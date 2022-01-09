@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Photon.Pun;
 
@@ -83,6 +84,12 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
         curTimer = 0;
         errorText.alpha = 100;
         errorText.gameObject.SetActive(true);
+    }
+
+    public void back()
+    {
+        SceneManager.LoadScene("Main Menu");
+        PhotonNetwork.Disconnect();
     }
 
 
