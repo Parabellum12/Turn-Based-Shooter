@@ -88,8 +88,8 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
 
     public void back()
     {
-        SceneManager.LoadScene("Main Menu");
         PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("Main Menu");
     }
 
 

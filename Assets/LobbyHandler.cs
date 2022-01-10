@@ -9,16 +9,28 @@ using Photon.Realtime;
 
 public class LobbyHandler : MonoBehaviourPunCallbacks
 {
-    public TMP_Text text;
+    public TMP_Text UserName;
+    Photon.Realtime.Player[] players;
 
     public void Awake()
     {
-        text.text = PhotonNetwork.IsMasterClient.ToString() + " Name:" + PhotonNetwork.NickName;
+        UserName.text = " "+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName;
         Photon.Realtime.Player[] arr =  PhotonNetwork.PlayerListOthers;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            //not host
+            return;
+        }
+        else
+        {
+            //host
+            players = PhotonNetwork.PlayerListOthers;
+            Debug.Log(newPlayer.CustomProperties.ToString());
+        }
         Debug.Log(newPlayer.NickName + " Joined");
     }
 
@@ -26,9 +38,19 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     {
         if (otherPlayer.IsMasterClient == true)
         {
-            PhotonNetwork.LeaveRoom();
-            SceneManager.LoadScene("JoinServer");
+            HostDisconnected();
         }
+    }
+
+    private void HostDisconnected()
+    {
+        
+    }
+
+    public void Disconnect()
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene("JoinServer");
     }
 
 }
