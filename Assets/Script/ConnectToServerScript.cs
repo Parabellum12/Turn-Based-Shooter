@@ -22,4 +22,9 @@ public class ConnectToServerScript : MonoBehaviourPunCallbacks
     {
         SceneManager.LoadScene("JoinServer");
     }
+
+    public void exit()
+    {
+        Application.Quit();
+    }
 }
