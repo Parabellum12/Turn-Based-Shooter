@@ -31,14 +31,23 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         {
             //host
             players = PhotonNetwork.PlayerListOthers;
-            Debug.Log(newPlayer.CustomProperties.ToString());
         }
         Debug.Log(newPlayer.NickName + " Joined");
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            //not host
+            return;
+        }
+        else
+        {
+            //host
+            players = PhotonNetwork.PlayerListOthers;
+        }
+        Debug.Log(otherPlayer.NickName + " left");
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
