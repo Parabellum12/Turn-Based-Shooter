@@ -14,6 +14,11 @@ public class Settings_Handler_Script : MonoBehaviour
     }
 
 
+    public void resetSettings()
+    {
+        Settings_Handler.resetSettings();
+    }
+
 
     public void toSettings()
     {

@@ -11,10 +11,12 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 {
     public TMP_Text UserName;
     Photon.Realtime.Player[] players;
+    [SerializeField] GameObject popupPrefab;
+    [SerializeField] Canvas canvas;
 
     public void Awake()
     {
-        UserName.text = " "+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName;
+        UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ";
         Photon.Realtime.Player[] arr =  PhotonNetwork.PlayerListOthers;
     }
 
@@ -36,15 +38,23 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if (otherPlayer.IsMasterClient == true)
-        {
-            HostDisconnected();
-        }
+
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        HostDisconnected();
     }
 
     private void HostDisconnected()
     {
-        
+        Debug.Log("HostDisconnected");
+        GameObject popup = Instantiate(popupPrefab, canvas.transform.position, Quaternion.identity);
+        popup.transform.SetParent(canvas.transform); 
+        popupScript popScript = popup.GetComponent<popupScript>();
+        popScript.text.text = "Host Disconnected";
+        popScript.buttonText.text = "Ok";
+        popScript.button.onClick.AddListener(Disconnect);
     }
 
     public void Disconnect()
@@ -52,5 +62,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("JoinServer");
     }
+
+
 
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public static class Settings_Handler
 {
     public static Resolution[] resolutions;
-    private static int resIndex = 0;
+    public static int resIndex = 0;
     public static Resolution preferedRes;
 
 
@@ -22,7 +22,15 @@ public static class Settings_Handler
      * 
      */
 
-    
+    public static void resetSettings()
+    {
+        for (int i = 0; i < errorFlags.Length; i++)
+        {
+            setErrorFlag(i, true);
+        }
+        checkAndFixErrors();
+        setPreferences();
+    }
 
 
     public static void loadSettings()
@@ -36,10 +44,6 @@ public static class Settings_Handler
         checkAndFixErrors();
         setPreferences();
 
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-            Debug.Log(resolutions[i].ToString());
-        }
     }
 
 
@@ -49,7 +53,6 @@ public static class Settings_Handler
         bool errorFix = false;
         for (int i = 0; i < error_flags.Length; i++)
         {
-            Debug.Log("test");
             if (error_flags[i] == '1')
             {
                 errorFix = true;
@@ -72,8 +75,7 @@ public static class Settings_Handler
 
     private static void fixResolution()
     {
-        Debug.Log("ResFix");
-        Resolution[] arr = Screen.resolutions;
+        Resolution[] arr = uniqueRes(Screen.resolutions);
         PlayerPrefs.SetInt("ResolutionNumber", arr.Length);
         for (int i = 0; i < arr.Length; i++)
         {
@@ -90,6 +92,22 @@ public static class Settings_Handler
 
     }
 
+    private static Resolution[] uniqueRes(Resolution[] resArr)
+    {
+        List<Resolution> temp = new List<Resolution>();
+        List<string> tempString = new List<string>();
+        for (int i = 0; i < resArr.Length; i++)
+        {
+            string value = resArr[i].width + ":" + resArr[i].height;
+            if (!tempString.Contains(value))
+            {
+                tempString.Add(value);
+                temp.Add(resArr[i]);
+            }
+        }
+        return temp.ToArray();
+    }
+
 
 
 
@@ -99,7 +117,6 @@ public static class Settings_Handler
         if (PlayerPrefs.HasKey("ResolutionNumber"))
         {
             setErrorFlag(0, false);
-            Debug.Log("How");
 
             string[] temp2 = PlayerPrefs.GetString("ResolutionPref").Split(':');
             Resolution tempRes2 = new Resolution();

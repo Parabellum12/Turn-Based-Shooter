@@ -64,7 +64,6 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         PhotonNetwork.LoadLevel("Pre-Game_Lobby");
-        bool main = PhotonNetwork.IsMasterClient;
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
