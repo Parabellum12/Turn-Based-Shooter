@@ -13,11 +13,19 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     Photon.Realtime.Player[] players;
     [SerializeField] GameObject popupPrefab;
     [SerializeField] Canvas canvas;
+    [SerializeField] Button playButton;
 
     public void Awake()
     {
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ";
         Photon.Realtime.Player[] arr =  PhotonNetwork.PlayerListOthers;
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            playButton.onClick = null;
+            playButton.interactable = false;
+        }
+
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -71,6 +79,17 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("JoinServer");
     }
+
+
+
+    public void play()
+    {
+        PhotonNetwork.LoadLevel("InGame");
+    }
+
+
+
+
 
 
 
