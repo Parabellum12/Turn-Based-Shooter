@@ -14,15 +14,22 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] GameObject popupPrefab;
     [SerializeField] Canvas canvas;
     [SerializeField] Button playButton;
+    [SerializeField] Image playerListCanvas;
+    Player_Icon_Script[] playerIcons;
 
     public void Awake()
     {
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ";
-        Photon.Realtime.Player[] arr =  PhotonNetwork.PlayerListOthers;
+        players =  PhotonNetwork.PlayerList;
         if (!PhotonNetwork.IsMasterClient)
         {
-            playButton.onClick = null;
             playButton.interactable = false;
+        }
+        else
+        {
+            playerIcons = null;
+            //is host
+            updatePlayerList();
         }
 
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -38,7 +45,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         else
         {
             //host
-            players = PhotonNetwork.PlayerListOthers;
+            players = PhotonNetwork.PlayerList;
+            updatePlayerList();
         }
         Debug.Log(newPlayer.NickName + " Joined");
     }
@@ -53,7 +61,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         else
         {
             //host
-            players = PhotonNetwork.PlayerListOthers;
+            players = PhotonNetwork.PlayerList;
+            updatePlayerList();
         }
         Debug.Log(otherPlayer.NickName + " left");
     }
@@ -88,7 +97,46 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     }
 
 
+    public void updatePlayerList()
+    {
+        Debug.Log("gotcha");
+        if(playerIcons != null)
+        {
+            foreach (Player_Icon_Script g in playerIcons)
+            {
+                g.deleteMe();
+            }
+        }
+        playerIcons = new Player_Icon_Script[players.Length];
+        int index = 0;
+        int x = 0;
+        int y= 0;
+        foreach (Photon.Realtime.Player plr in players)
+        {
+            GameObject temp = PhotonNetwork.Instantiate("plr_Icon", getIconOffset(60, playerListCanvas, index), Quaternion.identity);
+            temp.transform.SetParent(playerListCanvas.transform); 
+            RectTransform rectTrans = temp.GetComponent<RectTransform>();
+            rectTrans.SetParent(playerListCanvas.transform);
+            rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 170f);
+            rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 60);
+            Player_Icon_Script iconS = temp.GetComponent<Player_Icon_Script>();
+            iconS.setUserName(plr.NickName);
+            iconS.NotReady();
+            iconS.updateColorBarSize();
+            playerIcons[index] = iconS;
 
+            index++;
+        }
+    }
+
+    private Vector3 getIconOffset(float iconheight, Image backGround, int index)
+    {
+        Vector3 returner = backGround.rectTransform.position;
+        Debug.Log(returner.y + ":" + (backGround.rectTransform.rect.height) + ":" + (backGround.rectTransform.rect.height / 2f));
+        float offsetAmount = (215) - (index * iconheight);
+        returner.y += offsetAmount;
+        return returner;
+    }
 
 
 

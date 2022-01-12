@@ -1303,6 +1303,7 @@ MonoBehaviour:
   popupPrefab: {fileID: 1496470097787588889, guid: e32b41957bb6bc84eb34d402a5df84bd, type: 3}
   canvas: {fileID: 1124960242}
   playButton: {fileID: 1572396460}
+  playerListCanvas: {fileID: 1781072539}
 --- !u!4 &1961694012
 Transform:
   m_ObjectHideFlags: 0
