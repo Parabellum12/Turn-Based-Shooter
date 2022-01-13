@@ -8,13 +8,24 @@ public static class Settings_Handler
     public static int resIndex = 0;
     public static Resolution preferedRes;
 
+    public static FullScreenMode[] fullScreenModes = new FullScreenMode[]
+    {
+        FullScreenMode.FullScreenWindow,
+        FullScreenMode.MaximizedWindow,
+        FullScreenMode.Windowed,
+    };
+    public static FullScreenMode preferedScreenMode;
+
+    public static int fullSceenModesIndex = 0;
 
 
 
-    static string errorFlags = "0";
+
+    static string errorFlags = "00";
     static Dictionary<int, string> errorIndexToKey = new Dictionary<int, string>()
     {
-        {0, "Resolution"}
+        {0, "Resolution"},
+        {1, "WindowMode"}
     };
     /*resolution
      * 
@@ -37,7 +48,7 @@ public static class Settings_Handler
     {
         resetFlags();
         loadResolutionSettings();
-
+        loadFullscreenWindowSettings();
 
 
 
@@ -62,6 +73,10 @@ public static class Settings_Handler
                     case "Resolution":
                         fixResolution();
                         loadResolutionSettings();
+                        break;
+                    case "WindowMode":
+                        fixFullscreenWindowSettings();
+                        loadFullscreenWindowSettings();
                         break;
                 };
 
@@ -150,6 +165,24 @@ public static class Settings_Handler
         }
     }
 
+    private static void fixFullscreenWindowSettings()
+    {
+        PlayerPrefs.SetInt("WindowMode", 0);
+    }
+
+    private static void loadFullscreenWindowSettings()
+    {
+        if (PlayerPrefs.HasKey("WindowMode"))
+        {
+            fullSceenModesIndex = PlayerPrefs.GetInt("WindowMode");
+            preferedScreenMode = fullScreenModes[fullSceenModesIndex];
+        }
+        else
+        {
+            setErrorFlag(1, true);
+        }
+    }
+
     private static void setErrorFlag(int index, bool value)
     {
         string temp = "";
@@ -204,6 +237,30 @@ public static class Settings_Handler
     public static Resolution getCurRes()
     {
         return resolutions[resIndex];
+    }
+
+
+    public static void switchWindowMode(bool nextOrLast)
+    {
+        if (nextOrLast)
+        {
+            //next
+            fullSceenModesIndex = (fullSceenModesIndex + 1) % 3;
+        }
+        else
+        {
+            //last
+            fullSceenModesIndex--;
+            if (fullSceenModesIndex < 0)
+            {
+                fullSceenModesIndex = 2;
+            }
+        }
+    }
+
+    public static FullScreenMode getCurWindowMode()
+    {
+        return fullScreenModes[fullSceenModesIndex];
     }
 
     

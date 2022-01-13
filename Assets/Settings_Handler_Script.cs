@@ -8,6 +8,8 @@ public class Settings_Handler_Script : MonoBehaviour
     [SerializeField] GameObject MainMenu;
     [SerializeField] GameObject Settings;
     [SerializeField] TMP_Text resValueTex;
+    [SerializeField] TMP_Text WindowModeValueTex;
+
     public void Start()
     {
         Settings_Handler.loadSettings();
@@ -17,6 +19,7 @@ public class Settings_Handler_Script : MonoBehaviour
     public void resetSettings()
     {
         Settings_Handler.resetSettings();
+        loadSettingData();
     }
 
 
@@ -37,6 +40,7 @@ public class Settings_Handler_Script : MonoBehaviour
     private void loadSettingData()
     {
         resValueTex.text = Settings_Handler.preferedRes.width + "x" + Settings_Handler.preferedRes.height;
+        WindowModeValueTex.text = Settings_Handler.getCurWindowMode().ToString();
     }
 
 
@@ -54,6 +58,18 @@ public class Settings_Handler_Script : MonoBehaviour
         resValueTex.text = temp.width + "x" + temp.height;
     }
 
+    public void nextWindowMode()
+    {
+        Settings_Handler.switchWindowMode(true);
+        WindowModeValueTex.text = Settings_Handler.getCurWindowMode().ToString();
+    }
+
+    public void lastWindowMode()
+    {
+        Settings_Handler.switchWindowMode(false);
+        WindowModeValueTex.text = Settings_Handler.getCurWindowMode().ToString();
+    }
+
 
     public void cancel()
     {
@@ -69,8 +85,8 @@ public class Settings_Handler_Script : MonoBehaviour
     public void apply()
     {
         Resolution tempRes = Settings_Handler.getCurRes();
-        Screen.SetResolution(tempRes.width, tempRes.height, FullScreenMode.FullScreenWindow);
-
+        Screen.SetResolution(tempRes.width, tempRes.height, Settings_Handler.getCurWindowMode());
+        //Screen.fullScreenMode = FullScreenMode.Windowed;
 
         PlayerPrefs.Save();
     }
