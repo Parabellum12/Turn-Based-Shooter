@@ -142,7 +142,26 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
     public void play()
     {
-        PhotonNetwork.LoadLevel("InGame");
+        if (allPlayersReady())
+        {
+            PhotonNetwork.LoadLevel("InGame");
+        }
+    }
+
+    private bool allPlayersReady()
+    {
+        for (int i = 0; i < playerIcons.Length; i++)
+        {
+            Player_Icon_Script temp = playerIcons[i].GetComponent<Player_Icon_Script>();
+            if (temp.userName.enabled)
+            {
+                if (!temp.ready)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

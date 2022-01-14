@@ -2153,6 +2153,10 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 919030091283666636, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2065374073536655713, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2236,6 +2240,10 @@ PrefabInstance:
     - target: {fileID: 2065374073536655713, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2741960952740545519, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3121990740140183619, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId

@@ -7,7 +7,7 @@ using Photon.Pun;
 
 public class Player_Icon_Script : MonoBehaviour
 {
-    [SerializeField] TMP_Text userName;
+    [SerializeField] public TMP_Text userName;
     [SerializeField] Image colorBar;
     [SerializeField] public PhotonView photonView;
     [SerializeField] Image backGround;
@@ -66,10 +66,7 @@ public class Player_Icon_Script : MonoBehaviour
         ready = false;
     }
 
-    public void deleteMe()
-    {
-        Destroy(gameObject);
-    }
+   
 
 
 }
