@@ -14,12 +14,14 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] GameObject popupPrefab;
     [SerializeField] Canvas canvas;
     [SerializeField] Button playButton;
-    [SerializeField] Image playerListCanvas;
-    Player_Icon_Script[] playerIcons;
+    [SerializeField] Player_Icon_Script[] playerIcons;
+    bool[] playerIconsused;
 
-    public void Awake()
+    public void start()
     {
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ";
+        Debug.Log(" User:" + PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ");
+        Debug.Log("hello?");
         players =  PhotonNetwork.PlayerList;
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -27,7 +29,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         }
         else
         {
-            playerIcons = null;
+            //playerIcons = null;
             //is host
             updatePlayerList();
         }
@@ -85,6 +87,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
     public void Disconnect()
     {
+        PhotonNetwork.AutomaticallySyncScene = false;
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("JoinServer");
     }
@@ -104,39 +107,30 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         {
             foreach (Player_Icon_Script g in playerIcons)
             {
-                g.deleteMe();
+                g.gameObject.SetActive(false);
             }
         }
-        playerIcons = new Player_Icon_Script[players.Length];
+        playerIconsused = new bool[players.Length];
         int index = 0;
-        int x = 0;
-        int y= 0;
         foreach (Photon.Realtime.Player plr in players)
         {
-            GameObject temp = PhotonNetwork.Instantiate("plr_Icon", getIconOffset(60, playerListCanvas, index), Quaternion.identity);
-            temp.transform.SetParent(playerListCanvas.transform); 
-            RectTransform rectTrans = temp.GetComponent<RectTransform>();
-            rectTrans.SetParent(playerListCanvas.transform);
-            rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 170f);
-            rectTrans.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 60);
-            Player_Icon_Script iconS = temp.GetComponent<Player_Icon_Script>();
-            iconS.setUserName(plr.NickName);
-            iconS.NotReady();
-            iconS.updateColorBarSize();
-            playerIcons[index] = iconS;
+            for (int i = 0; i < playerIconsused.Length; i++)
+            {
+                if (playerIconsused[i] == false)
+                {
+                    index = i;
+                    playerIconsused[i] = true;
+                    break;
+                }
+            }
 
-            index++;
+            playerIcons[index].setUserName(plr.NickName);
+            playerIcons[index].NotReady();
+            playerIcons[index].gameObject.SetActive(true);
         }
     }
 
-    private Vector3 getIconOffset(float iconheight, Image backGround, int index)
-    {
-        Vector3 returner = backGround.rectTransform.position;
-        Debug.Log(returner.y + ":" + (backGround.rectTransform.rect.height) + ":" + (backGround.rectTransform.rect.height / 2f));
-        float offsetAmount = (215) - (index * iconheight);
-        returner.y += offsetAmount;
-        return returner;
-    }
+    
 
 
 

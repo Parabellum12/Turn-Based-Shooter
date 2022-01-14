@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class Player_Icon_Script : MonoBehaviour
 {
     [SerializeField] TMP_Text userName;
     [SerializeField] Image colorBar;
+    public int index = 0;
 
+
+    public void Awake()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            //Destroy(gameObject);
+        }
+    }
 
     public void setUserName(string name)
     {
@@ -30,9 +40,5 @@ public class Player_Icon_Script : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void updateColorBarSize()
-    {
-        colorBar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 25);
-        colorBar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, userName.gameObject.GetComponentInParent<RectTransform>().rect.height);
-    }
+
 }

@@ -16,11 +16,7 @@ public class Settings_Handler_Script : MonoBehaviour
     }
 
 
-    public void resetSettings()
-    {
-        Settings_Handler.resetSettings();
-        loadSettingData();
-    }
+    
 
 
     public void toSettings()
@@ -69,7 +65,13 @@ public class Settings_Handler_Script : MonoBehaviour
         Settings_Handler.switchWindowMode(false);
         WindowModeValueTex.text = Settings_Handler.getCurWindowMode().ToString();
     }
-
+    public void resetSettings()
+    {
+        Settings_Handler.resetSettings();
+        Settings_Handler.loadSettings();
+        loadSettingData();
+        apply();
+    }
 
     public void cancel()
     {

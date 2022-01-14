@@ -197,8 +197,12 @@ public static class Settings_Handler
                 }
                 else
                 {
-                    temp += charTemp[i];
+                    temp += "0";
                 }
+            }
+            else
+            {
+                temp += charTemp[i];
             }
         }
         errorFlags = temp;

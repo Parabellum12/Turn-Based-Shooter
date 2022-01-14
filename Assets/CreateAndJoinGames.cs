@@ -25,6 +25,7 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
     public void createRoom()
     {
         checkNick();
+        PhotonNetwork.IsMessageQueueRunning = true;
         if (checkLobbyName())
         {
             PhotonNetwork.CreateRoom(GameName.text);
@@ -34,8 +35,9 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
     public void joinRoom()
     {
         checkNick();
+        PhotonNetwork.IsMessageQueueRunning = true;
         if (checkLobbyName())
-        { 
+        {
             PhotonNetwork.JoinRoom(GameName.text); 
         }
     }
