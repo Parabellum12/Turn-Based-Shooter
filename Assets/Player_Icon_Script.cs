@@ -9,15 +9,28 @@ public class Player_Icon_Script : MonoBehaviour
 {
     [SerializeField] TMP_Text userName;
     [SerializeField] Image colorBar;
-    public int index = 0;
+    [SerializeField] public PhotonView photonView;
+    [SerializeField] Image backGround;
+    public bool ready;
+
+   
 
 
-    public void Awake()
+    [PunRPC]
+   public void updatePlayerNameList(string name, bool enabled, bool ready)
     {
-        if (!PhotonNetwork.IsMasterClient)
+        userName.text = name;
+        if (ready)
         {
-            //Destroy(gameObject);
+            Ready();
         }
+        else
+        {
+            NotReady();
+        }
+        userName.enabled = enabled;
+        colorBar.enabled = enabled;
+        backGround.enabled = enabled;
     }
 
     public void setUserName(string name)
@@ -25,14 +38,32 @@ public class Player_Icon_Script : MonoBehaviour
         userName.text = name;
     }
 
+    [PunRPC]
+    public void updateReadyStatus(bool status)
+    {
+        //Debug.Log("updateReadyStatus was called :" + status);
+        if (status)
+        {
+            Ready();
+        }
+        else
+        {
+            NotReady();
+        }
+    }
+
     public void Ready()
     {
+        //photonView.RPC("updateReadyStatus", RpcTarget.OthersBuffered, true);
         colorBar.color = Color.green;
+        ready = true;
     }
 
     public void NotReady()
     {
+       // photonView.RPC("updateReadyStatus", RpcTarget.OthersBuffered, false);
         colorBar.color = Color.red;
+        ready = false;
     }
 
     public void deleteMe()

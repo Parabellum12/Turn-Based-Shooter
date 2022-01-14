@@ -15,26 +15,72 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] Canvas canvas;
     [SerializeField] Button playButton;
     [SerializeField] Player_Icon_Script[] playerIcons;
+    [SerializeField] PhotonView localView;
     bool[] playerIconsused;
 
-    public void start()
+    public void Start()
     {
-        UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ";
+        UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " "; 
         Debug.Log(" User:" + PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ");
         Debug.Log("hello?");
         players =  PhotonNetwork.PlayerList;
         if (!PhotonNetwork.IsMasterClient)
         {
-            playButton.interactable = false;
+            setToReadyButton();
+            for (int i = 0; i < playerIcons.Length; i++)
+            {
+                playerIcons[i].updatePlayerNameList("UserName", false, false);
+            }
         }
         else
         {
             //playerIcons = null;
             //is host
+            playButton.onClick.AddListener(play);
             updatePlayerList();
         }
-
+        PhotonNetwork.IsMessageQueueRunning = true;
         PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
+    private void setToReadyButton()
+    {
+        playButton.onClick.RemoveListener(play);
+        playButton.onClick.AddListener(readyUpdate);
+        playButton.GetComponentInChildren<TMP_Text>().text = "Not Ready";
+    }
+
+    public void readyUpdate()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            TMP_Text text = playButton.GetComponentInChildren<TMP_Text>();
+            if (text.text.Equals("Ready"))
+            {
+                text.text = "Not Ready";
+            }
+            else
+            {
+                text.text = "Ready";
+            }
+            localView.RPC("handleReadyUp", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer);
+        }
+    }
+
+
+    [PunRPC]
+    public void handleReadyUp(Photon.Realtime.Player plr)
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].Equals(plr))
+            {
+                PhotonView iconView = playerIcons[i].photonView;
+                iconView.RPC("updateReadyStatus", RpcTarget.OthersBuffered, !playerIcons[i].ready);
+                playerIcons[i].updateReadyStatus(!playerIcons[i].ready);
+                return;
+            }
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -100,6 +146,9 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     }
 
 
+    
+
+
     public void updatePlayerList()
     {
         Debug.Log("gotcha");
@@ -108,6 +157,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             foreach (Player_Icon_Script g in playerIcons)
             {
                 g.gameObject.SetActive(false);
+                PhotonView view = g.photonView;
+                view.RPC("updatePlayerNameList", RpcTarget.Others, "UserName", false, false);
             }
         }
         playerIconsused = new bool[players.Length];
@@ -127,6 +178,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             playerIcons[index].setUserName(plr.NickName);
             playerIcons[index].NotReady();
             playerIcons[index].gameObject.SetActive(true);
+            PhotonView view = playerIcons[index].photonView;
+            view.RPC("updatePlayerNameList", RpcTarget.Others, plr.NickName, true, false);
         }
     }
 

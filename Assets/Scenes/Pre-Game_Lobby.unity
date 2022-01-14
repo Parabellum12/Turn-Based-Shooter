@@ -503,11 +503,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081245631296008764, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6771991695146783995, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025383205001997525, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: sceneViewId
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
@@ -842,9 +846,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081245631296008764, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6771991695146783995, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025383205001997525, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId
       value: 2
       objectReference: {fileID: 0}
@@ -971,11 +979,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081245631296008764, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6771991695146783995, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025383205001997525, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: sceneViewId
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
@@ -1100,11 +1112,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081245631296008764, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6771991695146783995, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025383205001997525, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: sceneViewId
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
@@ -1640,19 +1656,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1572396461}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1961694011}
-        m_TargetAssemblyTypeName: LobbyHandler, Assembly-CSharp
-        m_MethodName: play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1572396461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1816,11 +1820,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081245631296008764, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6771991695146783995, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025383205001997525, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: sceneViewId
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
@@ -1945,11 +1953,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081245631296008764, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6771991695146783995, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025383205001997525, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: sceneViewId
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
@@ -2061,6 +2073,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1961694012}
   - component: {fileID: 1961694011}
+  - component: {fileID: 1961694013}
   m_Layer: 0
   m_Name: Handler
   m_TagString: Untagged
@@ -2092,6 +2105,7 @@ MonoBehaviour:
   - {fileID: 823736731}
   - {fileID: 1615672132}
   - {fileID: 825130468}
+  localView: {fileID: 1961694013}
 --- !u!4 &1961694012
 Transform:
   m_ObjectHideFlags: 0
@@ -2106,6 +2120,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1961694013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961694010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 8
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &2583451980945772455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2211,11 +2247,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6081245631296008764, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6771991695146783995, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
       propertyPath: sceneViewId
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8025383205001997525, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
+      propertyPath: sceneViewId
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8895bf975aa1c12448881ab8355faf9a, type: 3}
