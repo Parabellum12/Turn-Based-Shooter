@@ -27,7 +27,7 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
         checkNick();
         if (checkLobbyName())
         {
-            PhotonNetwork.CreateRoom(GameName.text);
+            PhotonNetwork.CreateRoom(GameName.text, new Photon.Realtime.RoomOptions { MaxPlayers = 4}, null);
         }
     }
 

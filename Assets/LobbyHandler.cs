@@ -153,10 +153,11 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         for (int i = 0; i < playerIcons.Length; i++)
         {
             Player_Icon_Script temp = playerIcons[i].GetComponent<Player_Icon_Script>();
-            if (temp.userName.enabled)
+            if (temp.gameObject.activeSelf)
             {
                 if (!temp.ready)
                 {
+                    Debug.Log("Error: Someone Not Ready:" + players[i].NickName);
                     return false;
                 }
             }
@@ -195,10 +196,18 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             }
 
             playerIcons[index].setUserName(plr.NickName);
-            playerIcons[index].NotReady();
-            playerIcons[index].gameObject.SetActive(true);
             PhotonView view = playerIcons[index].photonView;
-            view.RPC("updatePlayerNameList", RpcTarget.Others, plr.NickName, true, false);
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                playerIcons[index].NotReady();
+                view.RPC("updatePlayerNameList", RpcTarget.Others, plr.NickName, true, false);
+            }
+            else
+            {
+                playerIcons[index].Ready();
+                view.RPC("updatePlayerNameList", RpcTarget.Others, plr.NickName, true, true);
+            }
+            playerIcons[index].gameObject.SetActive(true);
         }
     }
 
