@@ -17,7 +17,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] Player_Icon_Script[] playerIcons;
     [SerializeField] PhotonView localView;
     bool[] playerIconsused;
-
+    [SerializeField]CharacterData[] units = new CharacterData[5];
     public void Start()
     {
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " "; 

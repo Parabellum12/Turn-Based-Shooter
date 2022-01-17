@@ -8,7 +8,7 @@ public class WeaponStats : ScriptableObject
     public float maxDamage;
     public float maxDamageRange;
     public float maxRange;
-    public enum weaponType
+    public enum WeaponType
     {
         Rifle,
         Sniper_Rifle,
@@ -17,14 +17,14 @@ public class WeaponStats : ScriptableObject
         LMG
     }
 
-    public enum validWeaponSlot
+    public enum ValidWeaponSlot
     {
         Primary,
         Secondary
     }
 
-    public weaponType weapon_Type;
-    public validWeaponSlot valid_Weapon_Slot;
+    public WeaponType weapon_Type;
+    public ValidWeaponSlot valid_Weapon_Slot;
     [System.Serializable]
     public class firingModes
     {
