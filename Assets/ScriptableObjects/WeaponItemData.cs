@@ -6,4 +6,6 @@ using UnityEngine;
 public class WeaponItemData : ScriptableObject
 {
     public Item_Inventory_Data inventory_Data;
+    public WeaponStats weapon_Stats;
+    public string weaponName;
 }

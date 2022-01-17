@@ -54,7 +54,7 @@ public class ConnectToServerScript : MonoBehaviourPunCallbacks
                 numDots++;
                 numDots = (numDots % 4);
                 loadingText.text = "Connecting" + getDots();
-                Debug.Log(numDots);
+                //Debug.Log(numDots);
             }
         }
     }

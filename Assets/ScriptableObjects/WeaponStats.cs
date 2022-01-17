@@ -16,7 +16,34 @@ public class WeaponStats : ScriptableObject
         Pistol,
         LMG
     }
+
+    public enum validWeaponSlot
+    {
+        Primary,
+        Secondary
+    }
+
     public weaponType weapon_Type;
+    public validWeaponSlot valid_Weapon_Slot;
+    [System.Serializable]
+    public class firingModes
+    {
+        public enum mode
+        {
+            Semi,
+            Burst,
+            Auto,
+        }
+        public mode firingMode;
+        public int maxShots;
+        public float maxOffsetAngle;
+        public float timeBetweenShots;
+    }
+    public firingModes[] firing_Modes;
+    public int current_Firing_Mode = 0;
+
+
+
 
     public float getDamage(float dist)
     {
@@ -37,3 +64,5 @@ public class WeaponStats : ScriptableObject
         return dropoffPer * remainingDist;
     }
 }
+
+

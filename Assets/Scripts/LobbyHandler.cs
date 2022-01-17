@@ -21,8 +21,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     public void Start()
     {
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " "; 
-        Debug.Log(" User:" + PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ");
-        Debug.Log("hello?");
+        //Debug.Log(" User:" + PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ");
+        //Debug.Log("hello?");
         players =  PhotonNetwork.PlayerList;
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -171,7 +171,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
     public void updatePlayerList()
     {
-        Debug.Log("gotcha");
+       // Debug.Log("gotcha");
         if(playerIcons != null)
         {
             foreach (Player_Icon_Script g in playerIcons)

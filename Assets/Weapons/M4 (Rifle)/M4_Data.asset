@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e30c85925f9e4954b883f72cbf8dbb8b, type: 3}
+  m_Name: M4_Data
+  m_EditorClassIdentifier: 
+  maxDamage: 25
+  maxDamageRange: 20
+  maxRange: 50
+  weapon_Type: 0
+  valid_Weapon_Slot: 0
+  firing_Modes:
+  - firingMode: 0
+    maxShots: 1
+    maxOffsetAngle: 5
+    timeBetweenShots: 0
+  - firingMode: 1
+    maxShots: 3
+    maxOffsetAngle: 7.5
+    timeBetweenShots: 0.2
+  - firingMode: 2
+    maxShots: 10
+    maxOffsetAngle: 10
+    timeBetweenShots: 0.2
+  current_Firing_Mode: 0
