@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class CharacterData : MonoBehaviour
 {
-    [SerializeField] WeaponScriptableObject Primary_Weapon;
-    [SerializeField] WeaponScriptableObject Secondary_Weapon;
+    WeaponItemData primary_Weapon;
+    WeaponItemData secondary_Weapon;
 }
