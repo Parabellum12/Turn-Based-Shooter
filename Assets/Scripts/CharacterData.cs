@@ -22,6 +22,12 @@ public class CharacterData
             Dexterity = 50;
             WeaponHandling = 50;
         }
+        else
+        {
+
+        }
+
+        CharacterName = Character_Name_Handler.generateName();
     }
 
     //0-100; 50 = no debuff or buff; < 50 = debuff; 50 < = buff checked by 10s or 5s

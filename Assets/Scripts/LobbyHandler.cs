@@ -17,10 +17,20 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] Button playButton;
     [SerializeField] Player_Icon_Script[] playerIcons;
     [SerializeField] PhotonView localView;
+
+    //unit list icons
     bool[] playerIconsused;
     [SerializeField] CharacterData[] units = new CharacterData[5];
     [SerializeField] Unit_Icon_Script[] unitIcons = new Unit_Icon_Script[8];
     [SerializeField] private int Currently_Selected_Icon = 0;
+
+    //unit managment
+    [SerializeField] TMP_Text openClose_UnitManagment_Text;
+    [SerializeField] GameObject UnitManagment;
+
+
+
+    bool isUnitManagementOpen = false;
     public void Start()
     {
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " "; 
@@ -43,9 +53,40 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             updatePlayerList();
         }
         updateUnitCount();
+        closeUnitManagment();
         PhotonNetwork.IsMessageQueueRunning = true;
         PhotonNetwork.AutomaticallySyncScene = true;
     }
+
+    public void openAndCloseUnitManagement()
+    {
+        if (isUnitManagementOpen)
+        {
+            //close
+            closeUnitManagment();
+        }
+        else
+        {
+            //open
+            openUnitManagment();
+        }
+    }
+
+    private void closeUnitManagment()
+    {
+        isUnitManagementOpen = false;
+        openClose_UnitManagment_Text.text = "Open Unit Managment";
+        UnitManagment.SetActive(false);
+    }
+
+    private void openUnitManagment()
+    {
+        isUnitManagementOpen = true;
+        openClose_UnitManagment_Text.text = "Close Unit Managment";
+        UnitManagment.SetActive(true);
+    }
+
+
 
     public void addUnit()
     {
@@ -77,6 +118,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
                     units[i] = new CharacterData(false);
                 }
                 unitIcons[i].Unit_Name.text = units[i].CharacterName;
+                unitIcons[i].Unit_Name.enableAutoSizing = false;
+                unitIcons[i].Unit_Name.enableAutoSizing = true;
                 if (i == Currently_Selected_Icon)
                 {
                     unitIcons[i].selector.enabled = true;
