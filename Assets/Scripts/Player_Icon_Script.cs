@@ -57,6 +57,7 @@ public class Player_Icon_Script : MonoBehaviour
         //photonView.RPC("updateReadyStatus", RpcTarget.OthersBuffered, true);
         colorBar.color = Color.green;
         ready = true;
+        Debug.Log("hello ready");
     }
 
     public void NotReady()
@@ -64,6 +65,7 @@ public class Player_Icon_Script : MonoBehaviour
        // photonView.RPC("updateReadyStatus", RpcTarget.OthersBuffered, false);
         colorBar.color = Color.red;
         ready = false;
+        Debug.Log("hello not ready");
     }
 
    

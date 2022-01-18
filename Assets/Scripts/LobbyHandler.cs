@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using System.IO;
 
 public class LobbyHandler : MonoBehaviourPunCallbacks
 {
@@ -17,7 +18,9 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] Player_Icon_Script[] playerIcons;
     [SerializeField] PhotonView localView;
     bool[] playerIconsused;
-    [SerializeField]CharacterData[] units = new CharacterData[5];
+    [SerializeField] CharacterData[] units = new CharacterData[5];
+    [SerializeField] Unit_Icon_Script[] unitIcons = new Unit_Icon_Script[8];
+    [SerializeField] private int Currently_Selected_Icon = 0;
     public void Start()
     {
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " "; 
@@ -39,8 +42,80 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             playButton.onClick.AddListener(play);
             updatePlayerList();
         }
+        updateUnitCount();
         PhotonNetwork.IsMessageQueueRunning = true;
         PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
+    public void addUnit()
+    {
+        CharacterData[] temp = new CharacterData[units.Length+1];
+        for (int i = 0; i < units.Length; i++)
+        {
+            temp[i] = units[i];
+        }
+        temp[temp.Length-1] = new CharacterData(false);
+        units = temp;
+        //Debug.Log("whyyyyy :" + temp.Length + ";" + units.Length);
+        updateUnitCount();
+    }
+
+
+    public void updateUnitCount()
+    {
+        if (Currently_Selected_Icon > units.Length)
+        {
+            Currently_Selected_Icon = 0;
+        }
+        for (int i = 0; i < unitIcons.Length; i++)
+        {
+            
+            if (i < units.Length)
+            {
+                if (units[i] == null)
+                {
+                    units[i] = new CharacterData(false);
+                }
+                unitIcons[i].Unit_Name.text = units[i].CharacterName;
+                if (i == Currently_Selected_Icon)
+                {
+                    unitIcons[i].selector.enabled = true;
+                }
+                else
+                {
+                    unitIcons[i].selector.enabled = false;
+                }
+                unitIcons[i].Class_Image.sprite = units[i].ClassImage;
+                unitIcons[i].Active.SetActive(true);
+                unitIcons[i].Buy.SetActive(false);
+            }
+            else
+            {
+                unitIcons[i].gameObject.SetActive(false);
+            }
+        }
+        if (units.Length < unitIcons.Length)
+        {
+            unitIcons[units.Length].gameObject.SetActive(true);
+            unitIcons[units.Length].Active.SetActive(false);
+            unitIcons[units.Length].Buy.SetActive(true);
+        }
+    }
+
+    public void UpdateSelectedUnit(Unit_Icon_Script caller)
+    {
+        for (int i = 0; i < unitIcons.Length; i++)
+        {
+            if (unitIcons[i].Equals(caller))
+            {
+                unitIcons[i].selector.enabled = true;
+                Currently_Selected_Icon = i;
+            }
+            else
+            {
+                unitIcons[i].selector.enabled = false;
+            }
+        }
     }
 
     private void setToReadyButton()
@@ -93,6 +168,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         else
         {
             //host
+            Debug.Log("host calls player entered room");
             players = PhotonNetwork.PlayerList;
             updatePlayerList();
         }
@@ -185,6 +261,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         int index = 0;
         foreach (Photon.Realtime.Player plr in players)
         {
+            //get next avalible icon
             for (int i = 0; i < playerIconsused.Length; i++)
             {
                 if (playerIconsused[i] == false)
@@ -195,16 +272,17 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
                 }
             }
 
+            //set set icon data
             playerIcons[index].setUserName(plr.NickName);
             PhotonView view = playerIcons[index].photonView;
-            if (!PhotonNetwork.IsMasterClient)
+            if (!plr.IsMasterClient)
             {
-                playerIcons[index].NotReady();
+                playerIcons[index].updatePlayerNameList(plr.NickName, true, false);
                 view.RPC("updatePlayerNameList", RpcTarget.Others, plr.NickName, true, false);
             }
             else
             {
-                playerIcons[index].Ready();
+                playerIcons[index].updatePlayerNameList(plr.NickName, true, true);
                 view.RPC("updatePlayerNameList", RpcTarget.Others, plr.NickName, true, true);
             }
             playerIcons[index].gameObject.SetActive(true);
