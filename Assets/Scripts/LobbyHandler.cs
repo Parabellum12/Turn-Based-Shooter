@@ -172,7 +172,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             players = PhotonNetwork.PlayerList;
             updatePlayerList();
         }
-        Debug.Log(newPlayer.NickName + " Joined");
+        //Debug.Log(newPlayer.NickName + " Joined");
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -188,7 +188,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             players = PhotonNetwork.PlayerList;
             updatePlayerList();
         }
-        Debug.Log(otherPlayer.NickName + " left");
+        //Debug.Log(otherPlayer.NickName + " left");
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -233,7 +233,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             {
                 if (!temp.ready)
                 {
-                    Debug.Log("Error: Someone Not Ready:" + players[i].NickName);
+                    //Debug.Log("Error: Someone Not Ready:" + players[i].NickName);
                     return false;
                 }
             }
