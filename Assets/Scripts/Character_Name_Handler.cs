@@ -27,7 +27,7 @@ public static class Character_Name_Handler
     }
 
 
-    [MenuItem("Tools/Test")]
+    
     public static string generateName()
     {
         if (seed == 0)

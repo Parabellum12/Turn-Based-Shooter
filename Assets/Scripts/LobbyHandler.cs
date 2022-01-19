@@ -27,6 +27,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     //unit managment
     [SerializeField] TMP_Text openClose_UnitManagment_Text;
     [SerializeField] GameObject UnitManagment;
+    [SerializeField] Unit_Stats_Handler_Script unit_Stats_Handler_Script;
 
 
 
@@ -54,6 +55,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         }
         updateUnitCount();
         closeUnitManagment();
+        UnitManagment.GetComponent<Unit_Stats_Handler_Script>().switchToLoadout();
         PhotonNetwork.IsMessageQueueRunning = true;
         PhotonNetwork.AutomaticallySyncScene = true;
     }
@@ -69,6 +71,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         {
             //open
             openUnitManagment();
+            unit_Stats_Handler_Script.getStats(units[Currently_Selected_Icon]);
         }
     }
 
