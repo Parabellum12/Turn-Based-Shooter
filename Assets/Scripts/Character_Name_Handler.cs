@@ -12,8 +12,8 @@ public static class Character_Name_Handler
 
     public static void setupCharacterNameList()
     {
-        string pathS = Application.dataPath + "/TextFiles/FirstNames.txt";
-        string pathSLast = Application.dataPath + "/TextFiles/LastNames.txt";
+        string pathS = Application.streamingAssetsPath + "/TextFiles/FirstNames.txt";
+        string pathSLast = Application.streamingAssetsPath + "/TextFiles/LastNames.txt";
         StreamReader reader = new StreamReader(pathS, true);
         string fullText = reader.ReadToEnd();
         string[] StringArray = fullText.Split('\n');
@@ -73,4 +73,10 @@ public static class Character_Name_Handler
         return returner;
     }
 
+    
+
+
 }
+
+
+

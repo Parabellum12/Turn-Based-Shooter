@@ -9,6 +9,18 @@ public class CharacterData
     public WeaponItemData primary_Weapon = null;
     public WeaponItemData secondary_Weapon = null;
 
+    //0-100; 50 = no debuff or buff; < 50 = debuff; 50 < = buff checked by 10s or 5s
+    public int ActionPoints;
+    public int Strength;
+    public int Accuracy;
+    public int HealthPoints;
+    public int ReactionTime;
+    public int Dexterity;
+    public int WeaponHandling;
+
+    static bool randomizeStats = false;
+
+    public Sprite ClassImage;
 
     public CharacterData(bool random)
     {
@@ -24,25 +36,27 @@ public class CharacterData
         }
         else
         {
-
+            ActionPoints = getAverageRandom();
+            Strength = getAverageRandom();
+            Accuracy = getAverageRandom();
+            HealthPoints = getAverageRandom();
+            ReactionTime = getAverageRandom();
+            Dexterity = getAverageRandom();
+            WeaponHandling = getAverageRandom();
         }
 
         CharacterName = Character_Name_Handler.generateName();
     }
 
-    //0-100; 50 = no debuff or buff; < 50 = debuff; 50 < = buff checked by 10s or 5s
-    public int ActionPoints;
-    public int Strength;
-    public int Accuracy;
-    public int HealthPoints;
-    public int ReactionTime;
-    public int Dexterity;
-    public int WeaponHandling;
-
-    static bool randomizeStats = false;
-
-    public Sprite ClassImage;
-
+    private int getAverageRandom()
+    {
+        int total = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            total += Random.Range(20, 80);
+        }
+        return total / 5;
+    }
 
 }
   

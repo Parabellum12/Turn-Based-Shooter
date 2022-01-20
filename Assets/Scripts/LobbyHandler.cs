@@ -98,7 +98,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         {
             temp[i] = units[i];
         }
-        temp[temp.Length-1] = new CharacterData(false);
+        temp[temp.Length-1] = new CharacterData(true);
         units = temp;
         //Debug.Log("whyyyyy :" + temp.Length + ";" + units.Length);
         updateUnitCount();
@@ -118,7 +118,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             {
                 if (units[i] == null)
                 {
-                    units[i] = new CharacterData(false);
+                    units[i] = new CharacterData(true);
                 }
                 unitIcons[i].Unit_Name.text = units[i].CharacterName;
                 unitIcons[i].Unit_Name.enableAutoSizing = false;
@@ -156,6 +156,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             {
                 unitIcons[i].selector.enabled = true;
                 Currently_Selected_Icon = i;
+                unit_Stats_Handler_Script.getStats(units[i]);
             }
             else
             {
