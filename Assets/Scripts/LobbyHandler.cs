@@ -267,8 +267,16 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     {
         if (allPlayersReady())
         {
+            localView.RPC("UnitHandoff", RpcTarget.Others);
+            UnitHandoff();
             PhotonNetwork.LoadLevel("InGame");
         }
+    }
+
+    [PunRPC]
+    private void UnitHandoff()
+    {
+        Player_Units_Handler.setUnitSquad(units);
     }
 
     private bool allPlayersReady()

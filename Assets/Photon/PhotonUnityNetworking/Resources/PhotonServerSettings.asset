@@ -42,6 +42,9 @@ MonoBehaviour:
   - updatePlayerNameList
   - updateReadyStatus
   - handleReadyUp
+  - UnitHandoff
+  - AssignLocalTeam
+  - SetActiveTeam
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
