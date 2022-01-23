@@ -5,15 +5,15 @@ using TMPro;
 using UnityEngine.UI;
 public class World_Handler_Script : MonoBehaviour
 {
-    GridClass<BulletFireLine> bulletPath;
-    List<GridClass<WorldBuildTile>> buildLevels;
+    GridClass<BulletFireLine> bulletPath = null;
+    List<GridClass<WorldBuildTile>> buildLevels = new List<GridClass<WorldBuildTile>>();
 
     [SerializeField] float cellSize = 10f;
     [SerializeField] TMP_Dropdown mapSize;
     [SerializeField] TMP_InputField mapHeight;
     [SerializeField]int baseWidth = 60;
     [SerializeField]int baseHeight = 60;
-    public void GenerateNewMap()
+    public void GenerateNewMap() 
     {
         buildLevels.Clear();
         bulletPath = null;
