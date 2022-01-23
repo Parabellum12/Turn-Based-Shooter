@@ -11,7 +11,7 @@ public class GridClass<TGridObject>
     {
         public int x, y;
     }
-    private static bool showDebug = false;
+    private static bool showDebug = true;
 
     private int width;
     private int height;
@@ -20,7 +20,7 @@ public class GridClass<TGridObject>
     private TGridObject[,] gridArray;
     private TextMesh[,] debugGridArray;
     GameObject gameobject;
-    public GridClass(Transform parent, int Width, int Height, float cellSize, Vector3 originPos, System.Func<GridClass<TGridObject>, int, int, TGridObject> createGridObject)
+    public GridClass(Transform parent, int Width, int Height, float cellSize, Vector3 originPos, System.Func<int, int, TGridObject> createGridObject)
     {
         this.width = Width;
         this.height = Height;
@@ -34,7 +34,7 @@ public class GridClass<TGridObject>
         {
             for (int j = 0; j < gridArray.GetLength(1); j++)
             {
-                gridArray[i, j] = createGridObject(this, i, j);
+                gridArray[i, j] = createGridObject(i, j);
             }
         }
 
