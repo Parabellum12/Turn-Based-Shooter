@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AmmoMagazineScriptableObject", menuName = "ScriptableObjects/AmmoMag")]
+[CreateAssetMenu(fileName = "AmmoMagazineScriptableObject", menuName = "ScriptableObjects/Weapons/Magazines/AmmoMag")]
 public class AmmoMag : ScriptableObject
 {
     public enum AmmoType

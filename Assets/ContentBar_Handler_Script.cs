@@ -9,6 +9,7 @@ public class ContentBar_Handler_Script : MonoBehaviour
 {
     [SerializeField] GameObject Settings;
     [SerializeField] GameObject SaveLoad;
+    [SerializeField] GameObject WorldTiles;
 
 
     private void Start()
@@ -30,10 +31,17 @@ public class ContentBar_Handler_Script : MonoBehaviour
         SaveLoad.SetActive(true);
     }
 
+    public void toWorldBuilding()
+    {
+        setAllInactive();
+        WorldTiles.SetActive(true);
+    }
+
     private void setAllInactive()
     {
         Settings.SetActive(false);
         SaveLoad.SetActive(false);
+        WorldTiles.SetActive(false);
     }
 
 

@@ -13,6 +13,11 @@ public class CameraPanAndZoom_Script : MonoBehaviour
     bool isRightMouseDown = false;
     Vector2 MouseStartingPos;
 
+    private void Start()
+    {
+        mainCamera.transform.position = new Vector3(0,0,-10);
+    }
+
     // Update is called once per frame
     void Update()
     {

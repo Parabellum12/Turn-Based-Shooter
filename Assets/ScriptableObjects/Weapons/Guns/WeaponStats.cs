@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeaponStats", menuName = "ScriptableObjects/WeaponStats")]
+[CreateAssetMenu(fileName = "WeaponStats", menuName = "ScriptableObjects/Weapons/Guns/WeaponStats")]
 public class WeaponStats : ScriptableObject
 {
     public float maxDamage;

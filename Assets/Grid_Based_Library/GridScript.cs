@@ -47,11 +47,11 @@ public class GridClass<TGridObject>
             {
                 for (int j = 0; j < gridArray.GetLength(1); j++)
                 {
-                    debugGridArray[i, j] = UtilClass.createWorldText(gridArray[i, j]?.ToString(), gameobject.transform, getWorldPosition(i, j) + new Vector3(cellSize, cellSize) * 0.5f, 30, Color.white, TextAnchor.MiddleCenter);
+                    debugGridArray[i, j] = UtilClass.createWorldText(gridArray[i, j]?.ToString(), parent, getWorldPosition(i, j) + new Vector3(cellSize, cellSize) * 0.5f, 30, Color.white, TextAnchor.MiddleCenter);
                     Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i, j + 1), Color.white, 100f);
                     Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i + 1, j), Color.white, 100f);
                 }
-            }
+            } 
 
             Debug.DrawLine(getWorldPosition(0, height), getWorldPosition(width, height), Color.white, 100f);
             Debug.DrawLine(getWorldPosition(width, 0), getWorldPosition(width, height), Color.white, 100f);
