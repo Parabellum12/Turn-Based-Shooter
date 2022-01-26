@@ -7,5 +7,5 @@ public class TileBuildData : ScriptableObject
 {
     public string BuildingName;
     public Sprite buildingSprite;
-    public bool[] BulletSubGrid = new bool[9];
+    public bool[] BulletBlockerSubGrid = new bool[9];
 }
