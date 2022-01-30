@@ -21,6 +21,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
         moveDist = Mathf.Abs(openPos - closePos);
         //Debug.Log(closePos + ";" + openPos);
         close();
+        setSelectedTileType();
     }
 
     public void openOrClose()
@@ -107,9 +108,67 @@ public class TileChooser_Handler_Script : MonoBehaviour
     //tile Asset Selection Handling
 
     [SerializeField] TileBuildData[] GroundTiles;
-    List<TileAssetSelector_Handelr_Script> CurrentlyVisibleTileAssets;
+    List<TileAssetSelector_Handelr_Script> CurrentlyVisibleTileAssets = new List<TileAssetSelector_Handelr_Script>();
+    [SerializeField] RectTransform ClassTypeTextBanner;
+    [SerializeField] GameObject TileAssetSelecterPrefab;
+
+    Dictionary<string, int> tileNameToIndex = new Dictionary<string, int>()
+    {
+        {"Ground", 0}
+    };
+
+    private TileBuildData[] getTileTypeArray()
+    {
+        switch (assetClassLabel.text)
+        {
+            case "Ground":
+                return GroundTiles;
+        }
+        return null;
+    }
+
+    private Vector2 getTopLeftCorner()
+    {
+        Vector2 returner = Vector2.zero;
+        returner.x -= localTransform.rect.width / 2f;
+        returner.y += (localTransform.rect.height / 2f) - ClassTypeTextBanner.rect.height;
+        return returner;
+    }
+
+    private Vector2 getLocalPosToSet(int index, Vector2 TLC)
+    {
+        index++;
+        Debug.Log(index);
+        int x = (index % 2);
+        if (x == 0)
+        {
+            TLC.x += (localTransform.rect.width / 3);
+        }
+        else
+        {
+            TLC.x += (localTransform.rect.width / 3) * 2;
+        }
+        int y = Mathf.CeilToInt(index / 2f);
+        Debug.Log("y:"+y);
+        TLC.y -= ((TileAssetSelecterPrefab.GetComponent<RectTransform>().rect.height/2) * 1.5f) * y;
+        return TLC;
+    }
     public void setSelectedTileType()
     {
+        foreach (TileAssetSelector_Handelr_Script scr in CurrentlyVisibleTileAssets)
+        {
+            scr.deleteMe();
+        }
+        CurrentlyVisibleTileAssets = new List<TileAssetSelector_Handelr_Script>();
+        tileNameToIndex.TryGetValue(assetClassLabel.text, out int index);
+        Vector2 TLC = getTopLeftCorner();
+        TileBuildData[] tileTypeArray = getTileTypeArray();
+        for (int i = 0; i < tileTypeArray.Length; i++)
+        {
+            GameObject temp = Instantiate(TileAssetSelecterPrefab, TLC, Quaternion.identity, gameObject.transform);
+            temp.GetComponent<RectTransform>().localPosition = getLocalPosToSet(i, TLC);
+            CurrentlyVisibleTileAssets.Add(temp.GetComponent<TileAssetSelector_Handelr_Script>());
+        }
 
     }
 

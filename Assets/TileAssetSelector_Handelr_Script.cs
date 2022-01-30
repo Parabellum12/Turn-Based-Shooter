@@ -7,4 +7,9 @@ public class TileAssetSelector_Handelr_Script : MonoBehaviour
 {
     public Image AssetImage;
     public Button AssetSelectButton;
+
+    public void deleteMe()
+    {
+        Destroy(gameObject);
+    }
 }
