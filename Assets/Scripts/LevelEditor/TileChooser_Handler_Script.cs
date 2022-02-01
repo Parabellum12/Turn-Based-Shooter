@@ -22,6 +22,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
         //Debug.Log(closePos + ";" + openPos);
         close();
         setSelectedTileType();
+        CurrentSelectedTile = CurrentlyVisibleTileAssets[0].BuildData;
     }
 
     public void openOrClose()
@@ -111,7 +112,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
     List<TileAssetSelector_Handelr_Script> CurrentlyVisibleTileAssets = new List<TileAssetSelector_Handelr_Script>();
     [SerializeField] RectTransform ClassTypeTextBanner;
     [SerializeField] GameObject TileAssetSelecterPrefab;
-
+    public TileBuildData CurrentSelectedTile;
     Dictionary<string, int> tileNameToIndex = new Dictionary<string, int>()
     {
         {"Ground", 0}
@@ -167,7 +168,11 @@ public class TileChooser_Handler_Script : MonoBehaviour
         {
             GameObject temp = Instantiate(TileAssetSelecterPrefab, TLC, Quaternion.identity, gameObject.transform);
             temp.GetComponent<RectTransform>().localPosition = getLocalPosToSet(i, TLC);
-            CurrentlyVisibleTileAssets.Add(temp.GetComponent<TileAssetSelector_Handelr_Script>());
+            TileAssetSelector_Handelr_Script tempScript = temp.GetComponent<TileAssetSelector_Handelr_Script>();
+            tempScript.BuildData = tileTypeArray[i];
+            tempScript.SetSelectorData();
+            tempScript.handler = this;
+            CurrentlyVisibleTileAssets.Add(tempScript);
         }
 
     }

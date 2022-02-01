@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Ground-Blocker_test
   m_EditorClassIdentifier: 
   BuildingName: fullBlocker
-  buildingSprite: {fileID: 0}
+  buildingSprite: {fileID: 21300000, guid: 9c55b99fa852ddc4db36e2384c11d90e, type: 3}
   BulletBlockerSubGrid: 010101010101010101

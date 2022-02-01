@@ -1,30 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public static class UtilClass 
 {
 
 
     //create world text
-    public static TextMesh createWorldText(string text, Transform parent = null, Vector3 localPos = default(Vector3), int fontSize = 40, Color color = default(Color), TextAnchor textAnchor = TextAnchor.MiddleCenter, TextAlignment textAlignment = TextAlignment.Center, int sorintOrder = 0)
+    public static TextMeshPro createWorldText(string text, Transform parent = null, Vector3 localPos = default(Vector3), int fontSize = 40, Color color = default(Color), TMPro.TextContainerAnchors textAnchor = TMPro.TextContainerAnchors.Middle, TMPro.TextAlignmentOptions textAlignment = TMPro.TextAlignmentOptions.Center, int sorintOrder = 0)
     {
         if (color == null)
         {
             color = Color.white;
         }
-        return createWorldText(parent, text, localPos, fontSize, color, textAnchor, textAlignment, sorintOrder);
+        return createWorldText2(parent, text, localPos, fontSize, color, textAnchor, textAlignment, sorintOrder);
     }
 
-    public static TextMesh createWorldText(Transform parent, string text, Vector3 localPos, int fontSize, Color color, TextAnchor textAnchor, TextAlignment textAlignment, int sorintOrder)
+    public static TextMeshPro createWorldText2(Transform parent, string text, Vector3 localPos, int fontSize, Color color, TMPro.TextContainerAnchors textAnchor, TMPro.TextAlignmentOptions textAlignment, int sorintOrder)
     {
-        GameObject gameObject = new GameObject("WorldText", typeof(TextMesh));
+        GameObject gameObject = new GameObject("WorldText", typeof(TextMeshPro));
         Transform transform = gameObject.transform;
         transform.SetParent(parent, false);
         transform.localPosition = localPos;
-        TextMesh textmesh = gameObject.GetComponent<TextMesh>();
-        textmesh.anchor = textAnchor;
+        TextMeshPro textmesh = gameObject.GetComponent<TextMeshPro>();
+        textmesh.enableAutoSizing = true;
+        textmesh.fontSizeMin = 5;
         textmesh.alignment = textAlignment;
+        gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(10, 10);
         textmesh.text = text;
         textmesh.fontSize = fontSize;
         textmesh.color = color;

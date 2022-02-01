@@ -50,6 +50,22 @@ public class World_Handler_Script : MonoBehaviour
 
     }
 
+    public void setTile(TileBuildData data, Vector2 mousePos, int buildLevel)
+    {
+        buildLevels[buildLevel].GetXY(mousePos, out int x, out int y);
+        if (!buildLevels[buildLevel].inBounds(x,y))
+        {
+            return;
+        }
+        buildLevels[buildLevel].getGridObject(mousePos).setBuildData(data);
+        buildLevels[buildLevel].triggerGridObjectChanged(x,y);
+    }
+
+    public List<GridClass<WorldBuildTile>> getBuildLayers()
+    {
+        return buildLevels;
+    }
+
 
 
 
@@ -58,7 +74,19 @@ public class World_Handler_Script : MonoBehaviour
     {
         int x;
         int y;
-        TileBuildData buildData;
+        TileBuildData GroundBuildData;
+        TileBuildData DecorationBuildData;
+        //walls
+        //top
+        TileBuildData WallTopBuildData;
+        //bottom
+        TileBuildData WallBottomBuildData;
+        //left
+        TileBuildData WallleftBuildData;
+        //right
+        TileBuildData WallRightBuildData;
+
+
         public WorldBuildTile(int x, int y)
         {
             this.x = x;
@@ -67,12 +95,16 @@ public class World_Handler_Script : MonoBehaviour
 
         public void setBuildData(TileBuildData data)
         {
-            buildData = data;
+            GroundBuildData = data;
         }
 
         public override string ToString()
         {
-            return x + "," + y;
+            if (GroundBuildData == null)
+            {
+                return "null";
+            }
+            return GroundBuildData.buildingSprite.name;
         }
     }
 

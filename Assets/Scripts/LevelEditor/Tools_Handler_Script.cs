@@ -6,6 +6,17 @@ public class Tools_Handler_Script : MonoBehaviour
 {
     [SerializeField] Tool_Selector_Script Select;
     [SerializeField] Tool_Selector_Script Place;
+    [SerializeField] Tool_Selector_Script Erase;
+
+
+    public enum Tools
+    {
+        Select,
+        Brush,
+        Erase
+    };
+
+    public Tools SelectedTool = new Tools();
     // Start is called before the first frame update
     void Start()
     {
@@ -17,17 +28,27 @@ public class Tools_Handler_Script : MonoBehaviour
     {
         DeSelectAll();
         Select.Select();
+        SelectedTool = Tools.Select;
     }
 
     public void ToolPlace()
     {
         DeSelectAll();
         Place.Select();
+        SelectedTool = Tools.Brush;
+    }
+
+    public void toolErase()
+    {
+        DeSelectAll();
+        Erase.Select();
+        SelectedTool = Tools.Erase;
     }
 
     private void DeSelectAll()
     {
         Select.DeSelect();
         Place.DeSelect();
+        Erase.DeSelect();
     }
 }

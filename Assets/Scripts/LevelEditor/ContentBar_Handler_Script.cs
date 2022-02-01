@@ -10,6 +10,7 @@ public class ContentBar_Handler_Script : MonoBehaviour
     [SerializeField] GameObject Settings;
     [SerializeField] GameObject SaveLoad;
     [SerializeField] GameObject WorldTiles;
+    public RectTransform localTransform;
 
 
     private void Start()

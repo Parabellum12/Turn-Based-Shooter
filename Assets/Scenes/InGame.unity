@@ -175,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c803012f91479498906f270f5d547f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LocalView: {fileID: 0}
+  LocalView: {fileID: 1478181539}
 --- !u!4 &1478181541
 Transform:
   m_ObjectHideFlags: 0

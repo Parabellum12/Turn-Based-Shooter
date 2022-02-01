@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GridClass<TGridObject>
 {
@@ -18,7 +19,7 @@ public class GridClass<TGridObject>
     private float cellSize;
     private Vector3 originPos;
     private TGridObject[,] gridArray;
-    private TextMesh[,] debugGridArray;
+    private TextMeshPro[,] debugGridArray;
     GameObject gameobject;
     public GridClass(Transform parent, int Width, int Height, float cellSize, Vector3 originPos, System.Func<int, int, TGridObject> createGridObject)
     {
@@ -27,7 +28,7 @@ public class GridClass<TGridObject>
         this.cellSize = cellSize;
         this.originPos = originPos;
         gridArray = new TGridObject[width, height];
-        debugGridArray = new TextMesh[width, height];
+        debugGridArray = new TextMeshPro[width, height];
 
 
         for (int i = 0; i < gridArray.GetLength(0); i++)
@@ -47,14 +48,14 @@ public class GridClass<TGridObject>
             {
                 for (int j = 0; j < gridArray.GetLength(1); j++)
                 {
-                    debugGridArray[i, j] = UtilClass.createWorldText(gridArray[i, j]?.ToString(), parent, getWorldPosition(i, j) + new Vector3(cellSize, cellSize) * 0.5f, 30, Color.white, TextAnchor.MiddleCenter);
-                    Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i, j + 1), Color.white, 100f);
-                    Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i + 1, j), Color.white, 100f);
+                    debugGridArray[i, j] = UtilClass.createWorldText(gridArray[i, j]?.ToString(), parent, getWorldPosition(i, j) + new Vector3(cellSize, cellSize) * 0.5f, 30, Color.white, TMPro.TextContainerAnchors.Middle);
+                    Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i, j + 1), Color.white, 10000f);
+                    Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i + 1, j), Color.white, 10000f);
                 }
             } 
 
-            Debug.DrawLine(getWorldPosition(0, height), getWorldPosition(width, height), Color.white, 100f);
-            Debug.DrawLine(getWorldPosition(width, 0), getWorldPosition(width, height), Color.white, 100f);
+            Debug.DrawLine(getWorldPosition(0, height), getWorldPosition(width, height), Color.white, 10000f);
+            Debug.DrawLine(getWorldPosition(width, 0), getWorldPosition(width, height), Color.white, 10000f);
             onGridValueChanged += (object sender, OnGridValueChangedEventArgs eventArgs) =>
             {
                 debugGridArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();
@@ -133,6 +134,15 @@ public class GridClass<TGridObject>
     public float getCellSize()
     {
         return cellSize;
+    }
+
+    public bool inBounds(int x, int y)
+    {
+        if (x <= width && y <= height && x >= 0 && y >= 0)
+        {
+            return true;
+        }
+        return false;
     }
 }
 
