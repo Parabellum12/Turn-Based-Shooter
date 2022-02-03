@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class World_Handler_Script : MonoBehaviour
 {
     List<GridClass<WorldBuildTile>> buildLevels = new List<GridClass<WorldBuildTile>>();
-
     [SerializeField] float cellSize = 15f;
     [SerializeField] TMP_Dropdown mapSize;
     [SerializeField] TMP_InputField mapHeight;
