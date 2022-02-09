@@ -7,7 +7,8 @@ using TMPro;
 public class TileChooser_Handler_Script : MonoBehaviour
 {
     [SerializeField] Image openCloseArrow;
-    [SerializeField] TMP_Text assetClassLabel;
+    [SerializeField] TMP_Text assetClassTypeLabel;
+    [SerializeField] RectTransform AssetPickerTopMargin;
     float openPos;
     float closePos;
     float timeToMove = .1f;
@@ -21,6 +22,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
         moveDist = Mathf.Abs(openPos - closePos);
         //Debug.Log(closePos + ";" + openPos);
         close();
+        setSelectedTileType();
     }
 
     public void openOrClose()
@@ -62,7 +64,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
             if (openClose)
             {
                 //open
-                if (localTransform.localPosition.x >= openPos)
+                if (localTransform.localPosition.x > openPos)
                 {
                     Vector2 posreturn = localTransform.localPosition;
                     posreturn.x = openPos;
@@ -82,7 +84,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
             else
             {
                 //close
-                if (localTransform.localPosition.x <= closePos)
+                if (localTransform.localPosition.x < closePos)
                 {
                     Vector2 posreturn = localTransform.localPosition;
                     posreturn.x = closePos;
@@ -106,11 +108,57 @@ public class TileChooser_Handler_Script : MonoBehaviour
 
     //tile Asset Selection Handling
 
+    [SerializeField] GameObject TileSelectorPrefab;
+
     [SerializeField] TileBuildData[] GroundTiles;
-    List<TileAssetSelector_Handelr_Script> CurrentlyVisibleTileAssets;
+    private TileBuildData[] getSelectedTileType()
+    {
+        switch(assetClassTypeLabel.text)
+        {
+            case "Ground":
+                return GroundTiles;
+            default:
+                Debug.LogError("Tile Type Not Found");               
+                return null;
+        };
+    }
+
+    private Vector2 GetPositionToSet(int index)
+    {
+        Vector2 returner = Vector2.zero;
+        returner.x = index % 3;
+        while (index > 3)
+        {
+            returner.y++;
+            index -= 3;
+        }
+        return returner;
+    }
+    List<TileAssetSelector_Handelr_Script> CurrentlyVisibleTileAssets = new List<TileAssetSelector_Handelr_Script>();
     public void setSelectedTileType()
     {
-
+        foreach (TileAssetSelector_Handelr_Script scr in CurrentlyVisibleTileAssets)
+        {
+            scr.DeleteMe();
+        }
+        TileBuildData[] CurrentSelectedTileType = getSelectedTileType();
+        Vector2 topLeftCorner = localTransform.localPosition;
+        topLeftCorner.x -= localTransform.rect.width / 2;
+        topLeftCorner.y += (localTransform.rect.height / 2) - (AssetPickerTopMargin.rect.height * 2);
+        float[] gridPosValues = {
+           0f - (localTransform.rect.width / 2f),
+           0f,
+           (localTransform.rect.width / 2f)
+        };
+        for (int i = 0; i < CurrentSelectedTileType.Length; i++)
+        {
+            Vector2 gridPos = GetPositionToSet(i);
+            GameObject temp = Instantiate(TileSelectorPrefab, Vector3.zero, Quaternion.identity, gameObject.transform);
+            TileAssetSelector_Handelr_Script tempScript = temp.GetComponent<TileAssetSelector_Handelr_Script>();
+            tempScript.AssetSelectRectTransform.localPosition = new Vector2(gridPos.x, gridPos.y);
+            CurrentlyVisibleTileAssets.Add(tempScript);
+            
+        }
     }
 
 
