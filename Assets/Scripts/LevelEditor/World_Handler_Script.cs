@@ -5,15 +5,15 @@ using TMPro;
 using UnityEngine.UI;
 public class World_Handler_Script : MonoBehaviour
 {
-    List<GridClass<WorldBuildTile>> buildLevels = new List<GridClass<WorldBuildTile>>();
+    GridClass<WorldBuildTile> buildLevels = null;
     [SerializeField] float cellSize = 15f;
     [SerializeField] TMP_Dropdown mapSize;
-    [SerializeField] TMP_InputField mapHeight;
     [SerializeField] int baseWidth = 60;
     [SerializeField] int baseHeight = 60;
+    [SerializeField] TileBuildData defaultTile;
     public void GenerateNewMap() 
     {
-        buildLevels.Clear();
+        buildLevels = null;
         int width = 0;
         int height = 0;
         switch (mapSize.value)
@@ -31,39 +31,67 @@ public class World_Handler_Script : MonoBehaviour
                 height = 3 * baseHeight;
                 break;
         };
-        int mapHeightInt;
-        if (mapHeight.text == "" || mapHeight.text == null)
-        {
-            mapHeightInt = 1;
-        }
-        else 
-        {
-            mapHeightInt = int.Parse(mapHeight.text);
-        }
-        for (int i = 0; i < mapHeightInt; i++)
-        {
-            buildLevels.Add(new GridClass<WorldBuildTile>(gameObject.transform, width, height, cellSize, Vector3.zero, (int x, int y) => new WorldBuildTile(x, y)));
-        }
+        genNewMap(width, height);
 
 
+    }
 
+    private void genNewMap(int width, int height)
+    {
+        buildLevels = new GridClass<WorldBuildTile>(gameObject.transform, width, height, cellSize, Vector3.zero, (int x, int y) => new WorldBuildTile(x, y, defaultTile));
+        setVisualGrid();
     }
 
     public void setTile(TileBuildData data, Vector2 mousePos, int buildLevel)
     {
-        buildLevels[buildLevel].GetXY(mousePos, out int x, out int y);
-        if (!buildLevels[buildLevel].inBounds(x,y))
+        buildLevels.GetXY(mousePos, out int x, out int y);
+        if (!buildLevels.inBounds(x,y))
         {
             return;
         }
-        buildLevels[buildLevel].getGridObject(mousePos).setBuildData(data);
-        buildLevels[buildLevel].triggerGridObjectChanged(x,y);
+        buildLevels.getGridObject(mousePos).setBuildData(data);
+        buildLevels.triggerGridObjectChanged(x,y);
     }
 
-    public List<GridClass<WorldBuildTile>> getBuildLayers()
+    public GridClass<WorldBuildTile> getBuildLayers()
     {
         return buildLevels;
     }
+
+    //visual handler
+    List<TileVisual_Script> tileVisual_Scripts = new List<TileVisual_Script>();
+    public void clearVisuals()
+    {
+        foreach ( TileVisual_Script scr in tileVisual_Scripts)
+        {
+            scr.deleteMe();
+        }
+        tileVisual_Scripts.Clear();
+    }
+
+    public void setVisualGrid()
+    {
+        if (buildLevels == null)
+        {
+            return;
+        }
+        setVisualGrid(0, buildLevels.width-1, buildLevels.height-1);
+        Debug.Log("Finished Settig Visual Layering");
+    }
+
+    private void setVisualGrid(int layer, int x, int y)
+    {
+        if (!buildLevels.inBounds(x, y) || buildLevels.getGridObject(x,y).getDisplayOrder() != -1)
+        {
+            return;
+        }
+        Debug.Log("Layer:" + layer + "; coords:" + x + "," + y);
+        buildLevels.getGridObject(x,y).setDisplayOrder(layer);
+        setVisualGrid(layer+1, x-1, y);
+        setVisualGrid(layer+1, x, y-1);
+
+    }
+
 
 
 
@@ -73,8 +101,13 @@ public class World_Handler_Script : MonoBehaviour
     {
         int x;
         int y;
+        int displayOrder = -1;
+        //floor
         TileBuildData GroundBuildData;
+
+        //decoration
         TileBuildData DecorationBuildData;
+
         //walls
         //top
         TileBuildData WallTopBuildData;
@@ -86,10 +119,21 @@ public class World_Handler_Script : MonoBehaviour
         TileBuildData WallRightBuildData;
 
 
-        public WorldBuildTile(int x, int y)
+        public WorldBuildTile(int x, int y, TileBuildData defaultTileLoc)
         {
             this.x = x;
             this.y = y;
+            this.GroundBuildData = defaultTileLoc;
+        }
+
+        public void setDisplayOrder(int layer)
+        {
+            displayOrder = layer;
+        }
+
+        public int getDisplayOrder()
+        {
+            return displayOrder;
         }
 
         public void setBuildData(TileBuildData data)
@@ -103,7 +147,7 @@ public class World_Handler_Script : MonoBehaviour
             {
                 return "null";
             }
-            return GroundBuildData.buildingSprite.name;
+            return GroundBuildData.BuildingName;
         }
     }
 

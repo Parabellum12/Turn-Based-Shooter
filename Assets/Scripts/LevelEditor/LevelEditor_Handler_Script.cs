@@ -42,7 +42,7 @@ public class LevelEditor_Handler_Script : MonoBehaviour
 
     private bool ValidMousePositionForTilePlacement()
     {
-        if (IsPointerOverUIElement() || worldDataHandler.getBuildLayers() == null || worldDataHandler.getBuildLayers().Count == 0)
+        if (IsPointerOverUIElement() || worldDataHandler.getBuildLayers() == null)
         {
             return false;
         }

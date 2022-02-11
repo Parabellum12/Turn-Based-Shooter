@@ -14,11 +14,11 @@ public class GridClass<TGridObject>
     }
     private static bool showDebug = true;
 
-    private int width;
-    private int height;
+    public int width;
+    public int height;
     private float cellSize;
     private Vector3 originPos;
-    private TGridObject[,] gridArray;
+    public TGridObject[,] gridArray;
     private TextMeshPro[,] debugGridArray;
     GameObject gameobject;
     public GridClass(Transform parent, int Width, int Height, float cellSize, Vector3 originPos, System.Func<int, int, TGridObject> createGridObject)
@@ -138,7 +138,7 @@ public class GridClass<TGridObject>
 
     public bool inBounds(int x, int y)
     {
-        if (x <= width && y <= height && x >= 0 && y >= 0)
+        if (x <= width-1 && y <= height-1 && x >= 0 && y >= 0)
         {
             return true;
         }

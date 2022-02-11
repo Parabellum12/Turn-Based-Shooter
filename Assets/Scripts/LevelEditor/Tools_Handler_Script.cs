@@ -7,13 +7,15 @@ public class Tools_Handler_Script : MonoBehaviour
     [SerializeField] Tool_Selector_Script Select;
     [SerializeField] Tool_Selector_Script Place;
     [SerializeField] Tool_Selector_Script Erase;
+    [SerializeField] Tool_Selector_Script BoxFill;
 
 
     public enum Tools
     {
         Select,
         Brush,
-        Erase
+        Erase,
+        BoxFill
     };
 
     public Tools SelectedTool = new Tools();
@@ -45,10 +47,19 @@ public class Tools_Handler_Script : MonoBehaviour
         SelectedTool = Tools.Erase;
     }
 
+    public void toolBoxFill()
+    {
+
+        DeSelectAll();
+        BoxFill.Select();
+        SelectedTool = Tools.BoxFill;
+    }
+
     private void DeSelectAll()
     {
         Select.DeSelect();
         Place.DeSelect();
         Erase.DeSelect();
+        BoxFill.DeSelect();
     }
 }
