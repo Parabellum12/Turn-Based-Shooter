@@ -24,6 +24,10 @@ public class LevelEditor_Handler_Script : MonoBehaviour
             //left click held
             HandleLeftClick();
         }
+        if (Input.GetMouseButtonUp(0))
+        {
+            //end left click hold
+        }
     }
 
 
@@ -37,6 +41,67 @@ public class LevelEditor_Handler_Script : MonoBehaviour
             case Tools_Handler_Script.Tools.Erase:
                 worldDataHandler.setTile(null, UtilClass.getMouseWorldPosition(), 0);
                 break;
+            case Tools_Handler_Script.Tools.BoxFill:
+                handleBoxFillRequest(true);
+                break;
+
+        }
+    }
+
+    private void HandleLeftClickRelease()
+    {
+        switch (toolsHandler.SelectedTool)
+        {
+            case Tools_Handler_Script.Tools.BoxFill:
+                handleBoxFillRequest(false);
+                break;
+        }
+    }
+
+
+    //boxfill
+    Vector2 originXY = new Vector2(-1,-1);
+    bool validStart = true;
+    private void handleBoxFillRequest(bool starting_ending)
+    {
+        if (starting_ending)
+        {
+            Vector2 nullTest = new Vector2(-1, -1);
+            if (originXY == nullTest)
+            {
+                worldDataHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
+                if (!worldDataHandler.getBuildLayers().inBounds(x, y))
+                {
+                    validStart = false;
+                }
+                Vector2 coords = new Vector2(x, y);
+            }
+        }
+        else
+        {
+            if (validStart)
+            {
+                worldDataHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int endingX, out int endingY);
+                Vector2 xMinToMax = returnMinToMax(Mathf.RoundToInt(originXY.x), endingX);
+                Vector2 yMinToMax = returnMinToMax(Mathf.RoundToInt(originXY.y), endingY);
+            }
+            else
+            {
+                validStart = true;
+                originXY = new Vector2(-1, -1);
+            }
+        }
+    }
+
+    private Vector2 returnMinToMax(int x, int y)
+    {
+        if (x < y)
+        {
+            return new Vector2(x, y);
+        }
+        else
+        {
+            return new Vector2(y, x);
         }
     }
 
