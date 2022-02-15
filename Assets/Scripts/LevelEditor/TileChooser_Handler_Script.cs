@@ -107,6 +107,15 @@ public class TileChooser_Handler_Script : MonoBehaviour
 
 
     //tile Asset Selection Handling
+    public void AssetClassTypeSwitchLeft()
+    {
+
+    }
+
+    public void AssetClassTypeSwitchRight()
+    {
+
+    }
 
     [SerializeField] TileBuildData[] GroundTiles;
     List<TileAssetSelector_Handelr_Script> CurrentlyVisibleTileAssets = new List<TileAssetSelector_Handelr_Script>();
