@@ -52,7 +52,7 @@ public class GridClass<TGridObject>
                     Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i, j + 1), Color.white, 10000f);
                     Debug.DrawLine(getWorldPosition(i, j), getWorldPosition(i + 1, j), Color.white, 10000f);
                 }
-            } 
+            }
 
             Debug.DrawLine(getWorldPosition(0, height), getWorldPosition(width, height), Color.white, 10000f);
             Debug.DrawLine(getWorldPosition(width, 0), getWorldPosition(width, height), Color.white, 10000f);
@@ -75,17 +75,7 @@ public class GridClass<TGridObject>
         y = Mathf.FloorToInt((worldPos - originPos).y / cellSize);
     }
 
-    public void setGridObject(int x, int y, TGridObject value)
-    {
-        if (x >= 0 && y >= 0 && x < width && y < height)
-        {
-            gridArray[x, y] = value;
-            if (onGridValueChanged != null)
-            {
-                onGridValueChanged(this, new OnGridValueChangedEventArgs{x=x,y=y});
-            }
-        }
-    }
+
 
     public void triggerGridObjectChanged(int x, int y)
     {
@@ -100,6 +90,17 @@ public class GridClass<TGridObject>
         int x, y;
         GetXY(worldPos, out x, out y);
         setGridObject(x, y, value);
+    }
+    public void setGridObject(int x, int y, TGridObject value)
+    {
+        if (x >= 0 && y >= 0 && x < width && y < height)
+        {
+            gridArray[x, y] = value;
+            if (onGridValueChanged != null)
+            {
+                onGridValueChanged(this, new OnGridValueChangedEventArgs { x = x, y = y });
+            }
+        }
     }
 
     public TGridObject getGridObject(int x, int y)
@@ -138,7 +139,7 @@ public class GridClass<TGridObject>
 
     public bool inBounds(int x, int y)
     {
-        if (x <= width-1 && y <= height-1 && x >= 0 && y >= 0)
+        if (x <= width - 1 && y <= height - 1 && x >= 0 && y >= 0)
         {
             return true;
         }

@@ -11,7 +11,7 @@ public class World_Handler_Script : MonoBehaviour
     [SerializeField] int baseWidth = 60;
     [SerializeField] int baseHeight = 60;
     [SerializeField] TileBuildData defaultTile;
-    public void GenerateNewMap() 
+    public void GenerateNewMap()
     {
         buildLevels = null;
         int width = 0;
@@ -45,12 +45,50 @@ public class World_Handler_Script : MonoBehaviour
     public void setTile(TileBuildData data, Vector2 mousePos, int buildLevel)
     {
         buildLevels.GetXY(mousePos, out int x, out int y);
-        if (!buildLevels.inBounds(x,y))
+        if (!buildLevels.inBounds(x, y))
         {
+            //Debug.Log("Tile Change Failed:" + x + "," + y);
             return;
         }
+        //Debug.Log("Tile Changed:" + x + "," + y);
         buildLevels.getGridObject(mousePos).setBuildData(data);
-        buildLevels.triggerGridObjectChanged(x,y);
+        buildLevels.triggerGridObjectChanged(x, y);
+    }
+
+    public void setTile(TileBuildData data, Vector2Int XY, int buildLevel)
+    {
+        if (!buildLevels.inBounds(XY.x, XY.y))
+        {
+            //Debug.Log("Tile Change Failed:" + XY.x + "," + XY.y);
+            return;
+        }
+        //Debug.Log("Tile Changed:" + XY.x + "," + XY.y);
+        buildLevels.getGridObject(XY.x, XY.y).setBuildData(data);
+        buildLevels.triggerGridObjectChanged(XY.x, XY.y);
+    }
+
+    public void setTile(WorldBuildTile tile, Vector2Int XY, int buildLevel)
+    {
+        if (!buildLevels.inBounds(XY.x, XY.y) || tile == null)
+        {
+            //Debug.Log("Tile Changed Fail:" + (tile == null));
+            return;
+        }
+       // Debug.Log("Tile Changed Entire:" + XY.ToString());
+        buildLevels.setGridObject(XY.x, XY.y, tile);
+        buildLevels.triggerGridObjectChanged(XY.x, XY.y);
+    }
+
+    public void setTile(worldBuildTileTransferData transferData, Vector2Int XY, int buildLevel)
+    {
+        if (!buildLevels.inBounds(XY.x, XY.y) || transferData == null)
+        {
+            //Debug.Log("Tile Changed Fail:" + (transferData == null));
+            return;
+        }
+        //Debug.Log("Tile Changed Entire:" + XY.ToString());
+        buildLevels.getGridObject(XY.x, XY.y).setValuesFromTransferData(transferData);
+        buildLevels.triggerGridObjectChanged(XY.x, XY.y);
     }
 
     public GridClass<WorldBuildTile> getBuildLayers()
@@ -62,7 +100,7 @@ public class World_Handler_Script : MonoBehaviour
     List<TileVisual_Script> tileVisual_Scripts = new List<TileVisual_Script>();
     public void clearVisuals()
     {
-        foreach ( TileVisual_Script scr in tileVisual_Scripts)
+        foreach (TileVisual_Script scr in tileVisual_Scripts)
         {
             scr.deleteMe();
         }
@@ -75,20 +113,20 @@ public class World_Handler_Script : MonoBehaviour
         {
             return;
         }
-        setVisualGrid(0, buildLevels.width-1, buildLevels.height-1);
+        setVisualGrid(0, buildLevels.width - 1, buildLevels.height - 1);
         Debug.Log("Finished Settig Visual Layering");
     }
 
     private void setVisualGrid(int layer, int x, int y)
     {
-        if (!buildLevels.inBounds(x, y) || buildLevels.getGridObject(x,y).getDisplayOrder() != -1)
+        if (!buildLevels.inBounds(x, y) || buildLevels.getGridObject(x, y).getDisplayOrder() != -1)
         {
             return;
         }
-        Debug.Log("Layer:" + layer + "; coords:" + x + "," + y);
-        buildLevels.getGridObject(x,y).setDisplayOrder(layer);
-        setVisualGrid(layer+1, x-1, y);
-        setVisualGrid(layer+1, x, y-1);
+        //Debug.Log("Layer:" + layer + "; coords:" + x + "," + y);
+        buildLevels.getGridObject(x, y).setDisplayOrder(layer);
+        setVisualGrid(layer + 1, x - 1, y);
+        setVisualGrid(layer + 1, x, y - 1);
 
     }
 
@@ -126,6 +164,49 @@ public class World_Handler_Script : MonoBehaviour
             this.GroundBuildData = defaultTileLoc;
         }
 
+        public WorldBuildTile(worldBuildTileTransferData transferData)
+        {
+            x = transferData.x;
+            y = transferData.y;
+            displayOrder = transferData.displayOrder;
+            GroundBuildData = transferData.GroundBuildData;
+            DecorationBuildData = transferData.DecorationBuildData;
+            WallTopBuildData = transferData.WallTopBuildData;
+            WallBottomBuildData = transferData.WallBottomBuildData;
+            WallRightBuildData = transferData.WallRightBuildData;
+            WallleftBuildData = transferData.WallleftBuildData;
+        }
+
+        public worldBuildTileTransferData getTransferData()
+        {
+            worldBuildTileTransferData data = new worldBuildTileTransferData();
+            data.x = x;
+            data.y = y;
+            data.displayOrder = displayOrder;
+            data.GroundBuildData = GroundBuildData;
+            data.WallRightBuildData = WallRightBuildData;
+            data.WallTopBuildData = WallTopBuildData;
+            data.WallBottomBuildData = WallBottomBuildData;
+            data.WallleftBuildData = WallleftBuildData;
+            data.DecorationBuildData = DecorationBuildData;
+
+            return data;
+        }
+
+        public void setValuesFromTransferData(worldBuildTileTransferData transferData)
+        {
+            x = transferData.x;
+            y = transferData.y;
+            displayOrder = transferData.displayOrder;
+            GroundBuildData = transferData.GroundBuildData;
+            DecorationBuildData = transferData.DecorationBuildData;
+            WallTopBuildData = transferData.WallTopBuildData;
+            WallBottomBuildData = transferData.WallBottomBuildData;
+            WallRightBuildData = transferData.WallRightBuildData;
+            WallleftBuildData = transferData.WallleftBuildData;
+        }
+
+
         public void setDisplayOrder(int layer)
         {
             displayOrder = layer;
@@ -149,6 +230,28 @@ public class World_Handler_Script : MonoBehaviour
             }
             return GroundBuildData.BuildingName;
         }
+    }
+
+    public class worldBuildTileTransferData
+    {
+        public int x;
+        public int y;
+        public int displayOrder = -1;
+        //floor
+        public TileBuildData GroundBuildData;
+
+        //decoration
+        public TileBuildData DecorationBuildData;
+
+        //walls
+        //top
+        public TileBuildData WallTopBuildData;
+        //bottom
+        public TileBuildData WallBottomBuildData;
+        //left
+        public TileBuildData WallleftBuildData;
+        //right
+        public TileBuildData WallRightBuildData;
     }
 
     
