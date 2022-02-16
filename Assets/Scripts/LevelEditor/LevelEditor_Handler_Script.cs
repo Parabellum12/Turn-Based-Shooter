@@ -66,6 +66,7 @@ public class LevelEditor_Handler_Script : MonoBehaviour
     //boxfill
     Vector2Int boxFillOriginXY = new Vector2Int(-1,-1);
     bool validBoxFillStart = true;
+    Vector2Int boxFillLastGridPos = new Vector2Int(-1,-1);
     Dictionary<Vector2Int, World_Handler_Script.worldBuildTileTransferData> BoxFillLastTiles = new Dictionary<Vector2Int, World_Handler_Script.worldBuildTileTransferData>();
     private void handleBoxFillRequest(bool starting_ending)
     {
@@ -81,19 +82,29 @@ public class LevelEditor_Handler_Script : MonoBehaviour
                     validBoxFillStart = false;
                 }
                 boxFillOriginXY = new Vector2Int(x, y);
+                boxFillLastGridPos = new Vector2Int(x, y);
             }
             else
             {
                 //Debug.Log("Fill: " + validBoxFillStart);
                 if (validBoxFillStart)
                 {
-                    foreach (KeyValuePair<Vector2Int, World_Handler_Script.worldBuildTileTransferData> entry in BoxFillLastTiles)
+                    worldDataHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
+                    if (x == boxFillLastGridPos.x && y == boxFillLastGridPos.y)
                     {
-                        worldDataHandler.setTile(entry.Value, entry.Key, 0);
-                        //Debug.Log("return To Original: " + entry.Key.ToString() + " Value:" + entry.Value.ToString());
+                        //no new box
+                        return;
                     }
 
-                    worldDataHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
+                    foreach (KeyValuePair<Vector2Int, World_Handler_Script.worldBuildTileTransferData> entry in BoxFillLastTiles)
+                    {
+                        if (!BoxFillTileInBounds(boxFillOriginXY, new Vector2Int(x,y), entry.Key.x, entry.Key.y))
+                        {
+                            worldDataHandler.setTile(entry.Value, entry.Key, 0);
+                            //Debug.Log("return To Original: " + entry.Key.ToString() + " Value:" + entry.Value.ToString());
+                        }
+                    }
+
                     Vector2Int xMinToMax = returnMinToMax((int)boxFillOriginXY.x, x);
                     Vector2Int YMinToMax = returnMinToMax((int)boxFillOriginXY.y, y);
                     //Debug.Log("origin:" + boxFillOriginXY.ToString() + " : new:" + x + "," + y + " :: XMinToMax:" + xMinToMax.ToString() + " ; YMinToMax:" + YMinToMax.ToString());
@@ -103,7 +114,7 @@ public class LevelEditor_Handler_Script : MonoBehaviour
                         {
                             if (worldDataHandler.getBuildLayers().inBounds(i,j))
                             {
-                                if (!BoxFillLastTiles.ContainsKey(new Vector2Int(i, j)))
+                                if (!BoxFillLastTiles.ContainsKey(new Vector2Int(i, j)) && !BoxFillTileInBounds(boxFillOriginXY, boxFillLastGridPos, i, j))
                                 {
                                     BoxFillLastTiles.Add(new Vector2Int(i, j), worldDataHandler.getBuildLayers().getGridObject(i, j).getTransferData());
                                 }
@@ -112,6 +123,7 @@ public class LevelEditor_Handler_Script : MonoBehaviour
                         }
                     }
 
+                    boxFillLastGridPos = new Vector2Int(x, y);
 
                 }
             }
@@ -120,8 +132,23 @@ public class LevelEditor_Handler_Script : MonoBehaviour
         {
             validBoxFillStart = true;
             boxFillOriginXY = new Vector2Int(-1, -1);
-
+            boxFillLastGridPos = new Vector2Int(-1, -1);
             BoxFillLastTiles.Clear();
+        }
+    }
+
+    private bool BoxFillTileInBounds(Vector2Int origin, Vector2Int current, int x, int y)
+    {
+        Vector2Int xMinToMax = returnMinToMax(origin.x, current.x);
+        Vector2Int yMinToMax = returnMinToMax(origin.y, current.y);
+        if (x < xMinToMax.x || x > xMinToMax.y
+            || y < yMinToMax.x || y > yMinToMax.y)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 

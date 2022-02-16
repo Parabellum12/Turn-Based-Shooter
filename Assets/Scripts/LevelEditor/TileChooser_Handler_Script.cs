@@ -148,9 +148,9 @@ public class TileChooser_Handler_Script : MonoBehaviour
     private Vector2 getLocalPosToSet(int index, Vector2 TLC)
     {
         index++;
-        Debug.Log(index);
+        Debug.Log("index: "+index);
         int x = (index % 2);
-        if (x == 0)
+        if (x == 1)
         {
             TLC.x += (localTransform.rect.width / 3);
         }
@@ -160,7 +160,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
         }
         int y = Mathf.CeilToInt(index / 2f);
         Debug.Log("y:"+y);
-        TLC.y -= ((TileAssetSelecterPrefab.GetComponent<RectTransform>().rect.height/2) * 1.5f) * y;
+        TLC.y -= ((TileAssetSelecterPrefab.GetComponent<RectTransform>().rect.height) * 1.1f) * y;
         return TLC;
     }
     public void setSelectedTileType()

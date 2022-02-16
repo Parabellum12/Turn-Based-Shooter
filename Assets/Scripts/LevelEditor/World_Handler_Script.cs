@@ -39,7 +39,6 @@ public class World_Handler_Script : MonoBehaviour
     private void genNewMap(int width, int height)
     {
         buildLevels = new GridClass<WorldBuildTile>(gameObject.transform, width, height, cellSize, Vector3.zero, (int x, int y) => new WorldBuildTile(x, y, defaultTile));
-        setVisualGrid();
     }
 
     public void setTile(TileBuildData data, Vector2 mousePos, int buildLevel)
