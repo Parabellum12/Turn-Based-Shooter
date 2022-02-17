@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b73d1617d066740b67c8f27fbb6cef, type: 3}
   m_Name: CheckerTile_WhiteBlack
   m_EditorClassIdentifier: 
-  BuildingName: 
-  buildingSprite: {fileID: 0}
+  BuildingName: CheckerPattern
+  buildingSprite: {fileID: 21300000, guid: 43892ae50f0d85b4e80f70654d55545c, type: 3}
   BulletBlockerSubGrid: 000000000000000000

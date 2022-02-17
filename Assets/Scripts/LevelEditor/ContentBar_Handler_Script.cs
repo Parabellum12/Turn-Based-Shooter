@@ -51,15 +51,16 @@ public class ContentBar_Handler_Script : MonoBehaviour
 
     // save/load
     [SerializeField] TMP_Dropdown LoadFileDropdown;
+    [SerializeField]Dictionary<int, string> FilDropDown_ValueToFileName = new Dictionary<int, string>();
     private void updattMapFileList()
     {
         LoadFileDropdown.options.Clear();
         string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\Maps", "*.MapData");
-
         TMP_Dropdown.OptionData customOption = new TMP_Dropdown.OptionData("New File");
         LoadFileDropdown.options.Add(customOption);
         for (int i = 0; i < files.Length; i++)
         {
+            FilDropDown_ValueToFileName.Add(i+1, files[i]);
             //Debug.Log(sr.ReadToEnd());
             string name = "";
             char[] temp = files[i].ToCharArray();

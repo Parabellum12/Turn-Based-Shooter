@@ -95,16 +95,21 @@ public class LevelEditor_Handler_Script : MonoBehaviour
                         //no new box
                         return;
                     }
-
+                    List<Vector2Int> toRemove = new List<Vector2Int>();
                     foreach (KeyValuePair<Vector2Int, World_Handler_Script.worldBuildTileTransferData> entry in BoxFillLastTiles)
                     {
                         if (!BoxFillTileInBounds(boxFillOriginXY, new Vector2Int(x,y), entry.Key.x, entry.Key.y))
                         {
                             worldDataHandler.setTile(entry.Value, entry.Key, 0);
+                            toRemove.Add(entry.Key);
                             //Debug.Log("return To Original: " + entry.Key.ToString() + " Value:" + entry.Value.ToString());
                         }
                     }
-
+                    foreach(Vector2Int cur in toRemove)
+                    {
+                        BoxFillLastTiles.Remove(cur);
+                    }
+                    toRemove.Clear();
                     Vector2Int xMinToMax = returnMinToMax((int)boxFillOriginXY.x, x);
                     Vector2Int YMinToMax = returnMinToMax((int)boxFillOriginXY.y, y);
                     //Debug.Log("origin:" + boxFillOriginXY.ToString() + " : new:" + x + "," + y + " :: XMinToMax:" + xMinToMax.ToString() + " ; YMinToMax:" + YMinToMax.ToString());
