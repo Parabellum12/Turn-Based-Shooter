@@ -11,12 +11,20 @@ public class ContentBar_Handler_Script : MonoBehaviour
     [SerializeField] GameObject SaveLoad;
     [SerializeField] GameObject WorldTiles;
     public RectTransform localTransform;
-
+    string fileSystemSeperator;
 
     private void Start()
     {
         toSettings();
         DealWithFileSelectionSettings();
+        if (Application.streamingAssetsPath.Contains("/"))
+        {
+            fileSystemSeperator = "/";
+        }
+        else if (Application.streamingAssetsPath.Contains("\\"))
+        {
+            fileSystemSeperator = "\\";
+        }
     }
 
     public void toSettings()
@@ -55,13 +63,15 @@ public class ContentBar_Handler_Script : MonoBehaviour
     private void updattMapFileList()
     {
         LoadFileDropdown.options.Clear();
-        string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + "\\Maps", "*.MapData");
+        string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + fileSystemSeperator + "Maps", "*.MapData");
+        //Debug.Log(Application.streamingAssetsPath + fileSystemSeperator + "Maps");
+        //Debug.Log("Files: Length:" + files.Length);
         TMP_Dropdown.OptionData customOption = new TMP_Dropdown.OptionData("New File");
         LoadFileDropdown.options.Add(customOption);
         for (int i = 0; i < files.Length; i++)
         {
             FilDropDown_ValueToFileName.Add(i+1, files[i]);
-            //Debug.Log(sr.ReadToEnd());
+            //Debug.Log(files[i]);
             string name = "";
             char[] temp = files[i].ToCharArray();
             bool fileName = false;
