@@ -15,3 +15,4 @@ MonoBehaviour:
   BuildingName: Default Tile
   buildingSprite: {fileID: 0}
   BulletBlockerSubGrid: 010101010101010101
+  buildingType: 6

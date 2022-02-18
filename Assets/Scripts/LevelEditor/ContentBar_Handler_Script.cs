@@ -12,6 +12,7 @@ public class ContentBar_Handler_Script : MonoBehaviour
     [SerializeField] GameObject WorldTiles;
     public RectTransform localTransform;
     string fileSystemSeperator;
+    public string MapFilePath;
 
     private void Start()
     {
@@ -25,6 +26,7 @@ public class ContentBar_Handler_Script : MonoBehaviour
         {
             fileSystemSeperator = "\\";
         }
+        MapFilePath = Application.streamingAssetsPath + fileSystemSeperator + "Maps" + fileSystemSeperator;
     }
 
     public void toSettings()
@@ -63,6 +65,8 @@ public class ContentBar_Handler_Script : MonoBehaviour
     private void updattMapFileList()
     {
         LoadFileDropdown.options.Clear();
+        LoadFileDropdown.ClearOptions();
+        FilDropDown_ValueToFileName.Clear();
         string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + fileSystemSeperator + "Maps", "*.MapData");
         //Debug.Log(Application.streamingAssetsPath + fileSystemSeperator + "Maps");
         //Debug.Log("Files: Length:" + files.Length);

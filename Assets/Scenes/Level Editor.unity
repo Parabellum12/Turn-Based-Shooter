@@ -5632,6 +5632,7 @@ MonoBehaviour:
   mapName: {fileID: 1209733614}
   existingFileName: {fileID: 2050860358}
   saveAsName: {fileID: 556154956}
+  contentBar: {fileID: 1913083797}
 --- !u!114 &1313104464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8085,6 +8086,7 @@ MonoBehaviour:
   SaveLoad: {fileID: 3744310}
   WorldTiles: {fileID: 904158804}
   localTransform: {fileID: 1913083794}
+  MapFilePath: 
   LoadFileDropdown: {fileID: 2050860358}
   saveFileName: {fileID: 556154956}
   loadButton: {fileID: 1336637463}

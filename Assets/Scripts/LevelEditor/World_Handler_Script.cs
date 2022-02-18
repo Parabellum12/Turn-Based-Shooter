@@ -155,12 +155,14 @@ public class World_Handler_Script : MonoBehaviour
         //right
         TileBuildData WallRightBuildData;
 
+        bool[] subGrid = new bool[9];
+
 
         public WorldBuildTile(int x, int y, TileBuildData defaultTileLoc)
         {
             this.x = x;
             this.y = y;
-            this.GroundBuildData = defaultTileLoc;
+            setBuildData(defaultTileLoc);
         }
 
         public WorldBuildTile(worldBuildTileTransferData transferData)
@@ -174,6 +176,7 @@ public class World_Handler_Script : MonoBehaviour
             WallBottomBuildData = transferData.WallBottomBuildData;
             WallRightBuildData = transferData.WallRightBuildData;
             WallleftBuildData = transferData.WallleftBuildData;
+            subGrid = transferData.subGridData;
         }
 
         public worldBuildTileTransferData getTransferData()
@@ -188,6 +191,7 @@ public class World_Handler_Script : MonoBehaviour
             data.WallBottomBuildData = WallBottomBuildData;
             data.WallleftBuildData = WallleftBuildData;
             data.DecorationBuildData = DecorationBuildData;
+            data.subGridData = subGrid;
 
             return data;
         }
@@ -203,6 +207,7 @@ public class World_Handler_Script : MonoBehaviour
             WallBottomBuildData = transferData.WallBottomBuildData;
             WallRightBuildData = transferData.WallRightBuildData;
             WallleftBuildData = transferData.WallleftBuildData;
+            subGrid = transferData.subGridData;
         }
 
 
@@ -218,7 +223,57 @@ public class World_Handler_Script : MonoBehaviour
 
         public void setBuildData(TileBuildData data)
         {
-            GroundBuildData = data;
+            switch (data.buildingType)
+            {
+                case TileBuildData.BuildingType.Ground:
+                    this.GroundBuildData = data;
+                    break;
+                case TileBuildData.BuildingType.Decoration:
+                    this.DecorationBuildData = data;
+                    break;
+                case TileBuildData.BuildingType.WallLeft:
+                    this.WallleftBuildData = data;
+                    break;
+                case TileBuildData.BuildingType.WallRight:
+                    this.WallRightBuildData = data;
+                    break;
+                case TileBuildData.BuildingType.WallTop:
+                    this.WallTopBuildData = data;
+                    break;
+                case TileBuildData.BuildingType.WallBottom:
+                    this.WallBottomBuildData = data;
+                    break;
+                case TileBuildData.BuildingType.DefaultTile:
+                    this.GroundBuildData = data;
+                    break;
+            }
+            setTileSubGrid();
+        }
+
+        private void setTileSubGrid()
+        {
+            addSubGridBlockers(GroundBuildData);
+            addSubGridBlockers(DecorationBuildData);
+            addSubGridBlockers(WallTopBuildData);
+            addSubGridBlockers(WallBottomBuildData);
+            addSubGridBlockers(WallRightBuildData);
+            addSubGridBlockers(WallleftBuildData);
+        }
+
+        private void addSubGridBlockers(TileBuildData data)
+        {
+            if (data == null || data.BulletBlockerSubGrid == null || data.BulletBlockerSubGrid.Length == 0)
+            {
+                return;
+            }
+            bool[] adderSubGrid = data.BulletBlockerSubGrid;
+            for (int i = 0; i < subGrid.Length; i++)
+            {
+                if (adderSubGrid[i] == true)
+                {
+                    subGrid[i] = true;
+                }
+            }
         }
 
         public override string ToString()
@@ -251,6 +306,12 @@ public class World_Handler_Script : MonoBehaviour
         public TileBuildData WallleftBuildData;
         //right
         public TileBuildData WallRightBuildData;
+        public bool[] subGridData;
+    }
+
+    public class WorldBuildTileVisual
+    {
+
     }
 
     
