@@ -15,18 +15,16 @@ public class SaveLoad_Handler_Script : MonoBehaviour
 
     public void save()
     {
+        //format 
+        /*
+         * map size x, y, map name
+         * TransDat:x,y,TBD:
+         * Tile 2: transfer data
+         * 
+         */
         StreamWriter sr = new StreamWriter(contentBar.MapFilePath + saveAsName.text + ".MapData", true);
         Debug.Log(contentBar.MapFilePath + saveAsName.text + ".MapData");
-        if (existingFileName.value.Equals("New File"))
-        {
-            //create new file
-            sr.WriteLine("hello");
-        }
-        else
-        {
-            //save to existing file
-            sr.WriteLine("hello2");
-        }
+        sr.WriteLine("hello");
         sr.Flush();
     }
 

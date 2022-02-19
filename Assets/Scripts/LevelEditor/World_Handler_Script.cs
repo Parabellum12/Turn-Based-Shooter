@@ -11,6 +11,9 @@ public class World_Handler_Script : MonoBehaviour
     [SerializeField] int baseWidth = 60;
     [SerializeField] int baseHeight = 60;
     [SerializeField] TileBuildData defaultTile;
+    public static TileBuildData[] allTileBuildData;
+
+
     public void GenerateNewMap()
     {
         buildLevels = null;
@@ -288,6 +291,11 @@ public class World_Handler_Script : MonoBehaviour
 
     public class worldBuildTileTransferData
     {
+
+
+
+
+
         public int x;
         public int y;
         public int displayOrder = -1;
@@ -307,12 +315,73 @@ public class World_Handler_Script : MonoBehaviour
         //right
         public TileBuildData WallRightBuildData;
         public bool[] subGridData;
+
+        public string getDataAsSaveString()
+        {
+
+            string subgridS = "";
+            for (int i = 0; i < subGridData.Length; i++)
+            {
+                if (subGridData[i] == true)
+                {
+                    subgridS += "true";
+                }
+                else
+                {
+                    subgridS += "false";
+                }
+                if (i != subGridData.Length-1)
+                {
+                    subgridS += ",";
+                }
+            }
+            string returner = "WBTTD:";
+            returner += x + "," + y + "," + displayOrder + "," + GroundBuildData.BuildingName + "," + DecorationBuildData.BuildingName + "," +
+                WallTopBuildData.BuildingName + "," + WallBottomBuildData.BuildingName + "," + WallleftBuildData.BuildingName + "," + WallRightBuildData.BuildingName
+                + subgridS;
+            return returner;
+        }
+
+        public bool setDataFromSaveString(string s)
+        {
+            string[] tagAndData = s.Split(':');
+            if (!tagAndData[0].Equals("WBTTD:"))
+            {
+                Debug.Log("Data Read Fail: Incorrect Data Type");
+                return false;
+            }
+            string[] data = tagAndData[1].Split(',');
+            x = int.Parse(data[0]);
+            y = int.Parse(data[1]);
+            displayOrder = int.Parse(data[2]);
+            GroundBuildData = getDataFromName(data[3]);
+            DecorationBuildData = getDataFromName(data[4]);
+
+            WallTopBuildData = getDataFromName(data[5]);
+            WallBottomBuildData = getDataFromName(data[6]);
+            WallleftBuildData = getDataFromName(data[7]);
+            WallRightBuildData = getDataFromName(data[8]);
+            for (int i = 9; i < data.Length; i++)
+            {
+                subGridData[i] = bool.Parse(data[i]);
+            }
+            return true;
+
+        }
+
+        private TileBuildData getDataFromName(string name)
+        {
+            for (int i = 0; i < World_Handler_Script.allTileBuildData.Length; i++)
+            {
+                if (World_Handler_Script.allTileBuildData[i].BuildingName.Equals(name))
+                {
+                    return World_Handler_Script.allTileBuildData[i];
+                }
+            }
+            return null;
+        }
     }
 
-    public class WorldBuildTileVisual
-    {
-
-    }
 
     
 }

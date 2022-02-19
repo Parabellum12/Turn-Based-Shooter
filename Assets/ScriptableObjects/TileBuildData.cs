@@ -20,4 +20,6 @@ public class TileBuildData : ScriptableObject
         DefaultTile
     };
     public BuildingType buildingType;
+
+   
 }
