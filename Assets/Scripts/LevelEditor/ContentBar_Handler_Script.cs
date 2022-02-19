@@ -65,7 +65,7 @@ public class ContentBar_Handler_Script : MonoBehaviour
     private void updattMapFileList()
     {
         LoadFileDropdown.options.Clear();
-        LoadFileDropdown.ClearOptions();
+        //LoadFileDropdown.ClearOptions();
         FilDropDown_ValueToFileName.Clear();
         string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + fileSystemSeperator + "Maps", "*.MapData");
         //Debug.Log(Application.streamingAssetsPath + fileSystemSeperator + "Maps");
