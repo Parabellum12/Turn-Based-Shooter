@@ -5633,6 +5633,7 @@ MonoBehaviour:
   existingFileName: {fileID: 2050860358}
   saveAsName: {fileID: 556154956}
   contentBar: {fileID: 1913083797}
+  worldHandler: {fileID: 1313104464}
 --- !u!114 &1313104464
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -184,6 +184,7 @@ public class World_Handler_Script : MonoBehaviour
 
         public worldBuildTileTransferData getTransferData()
         {
+            setTileSubGrid();
             worldBuildTileTransferData data = new worldBuildTileTransferData();
             data.x = x;
             data.y = y;
@@ -336,10 +337,22 @@ public class World_Handler_Script : MonoBehaviour
                 }
             }
             string returner = "WBTTD:";
-            returner += x + "," + y + "," + displayOrder + "," + GroundBuildData.BuildingName + "," + DecorationBuildData.BuildingName + "," +
-                WallTopBuildData.BuildingName + "," + WallBottomBuildData.BuildingName + "," + WallleftBuildData.BuildingName + "," + WallRightBuildData.BuildingName
+            returner += x + "," + y + "," + displayOrder + "," + getTBDName(GroundBuildData) + "," + getTBDName(DecorationBuildData) + "," +
+                getTBDName(WallTopBuildData) + "," + getTBDName(WallBottomBuildData) + "," + getTBDName(WallleftBuildData) + "," + getTBDName(WallRightBuildData)
                 + subgridS;
             return returner;
+        }
+
+        private string getTBDName(TileBuildData dat)
+        {
+            if (dat == null)
+            {
+                return "null";
+            }
+            else
+            {
+                return dat.BuildingName;
+            }
         }
 
         public bool setDataFromSaveString(string s)
