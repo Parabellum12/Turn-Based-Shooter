@@ -51,9 +51,26 @@ public class SaveLoad_Handler_Script : MonoBehaviour
         sr.Flush();
     }
 
-    public void load()
+    public void load(string fileName)
     {
-
+        string filePath = worldHandler.MapFolderFilePath + fileName + ".MapData";
+        Debug.Log("Load File:" + fileName);
+        Debug.Log("Load File Path:" + filePath);
+        StreamReader sr = new StreamReader(filePath);
+        string fileContents = sr.ReadToEnd();
+        Debug.Log("Reading:" + fileContents);
+        Debug.Log(fileContents.Split('\n').Length);
+        string[] contentsPerLine = fileContents.Split('\n');
+        worldHandler.genNewMap(int.Parse(contentsPerLine[0].Split(',')[0]), int.Parse(contentsPerLine[0].Split(',')[1]));
+        for (int i = 1; i < contentsPerLine.Length-1; i++)
+        {
+            World_Handler_Script.worldBuildTileTransferData transDat = new World_Handler_Script.worldBuildTileTransferData();
+            if (!transDat.setDataFromSaveString(contentsPerLine[i]))
+            {
+                Debug.LogError("Load File Fail: \n\tIncorrect Data Type: " + contentsPerLine[i]);
+            }
+            worldHandler.setTile(transDat, new Vector2Int(transDat.x, transDat.y), 0);
+        }
     }
 
 

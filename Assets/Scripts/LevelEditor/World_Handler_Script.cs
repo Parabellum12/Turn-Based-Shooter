@@ -12,7 +12,25 @@ public class World_Handler_Script : MonoBehaviour
     [SerializeField] int baseHeight = 60;
     [SerializeField] TileBuildData defaultTile;
     public static TileBuildData[] allTileBuildData;
+    [SerializeField] TileBuildData[] SetAllTileBuildData;
+    public string MapFolderFilePath;
 
+    public void Start()
+    {
+        allTileBuildData = SetAllTileBuildData;
+        string seperator = "";
+        if (Application.streamingAssetsPath.Contains("/"))
+        {
+            seperator = "/";
+        }
+        else if (Application.streamingAssetsPath.Contains("\\"))
+        {
+            seperator = "\\";
+        }
+        MapFolderFilePath = Application.streamingAssetsPath + seperator + "Maps" + seperator;
+    }
+
+    
 
     public void GenerateNewMap()
     {
@@ -39,7 +57,7 @@ public class World_Handler_Script : MonoBehaviour
 
     }
 
-    private void genNewMap(int width, int height)
+    public void genNewMap(int width, int height)
     {
         buildLevels = new GridClass<WorldBuildTile>(gameObject.transform, width, height, cellSize, Vector3.zero, (int x, int y) => new WorldBuildTile(x, y, defaultTile));
     }
@@ -325,11 +343,11 @@ public class World_Handler_Script : MonoBehaviour
             {
                 if (subGridData[i] == true)
                 {
-                    subgridS += "true";
+                    subgridS += "True";
                 }
                 else
                 {
-                    subgridS += "false";
+                    subgridS += "False";
                 }
                 if (i != subGridData.Length-1)
                 {
@@ -339,7 +357,7 @@ public class World_Handler_Script : MonoBehaviour
             string returner = "WBTTD:";
             returner += x + "," + y + "," + displayOrder + "," + getTBDName(GroundBuildData) + "," + getTBDName(DecorationBuildData) + "," +
                 getTBDName(WallTopBuildData) + "," + getTBDName(WallBottomBuildData) + "," + getTBDName(WallleftBuildData) + "," + getTBDName(WallRightBuildData)
-                + subgridS;
+                + "," + subgridS;
             return returner;
         }
 
@@ -358,7 +376,7 @@ public class World_Handler_Script : MonoBehaviour
         public bool setDataFromSaveString(string s)
         {
             string[] tagAndData = s.Split(':');
-            if (!tagAndData[0].Equals("WBTTD:"))
+            if (!tagAndData[0].Equals("WBTTD"))
             {
                 Debug.Log("Data Read Fail: Incorrect Data Type");
                 return false;
@@ -374,9 +392,11 @@ public class World_Handler_Script : MonoBehaviour
             WallBottomBuildData = getDataFromName(data[6]);
             WallleftBuildData = getDataFromName(data[7]);
             WallRightBuildData = getDataFromName(data[8]);
+            subGridData = new bool[9];
             for (int i = 9; i < data.Length; i++)
             {
-                subGridData[i] = bool.Parse(data[i]);
+                //Debug.Log("attempting to get bool values from:" + data[i] + ":" + i);
+                subGridData[i-9] = bool.Parse(data[i]);
             }
             return true;
 
@@ -384,11 +404,11 @@ public class World_Handler_Script : MonoBehaviour
 
         private TileBuildData getDataFromName(string name)
         {
-            for (int i = 0; i < World_Handler_Script.allTileBuildData.Length; i++)
+            for (int i = 0; i < allTileBuildData.Length; i++)
             {
-                if (World_Handler_Script.allTileBuildData[i].BuildingName.Equals(name))
+                if (allTileBuildData[i].BuildingName.Equals(name))
                 {
-                    return World_Handler_Script.allTileBuildData[i];
+                    return allTileBuildData[i];
                 }
             }
             return null;

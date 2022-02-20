@@ -9,6 +9,7 @@ public class LevelEditor_Handler_Script : MonoBehaviour
     [SerializeField] TileChooser_Handler_Script tileChooserHandler;
     [SerializeField] ContentBar_Handler_Script contentBarHandler;
     [SerializeField] Tools_Handler_Script toolsHandler;
+    [SerializeField] SaveLoad_Handler_Script saveLoadHandler;
     int UILayer;
 
     private void Start()
@@ -43,7 +44,7 @@ public class LevelEditor_Handler_Script : MonoBehaviour
                 worldDataHandler.setTile(tileChooserHandler.CurrentSelectedTile, UtilClass.getMouseWorldPosition(), 0);
                 break;
             case Tools_Handler_Script.Tools.Erase:
-                worldDataHandler.setTile(null, UtilClass.getMouseWorldPosition(), 0);
+                worldDataHandler.setTile(tileChooserHandler.defaultTile, UtilClass.getMouseWorldPosition(), 0);
                 break;
             case Tools_Handler_Script.Tools.BoxFill:
                 handleBoxFillRequest(true);
@@ -176,6 +177,27 @@ public class LevelEditor_Handler_Script : MonoBehaviour
             return new Vector2Int(y, x);
         }
     }
+
+
+
+
+    public void load()
+    {
+        Debug.Log("level load");
+        saveLoadHandler.load(contentBarHandler.getLoadFile());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     private bool ValidMousePositionForTilePlacement()
     {

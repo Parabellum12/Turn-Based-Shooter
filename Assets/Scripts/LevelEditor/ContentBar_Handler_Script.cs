@@ -62,6 +62,12 @@ public class ContentBar_Handler_Script : MonoBehaviour
     // save/load
     [SerializeField] TMP_Dropdown LoadFileDropdown;
     [SerializeField]Dictionary<int, string> FilDropDown_ValueToFileName = new Dictionary<int, string>();
+
+    public string getLoadFile()
+    {
+        Debug.Log("get load file");
+        return LoadFileDropdown.options[LoadFileDropdown.value].text;
+    }
     private void updattMapFileList()
     {
         LoadFileDropdown.options.Clear();

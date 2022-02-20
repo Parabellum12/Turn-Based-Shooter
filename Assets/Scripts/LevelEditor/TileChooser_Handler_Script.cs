@@ -122,6 +122,7 @@ public class TileChooser_Handler_Script : MonoBehaviour
     [SerializeField] RectTransform ClassTypeTextBanner;
     [SerializeField] GameObject TileAssetSelecterPrefab;
     public TileBuildData CurrentSelectedTile;
+    public TileBuildData defaultTile;
     Dictionary<string, int> tileNameToIndex = new Dictionary<string, int>()
     {
         {"Ground", 0}
