@@ -14,6 +14,7 @@ public class World_Handler_Script : MonoBehaviour
     public static TileBuildData[] allTileBuildData;
     [SerializeField] TileBuildData[] SetAllTileBuildData;
     public string MapFolderFilePath;
+    [SerializeField] WorldTileVisual visualGrid;
 
     public void Start()
     {
@@ -60,6 +61,7 @@ public class World_Handler_Script : MonoBehaviour
     public void genNewMap(int width, int height)
     {
         buildLevels = new GridClass<WorldBuildTile>(gameObject.transform, width, height, cellSize, Vector3.zero, (int x, int y) => new WorldBuildTile(x, y, defaultTile));
+        visualGrid.SetGrid(buildLevels);
     }
 
     public void setTile(TileBuildData data, Vector2 mousePos, int buildLevel)
@@ -178,7 +180,10 @@ public class World_Handler_Script : MonoBehaviour
 
         bool[] subGrid = new bool[9];
 
-
+        public TileBuildData getMainBuildData()
+        {
+            return GroundBuildData;
+        }
         public WorldBuildTile(int x, int y, TileBuildData defaultTileLoc)
         {
             this.x = x;

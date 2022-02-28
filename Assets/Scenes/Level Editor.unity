@@ -5563,6 +5563,8 @@ GameObject:
   - component: {fileID: 1313104462}
   - component: {fileID: 1313104463}
   - component: {fileID: 1313104464}
+  - component: {fileID: 1313104465}
+  - component: {fileID: 1313104466}
   m_Layer: 0
   m_Name: LevelEditor_Handler
   m_TagString: Untagged
@@ -5659,6 +5661,27 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c335ca7d3c168f2459e7273266c5aaa8, type: 2}
   - {fileID: 11400000, guid: 828faaee09ced8b49b4c12082a0348a5, type: 2}
   MapFolderFilePath: 
+  visualGrid: {fileID: 1313104465}
+--- !u!114 &1313104465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313104459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab40b3ca97ccb0c41a745bc9c88856e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!33 &1313104466
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313104459}
+  m_Mesh: {fileID: 0}
 --- !u!1 &1324697742
 GameObject:
   m_ObjectHideFlags: 0
