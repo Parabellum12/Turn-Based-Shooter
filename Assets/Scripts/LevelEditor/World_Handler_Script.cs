@@ -15,6 +15,7 @@ public class World_Handler_Script : MonoBehaviour
     [SerializeField] TileBuildData[] SetAllTileBuildData;
     public string MapFolderFilePath;
     [SerializeField] WorldTileVisual visualGrid;
+    [SerializeField] Sprite TileAtlas;
 
     public void Start()
     {

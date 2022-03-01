@@ -8,6 +8,7 @@ public class TileBuildData : ScriptableObject
     public string BuildingName;
     public Sprite buildingSprite;
     public bool[] BulletBlockerSubGrid = new bool[9];
+    public Vector2Int altasPos;
     public enum BuildingType
     {
         Ground,
@@ -20,6 +21,7 @@ public class TileBuildData : ScriptableObject
         DefaultTile
     };
     public BuildingType buildingType;
+
 
    
 }

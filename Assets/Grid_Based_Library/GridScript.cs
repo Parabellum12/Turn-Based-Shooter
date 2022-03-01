@@ -12,7 +12,7 @@ public class GridClass<TGridObject>
     {
         public int x, y;
     }
-    private static bool showDebug = true;
+    private static bool showDebug = false;
 
     public int width;
     public int height;

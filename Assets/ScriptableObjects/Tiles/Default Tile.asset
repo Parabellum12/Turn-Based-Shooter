@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Default Tile
   m_EditorClassIdentifier: 
   BuildingName: Default Tile
-  buildingSprite: {fileID: 21300000, guid: f09df3dc240e66d4c97e7fc44b5204a8, type: 3}
+  buildingSprite: {fileID: 21300000, guid: 69e36ad82aae8d3448ecf0682113b021, type: 3}
   BulletBlockerSubGrid: 010101010101010101
+  altasPos: {x: 0, y: 0}
   buildingType: 6

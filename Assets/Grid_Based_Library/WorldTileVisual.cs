@@ -9,7 +9,7 @@ public class WorldTileVisual : MonoBehaviour {
     private GridClass<World_Handler_Script.WorldBuildTile> objectGrid;
     private Mesh mesh;
     private bool updateMesh;
-
+    [SerializeField] Texture texture;
 
     private void Awake() {
         mesh = new Mesh();
@@ -34,6 +34,7 @@ public class WorldTileVisual : MonoBehaviour {
     }
 
     private void UpdateHeatMapVisual() {
+        Debug.Log("Updated Mesh");
         MeshUtils.CreateEmptyMeshArrays(objectGrid.getWidth() * objectGrid.getWidth(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
         for (int x = 0; x < objectGrid.getWidth(); x++) {
             for (int y = 0; y < objectGrid.getHeight(); y++) {
@@ -41,20 +42,12 @@ public class WorldTileVisual : MonoBehaviour {
                 Vector3 quadSize = new Vector3(1, 1) * objectGrid.getCellSize();
 
                 World_Handler_Script.WorldBuildTile gridObject = objectGrid.getGridObject(x, y);
-                Sprite TileSprite = gridObject.getMainBuildData().buildingSprite;
+                Vector2 pos = gridObject.getMainBuildData().altasPos;
+                int tilePixelSize = 128;
+                Vector2 uv00 = new Vector2((tilePixelSize * pos.x) / texture.width, (tilePixelSize * (pos.y)) / texture.height);
+                Vector2 uv11 = new Vector2(((tilePixelSize * pos.x) + tilePixelSize) / texture.width, ((tilePixelSize * pos.y) + tilePixelSize) / texture.height);
 
-                //Vector2 gridValueUV = new Vector2(gridValueNormalized, 0f);
-                float width = TileSprite.texture.width;
-                float height = TileSprite.texture.height;
-                Vector2[] uvCoords = TileSprite.uv;
-                Vector2 uv00 = uvCoords[3];
-                Vector2 uv11 = uvCoords[2];
-                for (int i = 0; i < uvCoords.Length; i++)
-                {
-                    Debug.Log("UvCoords of"+ gridObject.getMainBuildData().BuildingName +":"+uvCoords[i]);
-                }
-                Debug.Log("End UvCoords of" + gridObject.getMainBuildData().BuildingName);
-
+                //Debug.Log(gridObject.getMainBuildData().BuildingName + ":" + pos.ToString() + ":" + uv00.ToString() + ":" + uv11.ToString());
                 MeshUtils.AddToMeshArrays(vertices, uv, triangles, index, objectGrid.getWorldPosition(x, y) + quadSize * .5f, 0f, quadSize, uv00, uv11);
             }
         }
