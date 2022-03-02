@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91b73d1617d066740b67c8f27fbb6cef, type: 3}
-  m_Name: Default Tile
+  m_Name: Wall-Corner_BottomRight
   m_EditorClassIdentifier: 
-  BuildingName: Default Tile
-  buildingSprite: {fileID: 21300000, guid: e63756dea26fd05419e6674bcdfd8677, type: 3}
-  BulletBlockerSubGrid: 010101010101010101
-  altasPos: {x: 2, y: 0}
-  buildingType: 6
+  BuildingName: Wall Corner BottomRight
+  buildingSprite: {fileID: 21300000, guid: fd4b02912b26b5846bef05606b13a860, type: 3}
+  BulletBlockerSubGrid: 000000000000000000
+  altasPos: {x: 2, y: 1}
+  buildingType: 0

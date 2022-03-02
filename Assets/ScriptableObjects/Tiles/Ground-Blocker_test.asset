@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ground-Blocker_test
   m_EditorClassIdentifier: 
   BuildingName: fullBlocker
-  buildingSprite: {fileID: 21300000, guid: 9c55b99fa852ddc4db36e2384c11d90e, type: 3}
+  buildingSprite: {fileID: 21300000, guid: e63756dea26fd05419e6674bcdfd8677, type: 3}
   BulletBlockerSubGrid: 010101010101010101
-  altasPos: {x: 1, y: 1}
+  altasPos: {x: 2, y: 0}
   buildingType: 0

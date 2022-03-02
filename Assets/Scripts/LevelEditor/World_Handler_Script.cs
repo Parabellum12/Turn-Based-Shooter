@@ -73,7 +73,7 @@ public class World_Handler_Script : MonoBehaviour
             //Debug.Log("Tile Change Failed:" + x + "," + y);
             return;
         }
-        //Debug.Log("Tile Changed:" + x + "," + y);
+        Debug.Log("Tile Changed:" + x + "," + y + ":" + data.BuildingName);
         buildLevels.getGridObject(mousePos).setBuildData(data);
         buildLevels.triggerGridObjectChanged(x, y);
     }
@@ -85,7 +85,7 @@ public class World_Handler_Script : MonoBehaviour
             //Debug.Log("Tile Change Failed:" + XY.x + "," + XY.y);
             return;
         }
-        //Debug.Log("Tile Changed:" + XY.x + "," + XY.y);
+        Debug.Log("Tile Changed:" + XY.x + "," + XY.y + ":" + data.BuildingName);
         buildLevels.getGridObject(XY.x, XY.y).setBuildData(data);
         buildLevels.triggerGridObjectChanged(XY.x, XY.y);
     }
@@ -97,7 +97,7 @@ public class World_Handler_Script : MonoBehaviour
             //Debug.Log("Tile Changed Fail:" + (tile == null));
             return;
         }
-       // Debug.Log("Tile Changed Entire:" + XY.ToString());
+        // Debug.Log("Tile Changed Entire:" + XY.ToString());
         buildLevels.setGridObject(XY.x, XY.y, tile);
         buildLevels.triggerGridObjectChanged(XY.x, XY.y);
     }
@@ -312,6 +312,23 @@ public class World_Handler_Script : MonoBehaviour
             }
             return GroundBuildData.BuildingName;
         }
+
+
+        //pathfinding stuff
+        public int gCost;
+        public int hCost;
+        public int fCost;
+        public WorldBuildTile LastNode;
+
+        public void calcFCost()
+        {
+            fCost = gCost + hCost;
+        }
+
+        public Vector2Int getXY()
+        {
+            return new Vector2Int(x,y);
+        }
     }
 
     public class worldBuildTileTransferData
@@ -422,5 +439,5 @@ public class World_Handler_Script : MonoBehaviour
     }
 
 
-    
+
 }
