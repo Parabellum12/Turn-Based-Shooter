@@ -170,19 +170,16 @@ public class World_Handler_Script : MonoBehaviour
         TileBuildData DecorationBuildData;
 
         //walls
-        //top
-        TileBuildData WallTopBuildData;
-        //bottom
-        TileBuildData WallBottomBuildData;
-        //left
-        TileBuildData WallleftBuildData;
-        //right
-        TileBuildData WallRightBuildData;
+        TileBuildData WallData;
 
         bool[] subGrid = new bool[9];
 
         public TileBuildData getMainBuildData()
         {
+            if (WallData != null)
+            {
+                return WallData;
+            }
             return GroundBuildData;
         }
         public WorldBuildTile(int x, int y, TileBuildData defaultTileLoc)
@@ -199,10 +196,7 @@ public class World_Handler_Script : MonoBehaviour
             displayOrder = transferData.displayOrder;
             GroundBuildData = transferData.GroundBuildData;
             DecorationBuildData = transferData.DecorationBuildData;
-            WallTopBuildData = transferData.WallTopBuildData;
-            WallBottomBuildData = transferData.WallBottomBuildData;
-            WallRightBuildData = transferData.WallRightBuildData;
-            WallleftBuildData = transferData.WallleftBuildData;
+            WallData = transferData.WallData;
             subGrid = transferData.subGridData;
         }
 
@@ -214,10 +208,7 @@ public class World_Handler_Script : MonoBehaviour
             data.y = y;
             data.displayOrder = displayOrder;
             data.GroundBuildData = GroundBuildData;
-            data.WallRightBuildData = WallRightBuildData;
-            data.WallTopBuildData = WallTopBuildData;
-            data.WallBottomBuildData = WallBottomBuildData;
-            data.WallleftBuildData = WallleftBuildData;
+            data.WallData = WallData;
             data.DecorationBuildData = DecorationBuildData;
             data.subGridData = subGrid;
 
@@ -231,10 +222,7 @@ public class World_Handler_Script : MonoBehaviour
             displayOrder = transferData.displayOrder;
             GroundBuildData = transferData.GroundBuildData;
             DecorationBuildData = transferData.DecorationBuildData;
-            WallTopBuildData = transferData.WallTopBuildData;
-            WallBottomBuildData = transferData.WallBottomBuildData;
-            WallRightBuildData = transferData.WallRightBuildData;
-            WallleftBuildData = transferData.WallleftBuildData;
+            WallData = transferData.WallData;
             subGrid = transferData.subGridData;
         }
 
@@ -255,21 +243,14 @@ public class World_Handler_Script : MonoBehaviour
             {
                 case TileBuildData.BuildingType.Ground:
                     this.GroundBuildData = data;
+                    WallData = null;
                     break;
                 case TileBuildData.BuildingType.Decoration:
                     this.DecorationBuildData = data;
                     break;
-                case TileBuildData.BuildingType.WallLeft:
-                    this.WallleftBuildData = data;
-                    break;
-                case TileBuildData.BuildingType.WallRight:
-                    this.WallRightBuildData = data;
-                    break;
-                case TileBuildData.BuildingType.WallTop:
-                    this.WallTopBuildData = data;
-                    break;
-                case TileBuildData.BuildingType.WallBottom:
-                    this.WallBottomBuildData = data;
+                case TileBuildData.BuildingType.Wall:
+                    this.WallData = data;
+                    GroundBuildData = null;
                     break;
                 case TileBuildData.BuildingType.DefaultTile:
                     this.GroundBuildData = data;
@@ -282,10 +263,7 @@ public class World_Handler_Script : MonoBehaviour
         {
             addSubGridBlockers(GroundBuildData);
             addSubGridBlockers(DecorationBuildData);
-            addSubGridBlockers(WallTopBuildData);
-            addSubGridBlockers(WallBottomBuildData);
-            addSubGridBlockers(WallRightBuildData);
-            addSubGridBlockers(WallleftBuildData);
+            addSubGridBlockers(WallData);
         }
 
         private void addSubGridBlockers(TileBuildData data)
@@ -329,6 +307,15 @@ public class World_Handler_Script : MonoBehaviour
         {
             return new Vector2Int(x,y);
         }
+
+        public bool IsWalkable()
+        {
+            if (WallData == null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     public class worldBuildTileTransferData
@@ -348,14 +335,7 @@ public class World_Handler_Script : MonoBehaviour
         public TileBuildData DecorationBuildData;
 
         //walls
-        //top
-        public TileBuildData WallTopBuildData;
-        //bottom
-        public TileBuildData WallBottomBuildData;
-        //left
-        public TileBuildData WallleftBuildData;
-        //right
-        public TileBuildData WallRightBuildData;
+        public TileBuildData WallData;
         public bool[] subGridData;
 
         public string getDataAsSaveString()
@@ -379,8 +359,7 @@ public class World_Handler_Script : MonoBehaviour
             }
             string returner = "WBTTD:";
             returner += x + "," + y + "," + displayOrder + "," + getTBDName(GroundBuildData) + "," + getTBDName(DecorationBuildData) + "," +
-                getTBDName(WallTopBuildData) + "," + getTBDName(WallBottomBuildData) + "," + getTBDName(WallleftBuildData) + "," + getTBDName(WallRightBuildData)
-                + "," + subgridS;
+                getTBDName(WallData) + "," + subgridS;
             return returner;
         }
 
@@ -411,10 +390,7 @@ public class World_Handler_Script : MonoBehaviour
             GroundBuildData = getDataFromName(data[3]);
             DecorationBuildData = getDataFromName(data[4]);
 
-            WallTopBuildData = getDataFromName(data[5]);
-            WallBottomBuildData = getDataFromName(data[6]);
-            WallleftBuildData = getDataFromName(data[7]);
-            WallRightBuildData = getDataFromName(data[8]);
+            WallData = getDataFromName(data[5]);
             subGridData = new bool[9];
             for (int i = 9; i < data.Length; i++)
             {

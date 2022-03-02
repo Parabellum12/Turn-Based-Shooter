@@ -48,6 +48,11 @@ public class AstarPathing
                 {
                     continue;
                 }
+                if (!curTile.IsWalkable())
+                {
+                    closedList.Add(curTile);
+                    continue;
+                }
 
                 int tempGCost = currentNode.gCost + calcDistCost(currentNode, curTile);
                 if (tempGCost < curTile.gCost)

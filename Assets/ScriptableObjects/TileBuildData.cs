@@ -13,10 +13,7 @@ public class TileBuildData : ScriptableObject
     {
         Ground,
         Decoration,
-        WallLeft,
-        WallRight,
-        WallTop,
-        WallBottom,
+        Wall,
 
         DefaultTile
     };
