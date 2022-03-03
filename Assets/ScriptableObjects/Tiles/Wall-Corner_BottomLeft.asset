@@ -16,4 +16,4 @@ MonoBehaviour:
   buildingSprite: {fileID: 21300000, guid: 6fb8e390fc8c0624fb7a53631a38e088, type: 3}
   BulletBlockerSubGrid: 000000000000000000
   altasPos: {x: 2, y: 2}
-  buildingType: 0
+  buildingType: 2
