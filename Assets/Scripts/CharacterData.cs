@@ -9,6 +9,7 @@ public class CharacterData
     public WeaponItemData primary_Weapon = null;
     public WeaponItemData secondary_Weapon = null;
 
+    public int Armor;
     //0-100; 50 = no debuff or buff; < 50 = debuff; 50 < = buff checked by 10s or 5s
     public int ActionPoints;
     public int Strength;
@@ -20,29 +21,33 @@ public class CharacterData
 
     static bool randomizeStats = false;
 
+    //defender: high health/armor clsoe range, shotgun
+    //attacker: medium health/armor rifle
+    //engineer: low health/armor, can heal/repair others, pistol
+    //ranger: medium health, low armor, sniper
+    public enum CharacterClassEnum
+    {
+        Defender,
+        Attacker,
+        Engineer,
+        Ranger,
+    };
+
     public Sprite ClassImage;
+    public CharacterClassEnum characterClass = CharacterClassEnum.Attacker;
 
     public CharacterData(bool random)
     {
-        if (!random)
+        switch (characterClass)
         {
-            ActionPoints = 50;
-            Strength = 50;
-            Accuracy = 50;
-            HealthPoints = 50;
-            ReactionTime = 50;
-            Dexterity = 50;
-            WeaponHandling = 50;
-        }
-        else
-        {
-            ActionPoints = getAverageRandom();
-            Strength = getAverageRandom();
-            Accuracy = getAverageRandom();
-            HealthPoints = getAverageRandom();
-            ReactionTime = getAverageRandom();
-            Dexterity = getAverageRandom();
-            WeaponHandling = getAverageRandom();
+            case CharacterClassEnum.Defender:
+                break;
+            case CharacterClassEnum.Attacker:
+                break;
+            case CharacterClassEnum.Engineer:
+                break;
+            case CharacterClassEnum.Ranger:
+                break;
         }
 
         CharacterName = Character_Name_Handler.generateName();

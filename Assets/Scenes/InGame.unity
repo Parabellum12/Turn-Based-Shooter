@@ -134,6 +134,8 @@ GameObject:
   - component: {fileID: 1478181541}
   - component: {fileID: 1478181540}
   - component: {fileID: 1478181539}
+  - component: {fileID: 1478181543}
+  - component: {fileID: 1478181542}
   m_Layer: 0
   m_Name: Game Handler
   m_TagString: Untagged
@@ -176,6 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocalView: {fileID: 1478181539}
+  saveLoad: {fileID: 0}
 --- !u!4 &1478181541
 Transform:
   m_ObjectHideFlags: 0
@@ -190,6 +193,55 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1478181542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478181538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4d9c645e817d14590b38b491b5896a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellSize: 15
+  mapSize: {fileID: 0}
+  baseWidth: 60
+  baseHeight: 60
+  defaultTile: {fileID: 11400000, guid: 9dc88e35274504d4da9bd2a942d9e0c9, type: 2}
+  SetAllTileBuildData:
+  - {fileID: 11400000, guid: d5c99ac2016dd104498fc8111a157ac1, type: 2}
+  - {fileID: 11400000, guid: c335ca7d3c168f2459e7273266c5aaa8, type: 2}
+  - {fileID: 11400000, guid: 828faaee09ced8b49b4c12082a0348a5, type: 2}
+  - {fileID: 11400000, guid: cb116bb560ab26f49af6500ee3ca9809, type: 2}
+  - {fileID: 11400000, guid: 37d582855f21e5e4190287e4894fda27, type: 2}
+  - {fileID: 11400000, guid: e97587dac8487ec4995f4a29e4ae901e, type: 2}
+  - {fileID: 11400000, guid: 1a8ba19dab3e4ba4d97b8ceda74b88f5, type: 2}
+  - {fileID: 11400000, guid: e6960f574ee1f2d4f8cc35ce71ce761e, type: 2}
+  - {fileID: 11400000, guid: 3d1527a2a49e2cd458175ebf3d3c1cf5, type: 2}
+  - {fileID: 11400000, guid: 9dc88e35274504d4da9bd2a942d9e0c9, type: 2}
+  MapFolderFilePath: 
+  visualGrid: {fileID: 0}
+  TileAtlas: {fileID: 0}
+--- !u!114 &1478181543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478181538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f194efd0f8ae2045a4c0fe123ca8145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapSize: {fileID: 0}
+  mapName: {fileID: 0}
+  existingFileName: {fileID: 0}
+  saveAsName: {fileID: 0}
+  contentBar: {fileID: 0}
+  worldHandler: {fileID: 1478181542}
 --- !u!1 &2008474367
 GameObject:
   m_ObjectHideFlags: 0

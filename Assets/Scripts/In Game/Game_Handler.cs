@@ -5,7 +5,9 @@ using Photon.Pun;
 
 public class Game_Handler : MonoBehaviour
 {
+    public static string mapFileName;
     [SerializeField] PhotonView LocalView;
+    [SerializeField] SaveLoad_Handler_Script saveLoad;
     public enum Team
     {
         Team1,
@@ -26,6 +28,7 @@ public class Game_Handler : MonoBehaviour
     //game setup
     void Start()
     {
+        saveLoad.load(mapFileName);
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
@@ -34,6 +37,7 @@ public class Game_Handler : MonoBehaviour
         TotalPlayers = PhotonNetwork.PlayerList;
         AssignTeams();
         SetActiveTeam(Team.Team1);
+
     }
 
     void AssignTeams()
