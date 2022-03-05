@@ -15,31 +15,36 @@ public class Unit_Stats_Handler_Script : MonoBehaviour
     {
         currentSelected = currentlySelected;
 
-        trackers[0].sliderBar.value = currentlySelected.Armor;
+        currentSelected.updateStats();
+        updateUnitClassText();
+
+    }
+
+    public void updateStatText()
+    {
+        trackers[0].sliderBar.value = currentSelected.Armor;
         trackers[0].textTag.text = "Armor";
 
-        trackers[1].sliderBar.value = currentlySelected.ActionPoints;
+        trackers[1].sliderBar.value = currentSelected.ActionPoints;
         trackers[1].textTag.text = "Action Points";
 
-        trackers[2].sliderBar.value = currentlySelected.HealthPoints;
+        trackers[2].sliderBar.value = currentSelected.HealthPoints;
         trackers[2].textTag.text = "Health";
 
-        trackers[3].sliderBar.value = currentlySelected.Strength;
+        trackers[3].sliderBar.value = currentSelected.Strength;
         trackers[3].textTag.text = "Strength";
 
-        trackers[4].sliderBar.value = currentlySelected.Accuracy;
+        trackers[4].sliderBar.value = currentSelected.Accuracy;
         trackers[4].textTag.text = "Accuracy";
 
-        trackers[5].sliderBar.value = currentlySelected.ReactionTime;
+        trackers[5].sliderBar.value = currentSelected.ReactionTime;
         trackers[5].textTag.text = "Reaction Time";
 
-        trackers[6].sliderBar.value = currentlySelected.Dexterity;
+        trackers[6].sliderBar.value = currentSelected.Dexterity;
         trackers[6].textTag.text = "Dexterity";
 
-        trackers[7].sliderBar.value = currentlySelected.WeaponHandling;
+        trackers[7].sliderBar.value = currentSelected.WeaponHandling;
         trackers[7].textTag.text = "Weapon Handling";
-
-        updateUnitClassText();
 
     }
 
@@ -57,7 +62,9 @@ public class Unit_Stats_Handler_Script : MonoBehaviour
 
     public void updateUnitClassText()
     {
+        currentSelected.updateStats();
         unitClass.text = currentSelected.characterClass.ToString();
+        updateStatText();
     }
 
     public void nextUnitClass()

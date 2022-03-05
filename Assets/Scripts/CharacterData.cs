@@ -38,19 +38,28 @@ public class CharacterData
 
     public CharacterData(bool random)
     {
+
+        updateStats();
+        CharacterName = Character_Name_Handler.generateName();
+    }
+
+    public void updateStats()
+    {
         switch (characterClass)
         {
             case CharacterClassEnum.Defender:
+                setDataValues(100, 25, 30, 100, 60, 20, 35, 50);
                 break;
             case CharacterClassEnum.Attacker:
+                setDataValues(75, 75, 50, 75, 70, 40, 50, 50);
                 break;
             case CharacterClassEnum.Engineer:
+                setDataValues(50, 50, 40, 40, 20, 90, 20, 50);
                 break;
             case CharacterClassEnum.Ranger:
+                setDataValues(25, 100, 100, 60, 90, 50, 90, 50);
                 break;
         }
-
-        CharacterName = Character_Name_Handler.generateName();
     }
 
     private int getAverageRandom()
@@ -61,6 +70,18 @@ public class CharacterData
             total += Random.Range(20, 80);
         }
         return total / 5;
+    }
+
+    private void setDataValues(int armor, int ap, int acc, int hp, int rt, int dex, int weaHandle, int str)
+    {
+        this.Armor = armor;
+        ActionPoints = ap;
+        Accuracy = acc;
+        HealthPoints = hp;
+        ReactionTime = rt;
+        Dexterity = dex;
+        WeaponHandling = weaHandle;
+        Strength = str;
     }
 
 }
