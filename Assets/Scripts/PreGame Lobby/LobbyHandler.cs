@@ -29,17 +29,34 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] GameObject UnitManagment;
     [SerializeField] Unit_Stats_Handler_Script unit_Stats_Handler_Script;
 
+    //map selection
+    [SerializeField] TMP_Dropdown mapSelector;
+    string fileSystemSeperator;
 
 
     bool isUnitManagementOpen = false;
     public void Start()
     {
+
+        if (Application.streamingAssetsPath.Contains("/"))
+        {
+            fileSystemSeperator = "/";
+        }
+        else if (Application.streamingAssetsPath.Contains("\\"))
+        {
+            fileSystemSeperator = "\\";
+        }
+
+
+
+
         UserName.text = " User:"+PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " "; 
         //Debug.Log(" User:" + PhotonNetwork.NickName + "\tHost:" + PhotonNetwork.MasterClient.NickName + " ");
         //Debug.Log("hello?");
         players =  PhotonNetwork.PlayerList;
         if (!PhotonNetwork.IsMasterClient)
         {
+            mapSelector.gameObject.SetActive(false);
             setToReadyButton();
             for (int i = 0; i < playerIcons.Length; i++)
             {
@@ -50,6 +67,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         {
             //playerIcons = null;
             //is host
+            mapSelector.gameObject.SetActive(true);
+            updattMapFileList();
             playButton.onClick.AddListener(play);
             updatePlayerList();
         }
@@ -267,10 +286,19 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     {
         if (allPlayersReady())
         {
+            Game_Handler.mapFileName = getSelectedMap();
             localView.RPC("UnitHandoff", RpcTarget.Others);
             UnitHandoff();
             PhotonNetwork.LoadLevel("InGame");
         }
+    }
+
+    private string getSelectedMap()
+    {
+        string mapName = FilDropDown_ValueToFileName[mapSelector.value];
+        Debug.Log("SelectedMap:" + mapName);
+
+        return mapName;
     }
 
     [PunRPC]
@@ -344,7 +372,57 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         }
     }
 
-    
+
+
+
+
+
+    [SerializeField] Dictionary<int, string> FilDropDown_ValueToFileName = new Dictionary<int, string>();
+    private void updattMapFileList()
+    {
+        mapSelector.options.Clear();
+        //LoadFileDropdown.ClearOptions();
+        FilDropDown_ValueToFileName.Clear();
+        string[] files = System.IO.Directory.GetFiles(Application.streamingAssetsPath + fileSystemSeperator + "Maps", "*.MapData");
+        //Debug.Log(Application.streamingAssetsPath + fileSystemSeperator + "Maps");
+        //Debug.Log("Files: Length:" + files.Length);
+        //TMP_Dropdown.OptionData customOption = new TMP_Dropdown.OptionData("New File");
+        //mapSelector.options.Add(customOption);
+        for (int i = 0; i < files.Length; i++)
+        {
+            Debug.Log(files[i]);
+            string name2 = "";
+            StreamReader sr = new StreamReader(files[i]);
+            name2 = sr.ReadLine().Split(',')[2];
+
+            string fileNameS = "";
+            char[] temp = files[i].ToCharArray();
+            bool fileName = false;
+            for (int j = temp.Length - 1; j >= 0; j--)
+            {
+                if (temp[j] == '/' || temp[j] == '\\')
+                {
+                    break;
+                }
+                if (fileName)
+                {
+                    fileNameS = temp[j] + fileNameS;
+                }
+                else
+                {
+                    if (temp[j] == '.')
+                    {
+                        fileName = true;
+                    }
+                }
+            }
+            FilDropDown_ValueToFileName.Add(i, fileNameS);
+
+
+            TMP_Dropdown.OptionData optionData = new TMP_Dropdown.OptionData(name2);
+            mapSelector.options.Add(optionData);
+        }
+    }
 
 
 

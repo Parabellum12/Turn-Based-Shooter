@@ -17,7 +17,7 @@ public class World_Handler_Script : MonoBehaviour
     [SerializeField] WorldTileVisual visualGrid;
     [SerializeField] Sprite TileAtlas;
 
-    public void Start()
+    public void Awake()
     {
         allTileBuildData = SetAllTileBuildData;
         string seperator = "";

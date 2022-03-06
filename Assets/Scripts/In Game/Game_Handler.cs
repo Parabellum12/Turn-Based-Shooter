@@ -24,7 +24,7 @@ public class Game_Handler : MonoBehaviour
     int currentActiveTeamIndex = 0;
     Photon.Realtime.Player[] OtherPlayers;
     Photon.Realtime.Player[] TotalPlayers;
-    Dictionary<Team, Photon.Realtime.Player> TeamToPlayerDictionary = null;
+    Dictionary<Team, Photon.Realtime.Player> TeamToPlayerDictionary = new Dictionary<Team, Photon.Realtime.Player>();
     //game setup
     void Start()
     {
