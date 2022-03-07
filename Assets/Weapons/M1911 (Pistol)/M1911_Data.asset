@@ -16,7 +16,7 @@ MonoBehaviour:
   maxDamageRange: 25
   maxRange: 30
   weapon_Type: 3
-  valid_Weapon_Slot: 1
+  valid_Weapon_Slot: 0
   firing_Modes:
   - firingMode: 0
     maxShots: 1

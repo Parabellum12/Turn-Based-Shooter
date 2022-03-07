@@ -304,7 +304,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [PunRPC]
     private void UnitHandoff()
     {
-        Player_Units_Handler.setUnitSquad(units);
+        Game_Handler.PlayerUnits = units;
     }
 
     private bool allPlayersReady()
@@ -423,7 +423,6 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             mapSelector.options.Add(optionData);
         }
     }
-
 
 
 

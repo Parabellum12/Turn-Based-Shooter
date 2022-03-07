@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using Photon.Pun;
 
 public class Game_Handler : MonoBehaviour
@@ -8,6 +10,7 @@ public class Game_Handler : MonoBehaviour
     public static string mapFileName;
     [SerializeField] PhotonView LocalView;
     [SerializeField] SaveLoad_Handler_Script saveLoad;
+    public static CharacterData[] PlayerUnits;
     public enum Team
     {
         Team1,
@@ -28,11 +31,17 @@ public class Game_Handler : MonoBehaviour
     //game setup
     void Start()
     {
-        saveLoad.load(mapFileName);
+
+
+
+
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
         }
+        setMap(mapFileName);
+        LocalView.RPC("setMap", RpcTarget.OthersBuffered, mapFileName);
+        saveLoad.load(mapFileName);
         OtherPlayers = PhotonNetwork.PlayerListOthers;
         TotalPlayers = PhotonNetwork.PlayerList;
         AssignTeams();
@@ -74,6 +83,13 @@ public class Game_Handler : MonoBehaviour
     {
         currentActiveTeam = activeTeam;
     }
+
+    [PunRPC] public void setMap(string mapFileName)
+    {
+        Game_Handler.mapFileName = mapFileName.Trim();
+        saveLoad.load(mapFileName);
+    }
+
 
     
 

@@ -6,8 +6,7 @@ public class CharacterData
 {
     public string CharacterName;
 
-    public WeaponItemData primary_Weapon = null;
-    public WeaponItemData secondary_Weapon = null;
+    public WeaponItemData Weapon = null;
 
     public int Armor;
     //0-100; 50 = no debuff or buff; < 50 = debuff; 50 < = buff checked by 10s or 5s
@@ -19,7 +18,6 @@ public class CharacterData
     public int Dexterity;
     public int WeaponHandling;
 
-    static bool randomizeStats = false;
 
     //defender: high health/armor clsoe range, shotgun
     //attacker: medium health/armor rifle
