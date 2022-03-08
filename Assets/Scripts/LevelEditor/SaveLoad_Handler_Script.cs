@@ -49,6 +49,7 @@ public class SaveLoad_Handler_Script : MonoBehaviour
             }
         }
         sr.Flush();
+        sr.Close();
     }
 
     public void load(string fileName)
@@ -71,6 +72,8 @@ public class SaveLoad_Handler_Script : MonoBehaviour
             }
             worldHandler.setTile(transDat, new Vector2Int(transDat.x, transDat.y), 0);
         }
+
+        sr.Close();
     }
 
 

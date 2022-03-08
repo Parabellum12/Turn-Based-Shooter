@@ -15,12 +15,21 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
     [SerializeField]float maxDisapearTimer = .5f;
     [SerializeField] float maxHoldTimer = 2f;
 
+
+    [SerializeField] bool autoConnect = false;
     public void changeNick()
     {
         PhotonNetwork.NickName = userName.text;
     }
 
-
+    public void Start()
+    {
+        if (autoConnect)
+        {
+            GameName.text = "Test";
+            createRoom();
+        }
+    }
 
     public void createRoom()
     {

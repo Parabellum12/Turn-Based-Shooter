@@ -34,6 +34,11 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     string fileSystemSeperator;
 
 
+
+
+    [SerializeField] bool autoStart = false;
+
+
     bool isUnitManagementOpen = false;
     public void Start()
     {
@@ -77,6 +82,11 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         UnitManagment.GetComponent<Unit_Stats_Handler_Script>().switchToLoadout();
         PhotonNetwork.IsMessageQueueRunning = true;
         PhotonNetwork.AutomaticallySyncScene = true;
+
+        if (autoStart)
+        {
+            play();
+        }
     }
 
     public void openAndCloseUnitManagement()

@@ -12,8 +12,13 @@ public class InGameCameraHandler_Script : MonoBehaviour
     {
         float xMove = Input.GetAxisRaw("Horizontal");
         float yMove = Input.GetAxisRaw("Vertical");
-        horizonalSpeed += xMove * acceleration * Time.deltaTime;
-        verticalSpeed += yMove * acceleration * Time.deltaTime;
+        int runMulti = 1;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            runMulti = 2;
+        }
+        horizonalSpeed = xMove * acceleration * runMulti * Time.deltaTime;
+        verticalSpeed = yMove * acceleration * runMulti * Time.deltaTime;
         if (yMove == 0)
         {
             verticalSpeed = 0;
@@ -39,6 +44,6 @@ public class InGameCameraHandler_Script : MonoBehaviour
         float newx = transform.position.x + horizonalSpeed;
         float newy = transform.position.y + verticalSpeed;
         Debug.Log(xMove + "," + yMove + "::" + horizonalSpeed + "," + verticalSpeed);
-        transform.position = new Vector2(newx, newy);
+        transform.position = new Vector3(newx, newy, -10);
     }
 }

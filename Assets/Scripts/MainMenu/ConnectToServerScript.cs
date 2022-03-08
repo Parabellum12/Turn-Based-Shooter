@@ -12,11 +12,20 @@ public class ConnectToServerScript : MonoBehaviourPunCallbacks
     private bool loading = false;
     float time = 0;
     int numDots = 0;
+    [SerializeField] bool AutoConnect = false;
 
 
     private void Awake()
     {
         loadingText.gameObject.SetActive(false);
+    }
+
+    public void Start()
+    {
+        if (AutoConnect)
+        {
+            Connect();
+        }
     }
 
     public void Connect()
