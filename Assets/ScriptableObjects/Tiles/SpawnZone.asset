@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91b73d1617d066740b67c8f27fbb6cef, type: 3}
-  m_Name: Wall-Corner_TopRight
+  m_Name: SpawnZone
   m_EditorClassIdentifier: 
-  BuildingName: Wall Corner Top Right
-  buildingSprite: {fileID: 21300000, guid: 32f3db8b4b021ef4abe140b4e887f829, type: 3}
+  BuildingName: SpawnZone
+  buildingSprite: {fileID: 21300000, guid: 85182db33aae3a649a6dddacb2226a43, type: 3}
   BulletBlockerSubGrid: 000000000000000000
-  altasPos: {x: 0, y: 1}
-  buildingType: 2
+  altasPos: {x: 1, y: 0}
+  buildingType: 1

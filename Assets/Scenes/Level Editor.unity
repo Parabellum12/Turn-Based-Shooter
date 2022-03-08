@@ -3522,6 +3522,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e6960f574ee1f2d4f8cc35ce71ce761e, type: 2}
   - {fileID: 11400000, guid: 3d1527a2a49e2cd458175ebf3d3c1cf5, type: 2}
   - {fileID: 11400000, guid: cb116bb560ab26f49af6500ee3ca9809, type: 2}
+  - {fileID: 11400000, guid: 99d11e250dcd1dd4a8a3624f5ed8832c, type: 2}
   ClassTypeTextBanner: {fileID: 605037576}
   TileAssetSelecterPrefab: {fileID: 1577445123353872415, guid: 28ca3e010b9ca5141b4fcbc74ab9060c, type: 3}
   CurrentSelectedTile: {fileID: 0}
@@ -5672,6 +5673,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e6960f574ee1f2d4f8cc35ce71ce761e, type: 2}
   - {fileID: 11400000, guid: 3d1527a2a49e2cd458175ebf3d3c1cf5, type: 2}
   - {fileID: 11400000, guid: 9dc88e35274504d4da9bd2a942d9e0c9, type: 2}
+  - {fileID: 11400000, guid: 99d11e250dcd1dd4a8a3624f5ed8832c, type: 2}
   MapFolderFilePath: 
   visualGrid: {fileID: 1313104465}
   TileAtlas: {fileID: 21300000, guid: 820dbbfedc10ad14facbc150a9360bda, type: 3}

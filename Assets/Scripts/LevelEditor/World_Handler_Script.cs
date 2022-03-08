@@ -176,6 +176,10 @@ public class World_Handler_Script : MonoBehaviour
 
         public TileBuildData getMainBuildData()
         {
+            if (DecorationBuildData != null)
+            {
+                return DecorationBuildData;
+            }
             if (WallData != null)
             {
                 return WallData;

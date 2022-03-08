@@ -15,5 +15,5 @@ MonoBehaviour:
   BuildingName: Grass
   buildingSprite: {fileID: 21300000, guid: 08e8db534e0c74240b7dc15503dad641, type: 3}
   BulletBlockerSubGrid: 000000000000000000
-  altasPos: {x: 1, y: 0}
+  altasPos: {x: 3, y: 1}
   buildingType: 0
