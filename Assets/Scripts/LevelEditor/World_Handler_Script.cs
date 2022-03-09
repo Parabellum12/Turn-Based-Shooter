@@ -83,6 +83,7 @@ public class World_Handler_Script : MonoBehaviour
     
     public List<WorldTileSpawnPoints> setupSpawnPoints(GridClass<WorldBuildTile> gridmap)
     {
+        Debug.Log("WHYYYYYYYY");
         List<WorldTileSpawnPoints> returner = new List<WorldTileSpawnPoints>();
         List<Vector2Int> openList = new List<Vector2Int>();
         List<Vector2Int> closedList = new List<Vector2Int>();
@@ -112,7 +113,7 @@ public class World_Handler_Script : MonoBehaviour
             spawnPoint.TilesPos = toAdd;
             returner.Add(spawnPoint);
         }
-
+        Debug.Log("SpawnZone Count:"+returner.Count);
         return returner;
     }
 
@@ -184,7 +185,7 @@ public class World_Handler_Script : MonoBehaviour
         visualGrid.SetGrid(buildLevels);
 
 
-
+        /* A* preview
         AstarPathing pathing = new AstarPathing();
         Vector2Int[] path = pathing.returnPath(new Vector2Int(0,0), new Vector2Int(5, 10), buildLevels);
         string output = "";
@@ -195,6 +196,7 @@ public class World_Handler_Script : MonoBehaviour
             buildLevels.triggerGridObjectChanged(vec.x, vec.y);
         }
         Debug.Log(output);
+        */
     }
 
     public void setTile(TileBuildData data, Vector2 mousePos, int buildLevel)
@@ -429,6 +431,12 @@ public class World_Handler_Script : MonoBehaviour
             }
             return GroundBuildData.BuildingName;
         }
+        public void erase()
+        {
+            GroundBuildData = null;
+            DecorationBuildData = null;
+            WallData = null;
+        }
 
 
         //pathfinding stuff
@@ -462,7 +470,7 @@ public class World_Handler_Script : MonoBehaviour
 
         public bool isSpawnPoint()
         {
-            if (DecorationBuildData != null)
+            if (DecorationBuildData == allTileBuildData[10])
             {
                 return true;
             }

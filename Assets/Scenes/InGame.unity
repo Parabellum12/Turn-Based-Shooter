@@ -291,10 +291,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e6960f574ee1f2d4f8cc35ce71ce761e, type: 2}
   - {fileID: 11400000, guid: 3d1527a2a49e2cd458175ebf3d3c1cf5, type: 2}
   - {fileID: 11400000, guid: 9dc88e35274504d4da9bd2a942d9e0c9, type: 2}
+  - {fileID: 11400000, guid: 99d11e250dcd1dd4a8a3624f5ed8832c, type: 2}
   MapFolderFilePath: 
   visualGrid: {fileID: 1478181546}
   TileAtlas: {fileID: 21300000, guid: 820dbbfedc10ad14facbc150a9360bda, type: 3}
-  setDebugTo: 1
+  setDebugTo: 0
 --- !u!114 &1478181543
 MonoBehaviour:
   m_ObjectHideFlags: 0

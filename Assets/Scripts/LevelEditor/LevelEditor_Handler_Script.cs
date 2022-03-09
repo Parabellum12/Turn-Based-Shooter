@@ -45,7 +45,8 @@ public class LevelEditor_Handler_Script : MonoBehaviour
                 worldDataHandler.setTile(tileChooserHandler.CurrentSelectedTile, UtilClass.getMouseWorldPosition(), 0);
                 break;
             case Tools_Handler_Script.Tools.Erase:
-                worldDataHandler.setTile(tileChooserHandler.defaultTile, UtilClass.getMouseWorldPosition(), 0);
+                //worldDataHandler.setTile(tileChooserHandler.defaultTile, UtilClass.getMouseWorldPosition(), 0);
+                worldDataHandler.getBuildLayers().getGridObject(UtilClass.getMouseWorldPosition()).erase();
                 break;
             case Tools_Handler_Script.Tools.BoxFill:
                 handleBoxFillRequest(true);
