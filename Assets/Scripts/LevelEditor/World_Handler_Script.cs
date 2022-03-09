@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEditor;
 public class World_Handler_Script : MonoBehaviour
 {
     GridClass<WorldBuildTile> buildLevels = null;
@@ -17,8 +18,14 @@ public class World_Handler_Script : MonoBehaviour
     [SerializeField] WorldTileVisual visualGrid;
     [SerializeField] Sprite TileAtlas;
 
+    [SerializeField] bool setDebugTo = false;
+    public static bool debugging = false;
+
+    List<WorldTileSpawnPoints> spawnPoints = new List<WorldTileSpawnPoints>();
+
     public void Awake()
     {
+        debugging = setDebugTo;
         allTileBuildData = SetAllTileBuildData;
         string seperator = "";
         if (Application.streamingAssetsPath.Contains("/"))
@@ -55,14 +62,139 @@ public class World_Handler_Script : MonoBehaviour
                 break;
         };
         genNewMap(width, height);
+        setupSpawnPoints(buildLevels);
+
+    }
+
+    public void testspawnPointSetup()
+    {
+        string output = "";
+        foreach (WorldTileSpawnPoints spawn in setupSpawnPoints(buildLevels))
+        {
+            output += " (";
+            foreach (Vector2Int vec in spawn.TilesPos)
+            {
+                output += vec.ToString() + ",";
+            }
+            output += "); ";
+        }
+        Debug.Log(output);
+    }
+    
+    public List<WorldTileSpawnPoints> setupSpawnPoints(GridClass<WorldBuildTile> gridmap)
+    {
+        List<WorldTileSpawnPoints> returner = new List<WorldTileSpawnPoints>();
+        List<Vector2Int> openList = new List<Vector2Int>();
+        List<Vector2Int> closedList = new List<Vector2Int>();
+        for (int i = 0; i < gridmap.width; i++)
+        {
+            for (int j = 0; j < gridmap.height; j++)
+            {
+                //Debug.Log(i + "," + j);
+                if (gridmap.getGridObject(i,j).isSpawnPoint())
+                {
+                    openList.Add(new Vector2Int(i,j));
+                    gridmap.getGridObject(i, j).openForSpawnpointTesting = true;
+                }
+            }
+        }
 
 
+        while (openList.Count > 0)
+        {
+            List<Vector2Int> toAdd = spawnpointTesting(buildLevels.getGridObject(openList[0].x, openList[0].y), buildLevels);
+            foreach (Vector2Int vec in toAdd)
+            {
+                openList.Remove(vec);
+                closedList.Add(vec);
+            }
+            WorldTileSpawnPoints spawnPoint = new WorldTileSpawnPoints();
+            spawnPoint.TilesPos = toAdd;
+            returner.Add(spawnPoint);
+        }
+
+        return returner;
+    }
+
+    private List<Vector2Int> spawnpointTesting(WorldBuildTile node, GridClass<WorldBuildTile> tileGrid)
+    {
+        
+        List<Vector2Int> posList = new List<Vector2Int>();
+        if (!node.openForSpawnpointTesting)
+        {
+            return posList;
+        }
+        if (node.isSpawnPoint())
+        {
+            posList.Add(node.getXY());
+            node.openForSpawnpointTesting = false;
+        }
+        else
+        {
+            return posList;
+        }
+
+        Vector2Int tile = new Vector2Int(node.getXY().x + 1, node.getXY().y);
+        if (tileGrid.inBounds(tile.x, tile.y))
+        {
+            List<Vector2Int> temp = spawnpointTesting(tileGrid.getGridObject(tile.x, tile.y), tileGrid);
+            foreach (Vector2Int vec in temp)
+            {
+                posList.Add(vec);
+            }
+        }
+
+        tile = new Vector2Int(node.getXY().x - 1, node.getXY().y);
+        if (tileGrid.inBounds(tile.x, tile.y))
+        {
+            List<Vector2Int> temp = spawnpointTesting(tileGrid.getGridObject(tile.x, tile.y), tileGrid);
+            foreach (Vector2Int vec in temp)
+            {
+                posList.Add(vec);
+            }
+        }
+
+        tile = new Vector2Int(node.getXY().x, node.getXY().y - 1);
+        if (tileGrid.inBounds(tile.x, tile.y))
+        {
+            List<Vector2Int> temp = spawnpointTesting(tileGrid.getGridObject(tile.x, tile.y), tileGrid);
+            foreach (Vector2Int vec in temp)
+            {
+                posList.Add(vec);
+            }
+        }
+
+        tile = new Vector2Int(node.getXY().x, node.getXY().y + 1);
+        if (tileGrid.inBounds(tile.x, tile.y))
+        {
+            List<Vector2Int> temp = spawnpointTesting(tileGrid.getGridObject(tile.x, tile.y), tileGrid);
+            foreach (Vector2Int vec in temp)
+            {
+                posList.Add(vec);
+            }
+        }
+
+
+        return posList;
     }
 
     public void genNewMap(int width, int height)
     {
         buildLevels = new GridClass<WorldBuildTile>(gameObject.transform, width, height, cellSize, Vector3.zero, (int x, int y) => new WorldBuildTile(x, y, defaultTile));
         visualGrid.SetGrid(buildLevels);
+
+
+
+        AstarPathing pathing = new AstarPathing();
+        Vector2Int[] path = pathing.returnPath(new Vector2Int(0,0), new Vector2Int(5, 10), buildLevels);
+        string output = "";
+        foreach (Vector2Int vec in path)
+        {
+            output += "(" + vec.x + "," + vec.y +"), ";
+            buildLevels.getGridObject(vec.x, vec.y).setBuildData(allTileBuildData[0]);
+            buildLevels.triggerGridObjectChanged(vec.x, vec.y);
+        }
+        Debug.Log(output);
     }
 
     public void setTile(TileBuildData data, Vector2 mousePos, int buildLevel)
@@ -176,7 +308,7 @@ public class World_Handler_Script : MonoBehaviour
 
         public TileBuildData getMainBuildData()
         {
-            if (DecorationBuildData != null)
+            if (DecorationBuildData != null && World_Handler_Script.debugging)
             {
                 return DecorationBuildData;
             }
@@ -186,6 +318,8 @@ public class World_Handler_Script : MonoBehaviour
             }
             return GroundBuildData;
         }
+
+
         public WorldBuildTile(int x, int y, TileBuildData defaultTileLoc)
         {
             this.x = x;
@@ -258,6 +392,7 @@ public class World_Handler_Script : MonoBehaviour
                     break;
                 case TileBuildData.BuildingType.DefaultTile:
                     this.GroundBuildData = data;
+                    this.DecorationBuildData = null;
                     break;
             }
             setTileSubGrid();
@@ -320,6 +455,21 @@ public class World_Handler_Script : MonoBehaviour
             }
             return false;
         }
+
+
+        //spawnpoint stuff
+
+
+        public bool isSpawnPoint()
+        {
+            if (DecorationBuildData != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool openForSpawnpointTesting = true;
     }
 
     public class worldBuildTileTransferData
@@ -416,6 +566,12 @@ public class World_Handler_Script : MonoBehaviour
             }
             return null;
         }
+    }
+
+
+    public class WorldTileSpawnPoints
+    {
+        public List<Vector2Int> TilesPos;
     }
 
 

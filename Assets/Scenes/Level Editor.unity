@@ -271,7 +271,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3744311
 RectTransform:
   m_ObjectHideFlags: 0
@@ -941,7 +941,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &118214098
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5677,6 +5677,7 @@ MonoBehaviour:
   MapFolderFilePath: 
   visualGrid: {fileID: 1313104465}
   TileAtlas: {fileID: 21300000, guid: 820dbbfedc10ad14facbc150a9360bda, type: 3}
+  setDebugTo: 1
 --- !u!114 &1313104465
 MonoBehaviour:
   m_ObjectHideFlags: 0

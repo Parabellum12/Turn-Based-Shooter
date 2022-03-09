@@ -186,6 +186,7 @@ public class LevelEditor_Handler_Script : MonoBehaviour
     {
         Debug.Log("level load");
         saveLoadHandler.load(contentBarHandler.getLoadFile());
+        //worldDataHandler.testspawnPointSetup();
     }
 
 

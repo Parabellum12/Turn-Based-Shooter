@@ -43,7 +43,7 @@ public class InGameCameraHandler_Script : MonoBehaviour
         verticalSpeed = Mathf.Clamp(verticalSpeed, -maxSpeed, maxSpeed);
         float newx = transform.position.x + horizonalSpeed;
         float newy = transform.position.y + verticalSpeed;
-        Debug.Log(xMove + "," + yMove + "::" + horizonalSpeed + "," + verticalSpeed);
+        //Debug.Log(xMove + "," + yMove + "::" + horizonalSpeed + "," + verticalSpeed);
         transform.position = new Vector3(newx, newy, -10);
     }
 }

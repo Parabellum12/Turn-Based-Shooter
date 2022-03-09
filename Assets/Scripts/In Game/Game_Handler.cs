@@ -10,6 +10,10 @@ public class Game_Handler : MonoBehaviour
     public static string mapFileName;
     [SerializeField] PhotonView LocalView;
     [SerializeField] SaveLoad_Handler_Script saveLoad;
+    [SerializeField] World_Handler_Script worldHandler;
+
+    List<World_Handler_Script.WorldTileSpawnPoints> spawnZones;
+
     public static CharacterData[] PlayerUnits;
     public enum Team
     {
@@ -28,13 +32,10 @@ public class Game_Handler : MonoBehaviour
     Photon.Realtime.Player[] OtherPlayers;
     Photon.Realtime.Player[] TotalPlayers;
     Dictionary<Team, Photon.Realtime.Player> TeamToPlayerDictionary = new Dictionary<Team, Photon.Realtime.Player>();
+    int teamIntValue;
     //game setup
     void Start()
     {
-
-
-
-
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
@@ -47,6 +48,19 @@ public class Game_Handler : MonoBehaviour
         AssignTeams();
         SetActiveTeam(Team.Team1);
 
+        for (int i = 0; i < TotalPlayers.Length; i++)
+        {
+            TeamToPlayerDictionary.TryGetValue(getTeamFromValue(i), out Photon.Realtime.Player plr);
+            Debug.Log("RPC SpawnUnits: " + i);
+            LocalView.RPC("spawnUnits", plr, i);
+        }
+    }
+
+
+
+    [PunRPC] public void assignTeamInt(int i)
+    {
+        teamIntValue = i;
     }
 
     void AssignTeams()
@@ -55,6 +69,7 @@ public class Game_Handler : MonoBehaviour
         {
             LocalView.RPC("AssignLocalTeam", TotalPlayers[i], getTeamFromValue(i));
             TeamToPlayerDictionary.Add(getTeamFromValue(i), TotalPlayers[i]);
+            LocalView.RPC("assignTeamInt", TotalPlayers[i], getIntFromTeam(getTeamFromValue(i)));
         }
     }
 
@@ -73,6 +88,28 @@ public class Game_Handler : MonoBehaviour
         return Team.fail;
     }
 
+    int getIntFromTeam(Team team)
+    {
+        switch (team)
+        {
+            case Team.Team1:
+                return 0;
+            case Team.Team2:
+                return 1;
+            case Team.Team3:
+                return 2;
+            case Team.Team4:
+                return 3;
+            case Team.Team5:
+                return 4;
+            case Team.Team6:
+                return 5;
+            case Team.Team7:
+                return 6;
+        }
+        return -1;
+    }
+
     
     [PunRPC] void AssignLocalTeam(Team team)
     {
@@ -88,6 +125,22 @@ public class Game_Handler : MonoBehaviour
     {
         Game_Handler.mapFileName = mapFileName.Trim();
         saveLoad.load(mapFileName);
+        spawnZones = worldHandler.setupSpawnPoints(worldHandler.getBuildLayers());
+    }
+
+    [PunRPC] void spawnUnits(int spawnZoneIndex)
+    {
+        Debug.Log("PlayerUnits Length:" + PlayerUnits.Length + ", SpawnZoneCount:" + spawnZones.Count);
+        World_Handler_Script.WorldTileSpawnPoints spawnZone = spawnZones[spawnZoneIndex];
+        for (int i = 0; i < PlayerUnits.Length; i++)
+        {
+            spawnUnit(spawnZone.TilesPos[i % spawnZone.TilesPos.Count], i);
+        }
+    }
+
+    public void spawnUnit(Vector2Int tile, int index)
+    {
+        Debug.Log("SpawnedUnit At:" + tile.ToString());
     }
 
 
