@@ -44,7 +44,7 @@ public class WorldTileVisual : MonoBehaviour {
                 World_Handler_Script.WorldBuildTile gridObject = objectGrid.getGridObject(x, y);
                 Vector2 pos = gridObject.getMainBuildData().altasPos;
                 int tilePixelSize = 128;
-                Vector2 uv00 = new Vector2((tilePixelSize * pos.x+1) / texture.width, (tilePixelSize * (pos.y)+1) / texture.height);
+                Vector2 uv00 = new Vector2(((tilePixelSize + 1) * pos.x) / texture.width, ((tilePixelSize+1) * (pos.y)) / texture.height);
                 Vector2 uv11 = new Vector2(((tilePixelSize * pos.x) + tilePixelSize-1) / texture.width, ((tilePixelSize * pos.y) + tilePixelSize-1) / texture.height);
 
                 //Debug.Log(gridObject.getMainBuildData().BuildingName + ":" + pos.ToString() + ":" + uv00.ToString() + ":" + uv11.ToString());
