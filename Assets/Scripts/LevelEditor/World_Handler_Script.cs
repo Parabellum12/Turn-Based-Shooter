@@ -439,6 +439,8 @@ public class World_Handler_Script : MonoBehaviour
         }
 
 
+        public bool hasUnitOnIt;
+
         //pathfinding stuff
         public int gCost;
         public int hCost;
@@ -457,7 +459,7 @@ public class World_Handler_Script : MonoBehaviour
 
         public bool IsWalkable()
         {
-            if (WallData == null)
+            if (WallData == null && !hasUnitOnIt)
             {
                 return true;
             }

@@ -151,7 +151,27 @@ public class Game_Handler : MonoBehaviour
     }
 
 
+    public void updateUnitPlacement()
+    {
+        List<Vector2Int> allUnitsInGame = new List<Vector2Int>();
+        foreach (Photon.Realtime.Player plr in OtherPlayers)
+        {
+            allUnitsInGame.Add(LocalView.RPC("UnitPlacements", plr));
+        }
+    }
 
+    [PunRPC] Vector2Int[] UnitPlacements()
+    {
+        Vector2Int[] placements = new Vector2Int[AllUnits.Count];
+        int index = 0;
+        foreach (InGame_Unit_Handler_Script scr in AllUnits)
+        {
+            worldHandler.getBuildLayers().GetXY(scr.gameObject.transform.position, out int x, out int y);
+            placements[index] = new Vector2Int(x,y);
+            index++;
+        }
+        return placements;
+    }
     
     //gameStateHandling
 

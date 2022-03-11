@@ -42,9 +42,9 @@ public static class AstarPathing
             }
             openList.Remove(currentNode);
             closedList.Add(currentNode);
-            foreach (World_Handler_Script.WorldBuildTile curTile in getNodesAround(currentNode, grid))
+            foreach (World_Handler_Script.WorldBuildTile curTile in getNodesAround(currentNode, grid, adjacentOnly))
             {
-                if (closedList.Contains(curTile) || !validTile(curTile.getXY(), currentNode.getXY(), adjacentOnly))
+                if (closedList.Contains(curTile))// || !validTile(curTile.getXY(), currentNode.getXY(), adjacentOnly))
                 {
                     continue;
                 }
@@ -73,7 +73,7 @@ public static class AstarPathing
         return null;
     }
 
-    private static List<World_Handler_Script.WorldBuildTile> getNodesAround(World_Handler_Script.WorldBuildTile node, GridClass<World_Handler_Script.WorldBuildTile> grid)
+    private static List<World_Handler_Script.WorldBuildTile> getNodesAround(World_Handler_Script.WorldBuildTile node, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)
     {
         List<World_Handler_Script.WorldBuildTile> nodes = new List<World_Handler_Script.WorldBuildTile>();
         for (int i = node.getXY().x-1; i <= node.getXY().x+1; i++)
@@ -82,7 +82,10 @@ public static class AstarPathing
             {
                 if (i >= 0 && i < grid.getWidth() && j >= 0 && j < grid.getHeight())
                 {
-                    nodes.Add(grid.getGridObject(i,j));
+                    if (validTile(new Vector2Int(i,j), node.getXY(), adjacentOnly))
+                    {
+                        nodes.Add(grid.getGridObject(i, j));
+                    }
                 }
             }
         }
@@ -91,17 +94,18 @@ public static class AstarPathing
 
     private static bool validTile(Vector2Int cur, Vector2Int caller, bool adjacentOnly)
     {
+        Debug.Log("ValidTile Debug: " + cur.ToString() + " :: " + caller.ToString() + " :: " + adjacentOnly);
         if (adjacentOnly)
         {
             bool x = cur.x == caller.x;
             bool y = cur.y == caller.y;
-            if (x && y)
+            if (!x && !y)
             {
                 return false;
             }
             else
             {
-                return false;
+                return true;
             }    
         }
         else
