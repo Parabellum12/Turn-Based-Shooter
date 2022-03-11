@@ -7,7 +7,7 @@ using UnityEditor;
 public class World_Handler_Script : MonoBehaviour
 {
     GridClass<WorldBuildTile> buildLevels = null;
-    [SerializeField] float cellSize = 15f;
+    [SerializeField] public float cellSize = 15f;
     [SerializeField] TMP_Dropdown mapSize;
     [SerializeField] int baseWidth = 60;
     [SerializeField] int baseHeight = 60;

@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class InGame_Unit_Handler_Script : MonoBehaviour
+{
+    GameObject gameHadlerObj;
+    Game_Handler gameHandlerScript;
+    public CharacterData characterData;
+
+    private void Start()
+    {
+        gameHadlerObj = GameObject.FindGameObjectWithTag("GameController");
+        gameHandlerScript = gameHadlerObj.GetComponent<Game_Handler>();
+    }
+
+    public void setup(Vector3 pos, CharacterData charDat)
+    {
+        characterData = charDat;
+        transform.position = pos;
+    }
+
+
+    public bool mouseOver = false;
+
+    private void OnMouseEnter()
+    {
+        mouseOver = true;
+    }
+
+    private void OnMouseExit()
+    {
+        mouseOver=false;
+    }
+
+}

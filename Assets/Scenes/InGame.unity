@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 1478181544}
   m_Layer: 0
   m_Name: Game Handler
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -249,6 +249,9 @@ MonoBehaviour:
   LocalView: {fileID: 1478181539}
   saveLoad: {fileID: 1478181543}
   worldHandler: {fileID: 1478181542}
+  UnitPrefab: {fileID: 1708740022482147296, guid: be55ce4578e7e8d439cf13e662693639, type: 3}
+  SelectedUnit: {fileID: 0}
+  AllUnits: []
 --- !u!4 &1478181541
 Transform:
   m_ObjectHideFlags: 0

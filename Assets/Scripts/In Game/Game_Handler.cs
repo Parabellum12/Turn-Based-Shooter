@@ -138,19 +138,113 @@ public class Game_Handler : MonoBehaviour
         }
     }
 
+
+    [SerializeField] GameObject UnitPrefab;
     public void spawnUnit(Vector2Int tile, int index)
     {
         Debug.Log("SpawnedUnit At:" + tile.ToString());
+        Vector3 worldPosToSpawnAt = worldHandler.getBuildLayers().getWorldPosition(tile.x, tile.y) + (new Vector3(1,1) * worldHandler.cellSize) * .5f;
+        GameObject unit = Instantiate(UnitPrefab);
+        InGame_Unit_Handler_Script unitHandler = unit.GetComponent<InGame_Unit_Handler_Script>();
+        unitHandler.setup(worldPosToSpawnAt, PlayerUnits[index]);
+        AllUnits.Add(unitHandler);
     }
 
 
-    
 
+    
+    //gameStateHandling
+
+
+    public bool IsMyTurn()
+    {
+        if (currentActiveTeam == localTeam)
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+    public InGame_Unit_Handler_Script SelectedUnit;
+    public List<InGame_Unit_Handler_Script> AllUnits = new List<InGame_Unit_Handler_Script>();
 
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            handleLeftClick();
+        }
+    }
+
+
+    void handleLeftClick()
+    {
+        handleUnitLeftClick();
+    }
+
+    [SerializeField] bool adjacentOnly = true;
+    void handleUnitLeftClick()
+    {
+        if (IsMouseOverUI())
+        {
+            handleUILeftClick();
+        }
+        else
+        {
+            InGame_Unit_Handler_Script tempSelect = null;
+            foreach (InGame_Unit_Handler_Script scr in AllUnits)
+            {
+                if (scr.mouseOver)
+                {
+                    tempSelect = scr;
+                }
+            }
+
+            if (tempSelect != null)
+            {
+                //unit clicked
+                SelectedUnit = tempSelect;
+            }
+            else
+            {
+                //no unit clicked
+                if (SelectedUnit != null)
+                {
+                    //unit selected and empty grid square clicked
+                    //do pathfinding
+                    worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
+                    worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
+                    Vector2Int[] path = AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly);
+                    if (path == null)
+                    {
+                        Debug.Log("invalid path");
+                    }
+                    else
+                    {
+                        string outer = "";
+                        foreach (Vector2Int vec in path)
+                        {
+                            outer += vec.ToString() + ",";
+                        }
+                        Debug.Log("Found Path:" + outer);
+                    }
+                }
+            }
+        }
+    }
+
+    void handleUILeftClick()
+    {
+
+    }
+
+    bool IsMouseOverUI()
+    {
+        return false;
     }
 }

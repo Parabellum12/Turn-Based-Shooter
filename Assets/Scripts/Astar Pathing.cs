@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AstarPathing
+public static class AstarPathing
 {
-    const int Move_Straight_Cost = 10;
-    const int Move_Diagonal_Cost = 14;
+    static int Move_Straight_Cost = 10;
+    static int Move_Diagonal_Cost = 14;
     
-    public Vector2Int[] returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid)
+    public static Vector2Int[] returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)
     {
         World_Handler_Script.WorldBuildTile startNode = grid.getGridObject(start.x, start.y);
         World_Handler_Script.WorldBuildTile endNode = grid.getGridObject(end.x, end.y);
@@ -44,7 +44,7 @@ public class AstarPathing
             closedList.Add(currentNode);
             foreach (World_Handler_Script.WorldBuildTile curTile in getNodesAround(currentNode, grid))
             {
-                if (closedList.Contains(curTile))
+                if (closedList.Contains(curTile) || !validTile(curTile.getXY(), currentNode.getXY(), adjacentOnly))
                 {
                     continue;
                 }
@@ -73,7 +73,7 @@ public class AstarPathing
         return null;
     }
 
-    private List<World_Handler_Script.WorldBuildTile> getNodesAround(World_Handler_Script.WorldBuildTile node, GridClass<World_Handler_Script.WorldBuildTile> grid)
+    private static List<World_Handler_Script.WorldBuildTile> getNodesAround(World_Handler_Script.WorldBuildTile node, GridClass<World_Handler_Script.WorldBuildTile> grid)
     {
         List<World_Handler_Script.WorldBuildTile> nodes = new List<World_Handler_Script.WorldBuildTile>();
         for (int i = node.getXY().x-1; i <= node.getXY().x+1; i++)
@@ -89,7 +89,28 @@ public class AstarPathing
         return nodes;
     }
 
-    private Vector2Int[] getReturnPath(World_Handler_Script.WorldBuildTile endNode)
+    private static bool validTile(Vector2Int cur, Vector2Int caller, bool adjacentOnly)
+    {
+        if (adjacentOnly)
+        {
+            bool x = cur.x == caller.x;
+            bool y = cur.y == caller.y;
+            if (x && y)
+            {
+                return false;
+            }
+            else
+            {
+                return false;
+            }    
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private static Vector2Int[] getReturnPath(World_Handler_Script.WorldBuildTile endNode)
     {
         List<World_Handler_Script.WorldBuildTile> pathAsNodes = new List<World_Handler_Script.WorldBuildTile>();
         pathAsNodes.Add(endNode);
@@ -109,7 +130,7 @@ public class AstarPathing
         return pathAsCoords;
     }
 
-    private int calcDistCost(World_Handler_Script.WorldBuildTile nodeA, World_Handler_Script.WorldBuildTile nodeB)
+    private static int calcDistCost(World_Handler_Script.WorldBuildTile nodeA, World_Handler_Script.WorldBuildTile nodeB)
     {
         int xDist = Mathf.Abs(nodeA.getXY().x - nodeB.getXY().x);
         int yDist = Mathf.Abs(nodeA.getXY().y - nodeB.getXY().y);
@@ -117,7 +138,7 @@ public class AstarPathing
         return Move_Diagonal_Cost * Mathf.Min(xDist, yDist) + Move_Straight_Cost * remaining;
     }
 
-    private World_Handler_Script.WorldBuildTile getLowestFCostNode(List<World_Handler_Script.WorldBuildTile> openList)
+    private static World_Handler_Script.WorldBuildTile getLowestFCostNode(List<World_Handler_Script.WorldBuildTile> openList)
     {
         World_Handler_Script.WorldBuildTile currentLowest = openList[0];
         for (int i = 1; i < openList.Count; i++)
