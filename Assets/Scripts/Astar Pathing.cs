@@ -9,6 +9,15 @@ public static class AstarPathing
     
     public static Vector2Int[] returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)
     {
+        if (!grid.getGridObject(end.x, end.y).IsWalkable())
+        {
+            return null;
+        }
+        return returnPathPriv(start, end, grid, adjacentOnly);
+    }
+
+    static Vector2Int[] returnPathPriv(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)
+    {
         World_Handler_Script.WorldBuildTile startNode = grid.getGridObject(start.x, start.y);
         World_Handler_Script.WorldBuildTile endNode = grid.getGridObject(end.x, end.y);
 
@@ -71,6 +80,7 @@ public static class AstarPathing
         }
 
         return null;
+
     }
 
     private static List<World_Handler_Script.WorldBuildTile> getNodesAround(World_Handler_Script.WorldBuildTile node, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)

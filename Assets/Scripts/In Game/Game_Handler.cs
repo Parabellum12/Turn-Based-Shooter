@@ -136,6 +136,7 @@ public class Game_Handler : MonoBehaviour
         {
             spawnUnit(spawnZone.TilesPos[i % spawnZone.TilesPos.Count], i);
         }
+        LocalView.RPC("masterRecieveUnits", PhotonNetwork.MasterClient, AllUnits);
     }
 
 
@@ -144,34 +145,17 @@ public class Game_Handler : MonoBehaviour
     {
         Debug.Log("SpawnedUnit At:" + tile.ToString());
         Vector3 worldPosToSpawnAt = worldHandler.getBuildLayers().getWorldPosition(tile.x, tile.y) + (new Vector3(1,1) * worldHandler.cellSize) * .5f;
-        GameObject unit = Instantiate(UnitPrefab);
+        GameObject unit = PhotonNetwork.Instantiate("UnitPreFab", worldPosToSpawnAt, Quaternion.identity);  //Instantiate(UnitPrefab);
+        
         InGame_Unit_Handler_Script unitHandler = unit.GetComponent<InGame_Unit_Handler_Script>();
         unitHandler.setup(worldPosToSpawnAt, PlayerUnits[index]);
         AllUnits.Add(unitHandler);
     }
 
+    //master list of units
 
-    public void updateUnitPlacement()
-    {
-        List<Vector2Int> allUnitsInGame = new List<Vector2Int>();
-        foreach (Photon.Realtime.Player plr in OtherPlayers)
-        {
-            allUnitsInGame.Add(LocalView.RPC("UnitPlacements", plr));
-        }
-    }
 
-    [PunRPC] Vector2Int[] UnitPlacements()
-    {
-        Vector2Int[] placements = new Vector2Int[AllUnits.Count];
-        int index = 0;
-        foreach (InGame_Unit_Handler_Script scr in AllUnits)
-        {
-            worldHandler.getBuildLayers().GetXY(scr.gameObject.transform.position, out int x, out int y);
-            placements[index] = new Vector2Int(x,y);
-            index++;
-        }
-        return placements;
-    }
+    
     
     //gameStateHandling
 
@@ -189,6 +173,7 @@ public class Game_Handler : MonoBehaviour
 
 
     public InGame_Unit_Handler_Script SelectedUnit;
+    //local units
     public List<InGame_Unit_Handler_Script> AllUnits = new List<InGame_Unit_Handler_Script>();
 
 
@@ -199,6 +184,7 @@ public class Game_Handler : MonoBehaviour
         {
             handleLeftClick();
         }
+        //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
     }
 
 
@@ -252,6 +238,7 @@ public class Game_Handler : MonoBehaviour
                             outer += vec.ToString() + ",";
                         }
                         Debug.Log("Found Path:" + outer);
+                        SelectedUnit.moveToPos(path);
                     }
                 }
             }
@@ -266,5 +253,14 @@ public class Game_Handler : MonoBehaviour
     bool IsMouseOverUI()
     {
         return false;
+    }
+
+
+    public Vector3 getPosOnGrid(Vector2Int pos)
+    {
+        Vector3 newPos = worldHandler.getBuildLayers().getWorldPosition(pos.x, pos.y);
+        newPos.x = newPos.x + worldHandler.getBuildLayers().getCellSize() / 2;
+        newPos.y = newPos.y + worldHandler.getBuildLayers().getCellSize() / 2;
+        return newPos;
     }
 }

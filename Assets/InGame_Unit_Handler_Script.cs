@@ -33,4 +33,13 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         mouseOver=false;
     }
 
+    public void moveToPos(Vector2Int[] posList)
+    {
+        Debug.Log("Move");
+        foreach (Vector2Int vec in posList)
+        {
+            transform.position = gameHandlerScript.getPosOnGrid(vec);
+        }
+    }
+
 }
