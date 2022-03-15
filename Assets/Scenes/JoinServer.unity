@@ -1855,7 +1855,7 @@ MonoBehaviour:
   errorText: {fileID: 71993682}
   maxDisapearTimer: 0.5
   maxHoldTimer: 5
-  autoConnect: 0
+  autoConnect: 1
 --- !u!4 &830441112
 Transform:
   m_ObjectHideFlags: 0

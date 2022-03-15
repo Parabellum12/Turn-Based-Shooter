@@ -6292,7 +6292,7 @@ MonoBehaviour:
   UnitManagment: {fileID: 1502129294}
   unit_Stats_Handler_Script: {fileID: 1502129298}
   mapSelector: {fileID: 829840668}
-  autoStart: 0
+  autoStart: 1
 --- !u!4 &1961694012
 Transform:
   m_ObjectHideFlags: 0
