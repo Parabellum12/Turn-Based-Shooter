@@ -9,6 +9,7 @@ public class CameraPanAndZoom_Script : MonoBehaviour
     [SerializeField] float maxCameraDist = 25;
     [SerializeField] float minCameraDist = 1;
     [SerializeField] float scrollSensitivityPercent = 100;
+    [SerializeField] int mouseButtonPos = 2;
 
     bool isRightMouseDown = false;
     Vector2 MouseStartingPos;
@@ -21,12 +22,12 @@ public class CameraPanAndZoom_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(2))
         {
             MouseStartingPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             isRightMouseDown = true;
         }
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetMouseButtonUp(2))
         {
             isRightMouseDown = false;
         }

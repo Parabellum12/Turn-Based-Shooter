@@ -16,6 +16,7 @@ public static class AstarPathing
     */
     public static IEnumerator returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, System.Action<Vector2Int[]> callback = null)
     {
+       
         if (!grid.inBounds(end.x, end.y) ||!grid.getGridObject(end.x, end.y).IsWalkable())
         {
             callback.Invoke(null);
@@ -23,7 +24,6 @@ public static class AstarPathing
         }
         World_Handler_Script.WorldBuildTile startNode = grid.getGridObject(start.x, start.y);
         World_Handler_Script.WorldBuildTile endNode = grid.getGridObject(end.x, end.y);
-
 
 
         List<World_Handler_Script.WorldBuildTile> openList = new List<World_Handler_Script.WorldBuildTile>();
@@ -40,12 +40,20 @@ public static class AstarPathing
                 currentNode.LastNode = null;
             }
         }
+ 
         startNode.gCost = 0;
         startNode.hCost = calcDistCost(startNode, endNode);
         startNode.calcFCost();
-
+        bool needToUpdateTime = true;
+        float startTime = Time.realtimeSinceStartup;
         while (openList.Count > 0)
         {
+            if (needToUpdateTime)
+            {
+                //Debug.Log("update");
+                needToUpdateTime = false;
+                startTime = Time.realtimeSinceStartup;
+            }
             World_Handler_Script.WorldBuildTile currentNode = getLowestFCostNode(openList);
             if (currentNode == endNode)
             {
@@ -81,7 +89,13 @@ public static class AstarPathing
                     }
                 }
             }
-            yield return null;
+            if (Mathf.Abs(Time.realtimeSinceStartup - startTime) > 0.01)
+            {
+                needToUpdateTime = true;
+                //Debug.Log("set to update");
+                yield return null;
+            }
+            
         }
 
         callback.Invoke(null);

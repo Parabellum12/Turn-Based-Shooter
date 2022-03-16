@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ef1b775c16f1d4db63370129dc9262, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridPos: {x: 0, y: 0}
   mouseOver: 0
 --- !u!58 &6988666693218595776
 CircleCollider2D:

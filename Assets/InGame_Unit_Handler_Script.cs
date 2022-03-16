@@ -7,6 +7,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     GameObject gameHadlerObj;
     Game_Handler gameHandlerScript;
     public CharacterData characterData;
+    public Vector2Int gridPos;
 
     private void Start()
     {
@@ -14,10 +15,11 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         gameHandlerScript = gameHadlerObj.GetComponent<Game_Handler>();
     }
 
-    public void setup(Vector3 pos, CharacterData charDat)
+    public void setup(Vector3 pos, CharacterData charDat, Vector2Int gridpos)
     {
         characterData = charDat;
         transform.position = pos;
+        this.gridPos = gridpos;
     }
 
 
@@ -40,6 +42,18 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         {
             transform.position = gameHandlerScript.getPosOnGrid(vec);
         }
+        seGridPos(posList[posList.Length-1]);
     }
 
+
+
+    public void seGridPos(Vector2Int pos)
+    {
+        gridPos = pos;
+    }
+
+    public Vector2Int getGridPos()
+    {
+        return gridPos;
+    }
 }

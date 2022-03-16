@@ -252,6 +252,7 @@ MonoBehaviour:
   UnitPrefab: {fileID: 1708740022482147296, guid: be55ce4578e7e8d439cf13e662693639, type: 3}
   SelectedUnit: {fileID: 0}
   AllUnits: []
+  adjacentOnly: 1
 --- !u!4 &1478181541
 Transform:
   m_ObjectHideFlags: 0

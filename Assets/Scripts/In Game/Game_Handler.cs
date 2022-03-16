@@ -132,10 +132,14 @@ public class Game_Handler : MonoBehaviour
     {
         Debug.Log("PlayerUnits Length:" + PlayerUnits.Length + ", SpawnZoneCount:" + spawnZones.Count);
         World_Handler_Script.WorldTileSpawnPoints spawnZone = spawnZones[spawnZoneIndex];
+        Camera.main.transform.position = worldHandler.getBuildLayers().getWorldPosition(spawnZone.TilesPos[0].x, spawnZone.TilesPos[0].y);
+        Vector2Int[] arr = new Vector2Int[PlayerUnits.Length];
         for (int i = 0; i < PlayerUnits.Length; i++)
         {
             spawnUnit(spawnZone.TilesPos[i % spawnZone.TilesPos.Count], i);
+            arr[i] = spawnZone.TilesPos[i % spawnZone.TilesPos.Count];
         }
+        //LocalView.RPC("GiveMasterNewPositions", Photon.Pun.RpcTarget.MasterClient, arr, PhotonNetwork.LocalPlayer);
         //LocalView.RPC("masterRecieveUnits", PhotonNetwork.MasterClient, AllUnits);
     }
 
@@ -148,7 +152,7 @@ public class Game_Handler : MonoBehaviour
         GameObject unit = PhotonNetwork.Instantiate("UnitPreFab", worldPosToSpawnAt, Quaternion.identity);  //Instantiate(UnitPrefab);
         
         InGame_Unit_Handler_Script unitHandler = unit.GetComponent<InGame_Unit_Handler_Script>();
-        unitHandler.setup(worldPosToSpawnAt, PlayerUnits[index]);
+        unitHandler.setup(worldPosToSpawnAt, PlayerUnits[index], tile);
         AllUnits.Add(unitHandler);
     }
 
@@ -184,13 +188,28 @@ public class Game_Handler : MonoBehaviour
         {
             handleLeftClick();
         }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            handleRightClick();
+        }
         //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
     }
 
 
+    void handleRightClick()
+    {
+        handleUnitRightClick();
+    }
+
     void handleLeftClick()
     {
         handleUnitLeftClick();
+    }
+
+
+    void handleUnitRightClick()
+    {
+        SelectedUnit = null;
     }
 
     [SerializeField] bool adjacentOnly = true;
@@ -231,10 +250,19 @@ public class Game_Handler : MonoBehaviour
     {
         //unit selected and empty grid square clicked
         //do pathfinding
+
         worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
         worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
+        /*
+        if (clickedPosOccupied(new Vector2Int(x2, y2)))
+        {
+
+        }
+        */
+
+
         Vector2Int[] path = new Vector2Int[0];
-        StartCoroutine(AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, (pathReturn) =>
+        yield return StartCoroutine(AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, (pathReturn) =>
         {
             Debug.Log("The World Is Ending");
             path = pathReturn;
@@ -258,10 +286,30 @@ public class Game_Handler : MonoBehaviour
             }
             Debug.Log("Found Path:" + outer);
             SelectedUnit.moveToPos(path);
+            SelectedUnit = null;
+
+            Vector2Int[] arr = new Vector2Int[AllUnits.ToArray().Length];
+            int index = 0;
+            foreach (InGame_Unit_Handler_Script scr in AllUnits)
+            {
+                arr[index] = scr.getGridPos();
+                index++;
+            }
+            LocalView.RPC("GiveMasterNewPositions", Photon.Pun.RpcTarget.MasterClient, arr, PhotonNetwork.LocalPlayer);
+
+
+
+
         }
         yield break;
     }
 
+    /*
+    private bool clickedPosOccupied(Vector2Int pos)
+    {
+        playerToUnitDictionary.v
+    }
+    */
     void handleUILeftClick()
     {
 
@@ -279,5 +327,23 @@ public class Game_Handler : MonoBehaviour
         newPos.x = newPos.x + worldHandler.getBuildLayers().getCellSize() / 2;
         newPos.y = newPos.y + worldHandler.getBuildLayers().getCellSize() / 2;
         return newPos;
+    }
+
+
+
+
+
+    //network unit pos storage handling
+    Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary = new Dictionary<Photon.Realtime.Player, Vector2Int[]>();
+    [PunRPC] void GiveMasterNewPositions(Vector2Int[] posArr, Photon.Realtime.Player plr)
+    {
+        playerToUnitDictionary.Remove(plr);
+        playerToUnitDictionary.Add(plr, posArr);
+        LocalView.RPC("clientSetDictionary", Photon.Pun.RpcTarget.OthersBuffered, playerToUnitDictionary);
+    }
+
+    [PunRPC] void clientSetDictionary(Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary)
+    {
+        this.playerToUnitDictionary = playerToUnitDictionary;
     }
 }
