@@ -7,18 +7,20 @@ public static class AstarPathing
     static int Move_Straight_Cost = 10;
     static int Move_Diagonal_Cost = 14;
     
+    /*
     public static IEnumerator returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, System.Action<Vector2Int[]> callback)
     {
-        if (!grid.getGridObject(end.x, end.y).IsWalkable())
-        {
-            return null;
-        }
-        returnPathPriv(start, end, grid, adjacentOnly, callback);
-        return null;
+        return returnPathPriv(start, end, grid, adjacentOnly, callback);
+        //return null;
     }
-
-    static IEnumerator returnPathPriv(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, System.Action<Vector2Int[]> callback)
+    */
+    public static IEnumerator returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, System.Action<Vector2Int[]> callback = null)
     {
+        if (!grid.inBounds(end.x, end.y) ||!grid.getGridObject(end.x, end.y).IsWalkable())
+        {
+            callback.Invoke(null);
+            yield break;
+        }
         World_Handler_Script.WorldBuildTile startNode = grid.getGridObject(start.x, start.y);
         World_Handler_Script.WorldBuildTile endNode = grid.getGridObject(end.x, end.y);
 
@@ -48,7 +50,8 @@ public static class AstarPathing
             if (currentNode == endNode)
             {
                 //end
-                callback( getReturnPath(grid.getGridObject(end.x, end.y)));
+                callback.Invoke(getReturnPath(grid.getGridObject(end.x, end.y)));
+                yield break;
             }
             openList.Remove(currentNode);
             closedList.Add(currentNode);
@@ -81,7 +84,8 @@ public static class AstarPathing
             yield return null;
         }
 
-        callback (null);
+        callback.Invoke(null);
+        yield break;
 
     }
 
@@ -106,7 +110,7 @@ public static class AstarPathing
 
     private static bool validTile(Vector2Int cur, Vector2Int caller, bool adjacentOnly)
     {
-        Debug.Log("ValidTile Debug: " + cur.ToString() + " :: " + caller.ToString() + " :: " + adjacentOnly);
+        //Debug.Log("ValidTile Debug: " + cur.ToString() + " :: " + caller.ToString() + " :: " + adjacentOnly);
         if (adjacentOnly)
         {
             bool x = cur.x == caller.x;

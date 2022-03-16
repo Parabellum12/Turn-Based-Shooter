@@ -136,7 +136,7 @@ public class Game_Handler : MonoBehaviour
         {
             spawnUnit(spawnZone.TilesPos[i % spawnZone.TilesPos.Count], i);
         }
-        LocalView.RPC("masterRecieveUnits", PhotonNetwork.MasterClient, AllUnits);
+        //LocalView.RPC("masterRecieveUnits", PhotonNetwork.MasterClient, AllUnits);
     }
 
 
@@ -221,26 +221,33 @@ public class Game_Handler : MonoBehaviour
                 //no unit clicked
                 if (SelectedUnit != null)
                 {
-                    handleUnitMove();
+                    StartCoroutine(handleUnitMove());
                 }
             }
         }
     }
 
-    private void handleUnitMove()
+    private IEnumerator handleUnitMove()
     {
         //unit selected and empty grid square clicked
         //do pathfinding
         worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
         worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
         Vector2Int[] path = new Vector2Int[0];
-        AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, (callback) =>
+        StartCoroutine(AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, (pathReturn) =>
         {
-            path = callback;
-        });
+            Debug.Log("The World Is Ending");
+            path = pathReturn;
+        }));
+        Debug.Log("The World Is Starting");
         if (path == null)
         {
-            Debug.Log("invalid path");
+            Debug.Log("invalid path null");
+        }
+        else if (path.Length == 0)
+        {
+
+            Debug.Log("invalid path no length");
         }
         else
         {
@@ -252,6 +259,7 @@ public class Game_Handler : MonoBehaviour
             Debug.Log("Found Path:" + outer);
             SelectedUnit.moveToPos(path);
         }
+        yield break;
     }
 
     void handleUILeftClick()
