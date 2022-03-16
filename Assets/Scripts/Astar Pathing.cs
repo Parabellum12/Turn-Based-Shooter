@@ -7,16 +7,17 @@ public static class AstarPathing
     static int Move_Straight_Cost = 10;
     static int Move_Diagonal_Cost = 14;
     
-    public static Vector2Int[] returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)
+    public static IEnumerator returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, System.Action<Vector2Int[]> callback)
     {
         if (!grid.getGridObject(end.x, end.y).IsWalkable())
         {
             return null;
         }
-        return returnPathPriv(start, end, grid, adjacentOnly);
+        returnPathPriv(start, end, grid, adjacentOnly, callback);
+        return null;
     }
 
-    static Vector2Int[] returnPathPriv(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)
+    static IEnumerator returnPathPriv(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, System.Action<Vector2Int[]> callback)
     {
         World_Handler_Script.WorldBuildTile startNode = grid.getGridObject(start.x, start.y);
         World_Handler_Script.WorldBuildTile endNode = grid.getGridObject(end.x, end.y);
@@ -47,7 +48,7 @@ public static class AstarPathing
             if (currentNode == endNode)
             {
                 //end
-                return getReturnPath(grid.getGridObject(end.x, end.y));
+                callback( getReturnPath(grid.getGridObject(end.x, end.y)));
             }
             openList.Remove(currentNode);
             closedList.Add(currentNode);
@@ -77,9 +78,10 @@ public static class AstarPathing
                     }
                 }
             }
+            yield return null;
         }
 
-        return null;
+        callback (null);
 
     }
 

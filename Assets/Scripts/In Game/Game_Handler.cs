@@ -221,31 +221,38 @@ public class Game_Handler : MonoBehaviour
                 //no unit clicked
                 if (SelectedUnit != null)
                 {
-                    //unit selected and empty grid square clicked
-                    //do pathfinding
-                    worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
-                    worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
-                    Vector2Int[] path = AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly);
-                    if (path == null)
-                    {
-                        Debug.Log("invalid path");
-                    }
-                    else
-                    {
-                        string outer = "";
-                        foreach (Vector2Int vec in path)
-                        {
-                            outer += vec.ToString() + ",";
-                        }
-                        Debug.Log("Found Path:" + outer);
-                        SelectedUnit.moveToPos(path);
-                    }
+                    handleUnitMove();
                 }
             }
         }
     }
 
-    
+    private void handleUnitMove()
+    {
+        //unit selected and empty grid square clicked
+        //do pathfinding
+        worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
+        worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
+        Vector2Int[] path = new Vector2Int[0];
+        AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, (callback) =>
+        {
+            path = callback;
+        });
+        if (path == null)
+        {
+            Debug.Log("invalid path");
+        }
+        else
+        {
+            string outer = "";
+            foreach (Vector2Int vec in path)
+            {
+                outer += vec.ToString() + ",";
+            }
+            Debug.Log("Found Path:" + outer);
+            SelectedUnit.moveToPos(path);
+        }
+    }
 
     void handleUILeftClick()
     {
