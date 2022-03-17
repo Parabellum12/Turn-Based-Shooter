@@ -139,8 +139,15 @@ public class Game_Handler : MonoBehaviour
             spawnUnit(spawnZone.TilesPos[i % spawnZone.TilesPos.Count], i);
             arr[i] = spawnZone.TilesPos[i % spawnZone.TilesPos.Count];
         }
-        //LocalView.RPC("GiveMasterNewPositions", Photon.Pun.RpcTarget.MasterClient, arr, PhotonNetwork.LocalPlayer);
-        //LocalView.RPC("masterRecieveUnits", PhotonNetwork.MasterClient, AllUnits);
+
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            LocalView.RPC("GiveMasterNewPositions", Photon.Pun.RpcTarget.MasterClient, Vector2IntArrayToString(arr), PhotonNetwork.LocalPlayer);
+        }
+        else
+        {
+            GiveMasterNewPositions(Vector2IntArrayToString(arr), PhotonNetwork.LocalPlayer);
+        }
     }
 
 
@@ -335,15 +342,48 @@ public class Game_Handler : MonoBehaviour
 
     //network unit pos storage handling
     Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary = new Dictionary<Photon.Realtime.Player, Vector2Int[]>();
-    [PunRPC] void GiveMasterNewPositions(Vector2Int[] posArr, Photon.Realtime.Player plr)
+    [PunRPC] void GiveMasterNewPositions(string arrAsString, Photon.Realtime.Player plr)
     {
         playerToUnitDictionary.Remove(plr);
-        playerToUnitDictionary.Add(plr, posArr);
+        playerToUnitDictionary.Add(plr, stringToVector2Int(arrAsString));
         LocalView.RPC("clientSetDictionary", Photon.Pun.RpcTarget.OthersBuffered, playerToUnitDictionary);
     }
 
     [PunRPC] void clientSetDictionary(Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary)
     {
         this.playerToUnitDictionary = playerToUnitDictionary;
+    }
+
+    private string Vector2IntArrayToString(Vector2Int[] arr)
+    {
+        string returner = "";
+        for (int i = 0; i < arr.Length; i++)
+        {
+            returner += arr[i].x + "," + arr[i].y;
+            if (i != arr.Length-1)
+            {
+                returner += ";";
+            }
+        }
+
+        Debug.Log("Vector2IntArrayToString returner:" + returner);
+        return returner;
+    }
+
+    private Vector2Int[] stringToVector2Int(string s)
+    {
+        string[] values = s.Split(';');
+        Debug.Log("values length:" + values.Length);
+        Vector2Int[] returner = new Vector2Int[values.Length];
+        int index = 0;
+        foreach (string str in values)
+        {
+            string[] data = str.Split(',');
+            Debug.Log("vectorarr data Length:"+data.Length);
+            returner[index] = new Vector2Int(int.Parse(data[0]), int.Parse(data[1]));
+
+            index++;
+        }
+        return returner;
     }
 }
