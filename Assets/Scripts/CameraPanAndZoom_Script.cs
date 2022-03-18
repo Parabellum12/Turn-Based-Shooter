@@ -22,12 +22,12 @@ public class CameraPanAndZoom_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(2))
+        if (Input.GetMouseButtonDown(mouseButtonPos))
         {
             MouseStartingPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             isRightMouseDown = true;
         }
-        else if (Input.GetMouseButtonUp(2))
+        else if (Input.GetMouseButtonUp(mouseButtonPos))
         {
             isRightMouseDown = false;
         }

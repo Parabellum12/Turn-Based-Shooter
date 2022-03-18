@@ -14,7 +14,7 @@ public static class AstarPathing
         //return null;
     }
     */
-    public static IEnumerator returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, System.Action<Vector2Int[]> callback = null)
+    public static IEnumerator returnPath(Vector2Int start, Vector2Int end, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, List<Vector2Int> restrictedTiles, System.Action<Vector2Int[]> callback = null)
     {
        
         if (!grid.inBounds(end.x, end.y) ||!grid.getGridObject(end.x, end.y).IsWalkable())
@@ -63,7 +63,7 @@ public static class AstarPathing
             }
             openList.Remove(currentNode);
             closedList.Add(currentNode);
-            foreach (World_Handler_Script.WorldBuildTile curTile in getNodesAround(currentNode, grid, adjacentOnly))
+            foreach (World_Handler_Script.WorldBuildTile curTile in getNodesAround(currentNode, grid, adjacentOnly, restrictedTiles))
             {
                 if (closedList.Contains(curTile))// || !validTile(curTile.getXY(), currentNode.getXY(), adjacentOnly))
                 {
@@ -103,7 +103,7 @@ public static class AstarPathing
 
     }
 
-    private static List<World_Handler_Script.WorldBuildTile> getNodesAround(World_Handler_Script.WorldBuildTile node, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly)
+    private static List<World_Handler_Script.WorldBuildTile> getNodesAround(World_Handler_Script.WorldBuildTile node, GridClass<World_Handler_Script.WorldBuildTile> grid, bool adjacentOnly, List<Vector2Int> restrictedTiles)
     {
         List<World_Handler_Script.WorldBuildTile> nodes = new List<World_Handler_Script.WorldBuildTile>();
         for (int i = node.getXY().x-1; i <= node.getXY().x+1; i++)
@@ -112,7 +112,7 @@ public static class AstarPathing
             {
                 if (i >= 0 && i < grid.getWidth() && j >= 0 && j < grid.getHeight())
                 {
-                    if (validTile(new Vector2Int(i,j), node.getXY(), adjacentOnly))
+                    if (validTile(new Vector2Int(i,j), node.getXY(), adjacentOnly, restrictedTiles))
                     {
                         nodes.Add(grid.getGridObject(i, j));
                     }
@@ -122,8 +122,9 @@ public static class AstarPathing
         return nodes;
     }
 
-    private static bool validTile(Vector2Int cur, Vector2Int caller, bool adjacentOnly)
+    private static bool validTile(Vector2Int cur, Vector2Int caller, bool adjacentOnly, List<Vector2Int> restrictedTiles)
     {
+
         //Debug.Log("ValidTile Debug: " + cur.ToString() + " :: " + caller.ToString() + " :: " + adjacentOnly);
         if (adjacentOnly)
         {

@@ -5627,6 +5627,7 @@ MonoBehaviour:
   maxCameraDist: 500
   minCameraDist: 1
   scrollSensitivityPercent: 200
+  mouseButtonPos: 1
 --- !u!114 &1313104463
 MonoBehaviour:
   m_ObjectHideFlags: 0
