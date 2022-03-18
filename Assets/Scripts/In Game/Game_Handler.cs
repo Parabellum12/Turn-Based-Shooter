@@ -219,7 +219,7 @@ public class Game_Handler : MonoBehaviour
         SelectedUnit = null;
     }
 
-    [SerializeField] bool adjacentOnly = true;
+    [SerializeField] bool adjacentOnly = false;
     void handleUnitLeftClick()
     {
         if (IsMouseOverUI())
@@ -245,13 +245,14 @@ public class Game_Handler : MonoBehaviour
             else
             {
                 //no unit clicked
-                if (SelectedUnit != null)
+                if (SelectedUnit != null && !moving)
                 {
                     StartCoroutine(handleUnitMove());
                 }
             }
         }
     }
+    bool moving = false;
 
     private IEnumerator handleUnitMove()
     {
@@ -266,8 +267,9 @@ public class Game_Handler : MonoBehaviour
             Debug.Log("spot already used");
             yield break;
         }
-        
 
+
+        moving = true;
 
         Vector2Int[] path = new Vector2Int[0];
         yield return StartCoroutine(AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, getRestrictedTiles(), (pathReturn) =>
@@ -309,19 +311,23 @@ public class Game_Handler : MonoBehaviour
 
 
         }
+        moving = false;
         yield break;
     }
 
     public List<Vector2Int> getRestrictedTiles()
     {
         List<Vector2Int> returner = new List<Vector2Int>();
+        int count = 0;
         foreach (Vector2Int[] arr in playerToUnitDictionary.Values)
         {
             foreach (Vector2Int Arrpos in arr)
             {
                 returner.Add(Arrpos);
+                count++;
             }
         }
+        Debug.Log("WHYYYYYYY:"+count);
         return returner;
     }
 
@@ -400,20 +406,20 @@ public class Game_Handler : MonoBehaviour
             }
         }
 
-        Debug.Log("Vector2IntArrayToString returner:" + returner);
+        //Debug.Log("Vector2IntArrayToString returner:" + returner);
         return returner;
     }
 
     private Vector2Int[] stringToVector2Int(string s)
     {
         string[] values = s.Split(';');
-        Debug.Log("values length:" + values.Length);
+        //Debug.Log("values length:" + values.Length);
         Vector2Int[] returner = new Vector2Int[values.Length];
         int index = 0;
         foreach (string str in values)
         {
             string[] data = str.Split(',');
-            Debug.Log("vectorarr data Length:"+data.Length);
+            //Debug.Log("vectorarr data Length:"+data.Length);
             returner[index] = new Vector2Int(int.Parse(data[0]), int.Parse(data[1]));
 
             index++;

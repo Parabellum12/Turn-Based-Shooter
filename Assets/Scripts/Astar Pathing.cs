@@ -126,6 +126,10 @@ public static class AstarPathing
     {
 
         //Debug.Log("ValidTile Debug: " + cur.ToString() + " :: " + caller.ToString() + " :: " + adjacentOnly);
+        if (restrictedTiles.Contains(cur))
+        {
+            return false;
+        }
         if (adjacentOnly)
         {
             bool x = cur.x == caller.x;
@@ -141,9 +145,27 @@ public static class AstarPathing
         }
         else
         {
-            return true;
+            if (diagonalValidMove(caller, cur))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
+
+    private static bool diagonalValidMove(Vector2Int original, Vector2Int MoveToTile)
+    {
+        if (original.x == MoveToTile.x || original.y == MoveToTile.y)
+        {
+            return true;
+        }
+
+        //need to check left and right diagonal seperatly, need to setup function to take bottom left to top right or bottom right to top left and check tiles between
+    }
+
 
     private static Vector2Int[] getReturnPath(World_Handler_Script.WorldBuildTile endNode)
     {
