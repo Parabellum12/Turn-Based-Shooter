@@ -112,7 +112,7 @@ public static class AstarPathing
             {
                 if (i >= 0 && i < grid.getWidth() && j >= 0 && j < grid.getHeight())
                 {
-                    if (validTile(new Vector2Int(i,j), node.getXY(), adjacentOnly, restrictedTiles))
+                    if (validTile(new Vector2Int(i,j), node.getXY(), adjacentOnly, restrictedTiles, grid))
                     {
                         nodes.Add(grid.getGridObject(i, j));
                     }
@@ -122,7 +122,7 @@ public static class AstarPathing
         return nodes;
     }
 
-    private static bool validTile(Vector2Int cur, Vector2Int caller, bool adjacentOnly, List<Vector2Int> restrictedTiles)
+    private static bool validTile(Vector2Int cur, Vector2Int caller, bool adjacentOnly, List<Vector2Int> restrictedTiles, GridClass<World_Handler_Script.WorldBuildTile> grid)
     {
 
         //Debug.Log("ValidTile Debug: " + cur.ToString() + " :: " + caller.ToString() + " :: " + adjacentOnly);
@@ -145,7 +145,7 @@ public static class AstarPathing
         }
         else
         {
-            if (diagonalValidMove(caller, cur))
+            if (diagonalValidMove(caller, cur, grid))
             {
                 return true;
             }
@@ -156,14 +156,71 @@ public static class AstarPathing
         }
     }
 
-    private static bool diagonalValidMove(Vector2Int original, Vector2Int MoveToTile)
+    private static bool diagonalValidMove(Vector2Int original, Vector2Int MoveToTile, GridClass<World_Handler_Script.WorldBuildTile> grid)
     {
         if (original.x == MoveToTile.x || original.y == MoveToTile.y)
         {
             return true;
         }
 
+
+
+        if (original.x < MoveToTile.x && original.y < MoveToTile.y)
+        {
+            //original bottom left, moveto top right slash
+            return checkSlash(original, MoveToTile, grid);
+        }
+        else if (original.x > MoveToTile.x && original.y > MoveToTile.y)
+        {
+            //moveto bottom left, original top right slash
+            return checkSlash(MoveToTile, original, grid);
+        }
+        else if (original.x < MoveToTile.x && original.y > MoveToTile.y)
+        {
+            //original top left, moveto bottom right backslash
+            return checkBackSlash(original, MoveToTile, grid);
+        }
+        else if (original.x > MoveToTile.x && original.y < MoveToTile.y)
+        {
+            //original bottom right, moveto top left backslash
+            return checkBackSlash(MoveToTile, original, grid);
+        }
+        else
+        {
+            Debug.LogError("unknown tileOrientation");
+            return false;
+        }
+
         //need to check left and right diagonal seperatly, need to setup function to take bottom left to top right or bottom right to top left and check tiles between
+    }
+
+
+    private static bool checkSlash(Vector2Int bottomLeft, Vector2Int topRight, GridClass<World_Handler_Script.WorldBuildTile> grid)
+    {
+        Vector2Int left = new Vector2Int(bottomLeft.x, topRight.y);
+        Vector2Int right = new Vector2Int(topRight.x, bottomLeft.y);
+        if (grid.getGridObject(left.x, left.y).IsWalkable() && grid.getGridObject(right.x, right.y).IsWalkable())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private static bool checkBackSlash(Vector2Int topLeft, Vector2Int bottomRight, GridClass<World_Handler_Script.WorldBuildTile> grid)
+    {
+        Vector2Int left = new Vector2Int(topLeft.x, bottomRight.y);
+        Vector2Int right = new Vector2Int(bottomRight.x, topLeft.y);
+        if (grid.getGridObject(left.x, left.y).IsWalkable() && grid.getGridObject(right.x, right.y).IsWalkable())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 
