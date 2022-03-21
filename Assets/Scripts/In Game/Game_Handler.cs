@@ -51,7 +51,7 @@ public class Game_Handler : MonoBehaviour
         for (int i = 0; i < TotalPlayers.Length; i++)
         {
             TeamToPlayerDictionary.TryGetValue(getTeamFromValue(i), out Photon.Realtime.Player plr);
-            Debug.Log("RPC SpawnUnits: " + i);
+            //Debug.Log("RPC SpawnUnits: " + i);
             LocalView.RPC("spawnUnits", plr, i);
         }
     }
@@ -119,6 +119,7 @@ public class Game_Handler : MonoBehaviour
     [PunRPC] void SetActiveTeam(Team activeTeam)
     {
         currentActiveTeam = activeTeam;
+        Debug.Log("Active Team:" + activeTeam);
     }
 
     [PunRPC] public void setMap(string mapFileName)
@@ -130,7 +131,7 @@ public class Game_Handler : MonoBehaviour
 
     [PunRPC] void spawnUnits(int spawnZoneIndex)
     {
-        Debug.Log("PlayerUnits Length:" + PlayerUnits.Length + ", SpawnZoneCount:" + spawnZones.Count);
+        //Debug.Log("PlayerUnits Length:" + PlayerUnits.Length + ", SpawnZoneCount:" + spawnZones.Count);
         World_Handler_Script.WorldTileSpawnPoints spawnZone = spawnZones[spawnZoneIndex];
         Camera.main.transform.position = worldHandler.getBuildLayers().getWorldPosition(spawnZone.TilesPos[0].x, spawnZone.TilesPos[0].y);
         Vector2Int[] arr = new Vector2Int[PlayerUnits.Length];
@@ -154,7 +155,7 @@ public class Game_Handler : MonoBehaviour
     [SerializeField] GameObject UnitPrefab;
     public void spawnUnit(Vector2Int tile, int index)
     {
-        Debug.Log("SpawnedUnit At:" + tile.ToString());
+        //Debug.Log("SpawnedUnit At:" + tile.ToString());
         Vector3 worldPosToSpawnAt = worldHandler.getBuildLayers().getWorldPosition(tile.x, tile.y) + (new Vector3(1,1) * worldHandler.cellSize) * .5f;
         GameObject unit = PhotonNetwork.Instantiate("UnitPreFab", worldPosToSpawnAt, Quaternion.identity);  //Instantiate(UnitPrefab);
         
@@ -163,11 +164,33 @@ public class Game_Handler : MonoBehaviour
         AllUnits.Add(unitHandler);
     }
 
-    //master list of units
+    //turn handleing
 
 
-    
-    
+    [PunRPC] void MasterNextTurn()
+    {
+        currentActiveTeamIndex = (currentActiveTeamIndex + 1) % TotalPlayers.Length;
+        LocalView.RPC("recieveNextTurn", RpcTarget.All, currentActiveTeamIndex);
+    }
+
+    [PunRPC] void recieveNextTurn(int index)
+    {
+        currentActiveTeamIndex = index;
+        currentActiveTeam = getTeamFromValue(currentActiveTeamIndex);
+        Debug.Log("Next Turn Set To:" + currentActiveTeam);
+    }
+
+    public void EndMyTurn()
+    {
+        if (IsMyTurn())
+        {
+            LocalView.RPC("MasterNextTurn", RpcTarget.MasterClient);
+        }
+    }
+
+
+
+
     //gameStateHandling
 
 
@@ -191,15 +214,20 @@ public class Game_Handler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (IsMyTurn())
         {
-            handleLeftClick();
+
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                handleLeftClick();
+            }
+            else if (Input.GetMouseButtonDown(1))
+            {
+                handleRightClick();
+            }
+            //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
         }
-        else if (Input.GetMouseButtonDown(1))
-        {
-            handleRightClick();
-        }
-        //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
     }
 
 
@@ -264,7 +292,7 @@ public class Game_Handler : MonoBehaviour
         
         if (clickedPosOccupied(new Vector2Int(x2, y2)))
         {
-            Debug.Log("spot already used");
+            //Debug.Log("spot already used");
             yield break;
         }
 
@@ -274,10 +302,10 @@ public class Game_Handler : MonoBehaviour
         Vector2Int[] path = new Vector2Int[0];
         yield return StartCoroutine(AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, getRestrictedTiles(), (pathReturn) =>
         {
-            Debug.Log("The World Is Ending");
+            //Debug.Log("The World Is Ending");
             path = pathReturn;
         }));
-        Debug.Log("The World Is Starting");
+        //Debug.Log("The World Is Starting");
         if (path == null)
         {
             Debug.Log("invalid path null");
@@ -294,7 +322,7 @@ public class Game_Handler : MonoBehaviour
             {
                 outer += vec.ToString() + ",";
             }
-            Debug.Log("Found Path:" + outer);
+            //Debug.Log("Found Path:" + outer);
             yield return StartCoroutine(SelectedUnit.moveToPos(path));
             SelectedUnit = null;
 
@@ -327,7 +355,7 @@ public class Game_Handler : MonoBehaviour
                 count++;
             }
         }
-        Debug.Log("WHYYYYYYY:"+count);
+        //Debug.Log("WHYYYYYYY:"+count);
         return returner;
     }
 

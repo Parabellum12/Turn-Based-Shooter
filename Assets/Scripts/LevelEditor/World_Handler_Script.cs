@@ -83,7 +83,7 @@ public class World_Handler_Script : MonoBehaviour
     
     public List<WorldTileSpawnPoints> setupSpawnPoints(GridClass<WorldBuildTile> gridmap)
     {
-        Debug.Log("WHYYYYYYYY");
+        //Debug.Log("WHYYYYYYYY");
         List<WorldTileSpawnPoints> returner = new List<WorldTileSpawnPoints>();
         List<Vector2Int> openList = new List<Vector2Int>();
         List<Vector2Int> closedList = new List<Vector2Int>();
@@ -113,7 +113,7 @@ public class World_Handler_Script : MonoBehaviour
             spawnPoint.TilesPos = toAdd;
             returner.Add(spawnPoint);
         }
-        Debug.Log("SpawnZone Count:"+returner.Count);
+        //Debug.Log("SpawnZone Count:"+returner.Count);
         return returner;
     }
 

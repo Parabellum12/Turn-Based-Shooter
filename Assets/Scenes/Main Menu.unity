@@ -2786,7 +2786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadingText: {fileID: 1311657185}
-  AutoConnect: 0
+  AutoConnect: 1
 --- !u!4 &1780502264
 Transform:
   m_ObjectHideFlags: 0

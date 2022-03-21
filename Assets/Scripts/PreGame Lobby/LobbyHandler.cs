@@ -35,14 +35,17 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
 
 
-
+    public bool debugging = false;
     [SerializeField] bool autoStart = false;
 
 
     bool isUnitManagementOpen = false;
     public void Start()
     {
-
+        if (autoStart)
+        {
+            debugging = true;
+        }
         if (Application.streamingAssetsPath.Contains("/"))
         {
             fileSystemSeperator = "/";
@@ -319,17 +322,23 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
     private bool allPlayersReady()
     {
+        int amount = 0;
         for (int i = 0; i < playerIcons.Length; i++)
         {
             Player_Icon_Script temp = playerIcons[i].GetComponent<Player_Icon_Script>();
             if (temp.gameObject.activeSelf)
             {
+                amount++;
                 if (!temp.ready)
                 {
                     //Debug.Log("Error: Someone Not Ready:" + players[i].NickName);
                     return false;
                 }
             }
+        }
+        if (amount < 2 && !debugging)
+        {
+            return false;
         }
         return true;
     }

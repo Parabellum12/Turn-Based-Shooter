@@ -31,12 +31,12 @@ public class SaveLoad_Handler_Script : MonoBehaviour
         if (existingFileName.value == 0)
         {
             sr = new StreamWriter(contentBar.MapFilePath + saveAsName.text + ".MapData", false);
-            Debug.Log(contentBar.MapFilePath + saveAsName.text + ".MapData");
+           // Debug.Log(contentBar.MapFilePath + saveAsName.text + ".MapData");
         }
         else
         {
             sr = new StreamWriter(contentBar.MapFilePath + existingFileName.options[existingFileName.value].text + ".MapData", false);
-            Debug.Log(contentBar.MapFilePath + existingFileName.options[existingFileName.value].text + ".MapData");
+            //Debug.Log(contentBar.MapFilePath + existingFileName.options[existingFileName.value].text + ".MapData");
         }
         sr.WriteLine(worldHandler.getBuildLayers().width + "," + 
             worldHandler.getBuildLayers().height + "," + 
@@ -55,12 +55,12 @@ public class SaveLoad_Handler_Script : MonoBehaviour
     public void load(string fileName)
     {
         string filePath = worldHandler.MapFolderFilePath + fileName + ".MapData";
-        Debug.Log("Load File:" + fileName);
-        Debug.Log("Load File Path:" + filePath);
+        //Debug.Log("Load File:" + fileName);
+        //Debug.Log("Load File Path:" + filePath);
         StreamReader sr = new StreamReader(filePath);
         string fileContents = sr.ReadToEnd();
-        Debug.Log("Reading:" + fileContents);
-        Debug.Log(fileContents.Split('\n').Length);
+       // Debug.Log("Reading:" + fileContents);
+        //Debug.Log(fileContents.Split('\n').Length);
         string[] contentsPerLine = fileContents.Split('\n');
         worldHandler.genNewMap(int.Parse(contentsPerLine[0].Split(',')[0]), int.Parse(contentsPerLine[0].Split(',')[1]));
         for (int i = 1; i < contentsPerLine.Length-1; i++)
