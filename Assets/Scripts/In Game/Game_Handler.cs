@@ -36,6 +36,7 @@ public class Game_Handler : MonoBehaviour
     //game setup
     void Start()
     {
+        pathfindingVisualHandler = GameObject.FindGameObjectWithTag("PathfindingVisual").GetComponent<pathfindingColorVisualHandler>();
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
@@ -305,6 +306,14 @@ public class Game_Handler : MonoBehaviour
             //Debug.Log("The World Is Ending");
             path = pathReturn;
         }));
+
+        foreach (Vector2Int vec in path)
+        {
+            worldHandler.getBuildLayers().getGridObject(vec.x, vec.y).setPathfindingData(pathfindingColors[2]);
+        }
+        pathfindingVisualHandler.SetGrid(worldHandler.getBuildLayers());
+       
+        
         //Debug.Log("The World Is Starting");
         if (path == null)
         {
@@ -336,12 +345,15 @@ public class Game_Handler : MonoBehaviour
             LocalView.RPC("GiveMasterNewPositions", Photon.Pun.RpcTarget.MasterClient, Vector2IntArrayToString(arr), PhotonNetwork.LocalPlayer);
 
 
-
-
         }
         moving = false;
         yield break;
     }
+
+    [SerializeField] TileBuildData[] pathfindingColors = new TileBuildData[3];
+    [SerializeField] pathfindingColorVisualHandler pathfindingVisualHandler;
+
+
 
     public List<Vector2Int> getRestrictedTiles()
     {

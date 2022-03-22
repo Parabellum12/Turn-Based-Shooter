@@ -306,6 +306,8 @@ public class World_Handler_Script : MonoBehaviour
         //walls
         TileBuildData WallData;
 
+        TileBuildData pathfindingData = null;
+
         bool[] subGrid = new bool[9];
 
         public TileBuildData getMainBuildData()
@@ -365,6 +367,21 @@ public class World_Handler_Script : MonoBehaviour
             WallData = transferData.WallData;
             subGrid = transferData.subGridData;
         }
+
+
+
+
+        public void setPathfindingData(TileBuildData color)
+        {
+            pathfindingData = color;
+        }
+
+        public TileBuildData getPathfindingColors()
+        {
+            return pathfindingData;
+        }
+
+
 
 
         public void setDisplayOrder(int layer)
