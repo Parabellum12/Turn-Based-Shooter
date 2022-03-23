@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public static class UtilClass 
 {
@@ -65,5 +66,38 @@ public static class UtilClass
     }
 
 
+
+    
+
+
+    //Returns 'true' if we touched or hovering on Unity UI element.
+    public static bool IsPointerOverUIElement(int UILayer)
+    {
+        return IsPointerOverUIElement(GetEventSystemRaycastResults(UILayer), UILayer);
+    }
+
+
+    //Returns 'true' if we touched or hovering on Unity UI element.
+    private static bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaysastResults, int UILayer)
+    {
+        for (int index = 0; index < eventSystemRaysastResults.Count; index++)
+        {
+            RaycastResult curRaysastResult = eventSystemRaysastResults[index];
+            if (curRaysastResult.gameObject.layer == UILayer)
+                return true;
+        }
+        return false;
+    }
+
+
+    //Gets all event system raycast results of current mouse or touch position.
+    static List<RaycastResult> GetEventSystemRaycastResults(int UILayer)
+    {
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Input.mousePosition;
+        List<RaycastResult> raysastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, raysastResults);
+        return raysastResults;
+    }
 }
 

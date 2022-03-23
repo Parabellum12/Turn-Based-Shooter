@@ -18,7 +18,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     public void setup(Vector3 pos, CharacterData charDat, Vector2Int gridpos)
     {
         characterData = charDat;
-        transform.position = pos;
+        transform.position = new Vector3(pos.x, pos.y, -1);
         this.gridPos = gridpos;
     }
 
@@ -46,7 +46,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             {
                 yield return null;
             }
-            transform.position = targetPos;
+            transform.position = new Vector3(targetPos.x, targetPos.y, -1);
         }
         needToMove = false;
         seGridPos(posList[posList.Length-1]);
@@ -59,7 +59,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     {
         if (needToMove)
         {
-            transform.position = new Vector2(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed));
+            transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
         }
     }
 

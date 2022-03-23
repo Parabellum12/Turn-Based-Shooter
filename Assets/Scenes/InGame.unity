@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a31d3e4be8f69f340aac21a4e99d4861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  texture: {fileID: 2800000, guid: 5e5c523fbad4f3149875953b8a882dca, type: 3}
+  texture: {fileID: 2800000, guid: fe9a85cddbe0c6d41b8c5f3fae57937e, type: 3}
   meshfilter: {fileID: 1331162914}
 --- !u!4 &1331162916
 Transform:

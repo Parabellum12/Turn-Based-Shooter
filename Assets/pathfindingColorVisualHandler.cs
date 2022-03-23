@@ -56,7 +56,8 @@ public class pathfindingColorVisualHandler : MonoBehaviour
                 int tilePixelSize = 128;
                 if (gridObject.getPathfindingColors() == null)
                 {
-                    pos = new Vector2(0f,0f);
+                    quadSize = Vector3.zero;
+                    pos = new Vector2(3, 0);
                 }
                 else
                 {

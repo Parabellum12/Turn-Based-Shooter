@@ -183,6 +183,7 @@ public class Game_Handler : MonoBehaviour
 
     public void EndMyTurn()
     {
+        CancelMoveRequest = true;
         if (IsMyTurn())
         {
             LocalView.RPC("MasterNextTurn", RpcTarget.MasterClient);
@@ -219,11 +220,11 @@ public class Game_Handler : MonoBehaviour
         {
 
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !UtilClass.IsPointerOverUIElement(LayerMask.NameToLayer("UI")))
             {
                 handleLeftClick();
             }
-            else if (Input.GetMouseButtonDown(1))
+            else if (Input.GetMouseButtonDown(1) && !UtilClass.IsPointerOverUIElement(LayerMask.NameToLayer("UI")))
             {
                 handleRightClick();
             }
@@ -246,6 +247,12 @@ public class Game_Handler : MonoBehaviour
     void handleUnitRightClick()
     {
         SelectedUnit = null;
+        if (WaitingForAcceptionOfPath)
+        {
+            Debug.Log("cancelMoveRequest");
+            CancelMoveRequest = true;
+            resetPathVisualGrid();
+        }
     }
 
     [SerializeField] bool adjacentOnly = false;
@@ -270,27 +277,86 @@ public class Game_Handler : MonoBehaviour
             {
                 //unit clicked
                 SelectedUnit = tempSelect;
+                resetPathVisualGrid();
             }
             else
             {
                 //no unit clicked
                 if (SelectedUnit != null && !moving)
                 {
-                    StartCoroutine(handleUnitMove());
+                    if (!WaitingForAcceptionOfPath)
+                    {
+                        //new path
+                        StartCoroutine(handleUnitMove());
+                        WaitingForAcceptionOfPath = true;
+                    }
+                    else
+                    {
+                        //accept path
+                        AcceptedMovePath = true;
+                    }
                 }
             }
         }
     }
+
+
+
+    private void resetPathVisualGrid()
+    {
+
+        for (int i = 0; i < worldHandler.getBuildLayers().width; i++)
+        {
+            for (int j = 0; j < worldHandler.getBuildLayers().height; j++)
+            {
+                worldHandler.getBuildLayers().getGridObject(i, j).setPathfindingData(null);
+            }
+        }
+        Debug.Log("kill old path");
+        pathfindingVisualHandler.SetGrid(worldHandler.getBuildLayers());
+    }
+
+
     bool moving = false;
+    bool AcceptedMovePath = false;
+    bool CancelMoveRequest = false;
+    bool WaitingForAcceptionOfPath = false;
+
+    [SerializeField] int greenColorDist = 80;
+    [SerializeField] int orangeColorDist = 160;
+    [SerializeField] int RedColorDist = 240;
+    private int calculateUnitMoveColors(World_Handler_Script.WorldBuildTile tile)
+    {
+        if (tile.gCost < greenColorDist)
+        {
+            return 2;
+        }
+        else if (tile.gCost < orangeColorDist)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 
     private IEnumerator handleUnitMove()
     {
+        Debug.Log("start new path");
+
+        //reset path visuals
+        resetPathVisualGrid();
+
+
+
         //unit selected and empty grid square clicked
         //do pathfinding
 
         worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
         worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
-        
+
         if (clickedPosOccupied(new Vector2Int(x2, y2)))
         {
             //Debug.Log("spot already used");
@@ -298,22 +364,22 @@ public class Game_Handler : MonoBehaviour
         }
 
 
-        moving = true;
-
         Vector2Int[] path = new Vector2Int[0];
         yield return StartCoroutine(AstarPathing.returnPath(new Vector2Int(x, y), new Vector2Int(x2, y2), worldHandler.getBuildLayers(), adjacentOnly, getRestrictedTiles(), (pathReturn) =>
         {
             //Debug.Log("The World Is Ending");
             path = pathReturn;
         }));
-
-        foreach (Vector2Int vec in path)
+        if (path != null && path.Length > 0)
         {
-            worldHandler.getBuildLayers().getGridObject(vec.x, vec.y).setPathfindingData(pathfindingColors[2]);
+            foreach (Vector2Int vec in path)
+            {
+                worldHandler.getBuildLayers().getGridObject(vec.x, vec.y).setPathfindingData(pathfindingColors[calculateUnitMoveColors(worldHandler.getBuildLayers().getGridObject(vec.x, vec.y))]);
+            }
+            pathfindingVisualHandler.SetGrid(worldHandler.getBuildLayers());
         }
-        pathfindingVisualHandler.SetGrid(worldHandler.getBuildLayers());
-       
-        
+
+
         //Debug.Log("The World Is Starting");
         if (path == null)
         {
@@ -326,6 +392,37 @@ public class Game_Handler : MonoBehaviour
         }
         else
         {
+
+            //wait for acceptance of path
+            while (!AcceptedMovePath)
+            {
+                if (CancelMoveRequest)
+                {
+                    AcceptedMovePath = false;
+                    CancelMoveRequest = false;
+                    WaitingForAcceptionOfPath = false;
+
+                    resetPathVisualGrid();
+
+                    yield break;
+                }
+                yield return null;
+            }
+            worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int xnewTest, out int ynewTest);
+            if (!(xnewTest == x2 && ynewTest == y2))
+            {
+                //not clicked on same pos
+
+                
+                AcceptedMovePath = false;
+                StartCoroutine(handleUnitMove());
+                yield break;
+            }
+            moving = true;
+            AcceptedMovePath = false;
+            WaitingForAcceptionOfPath = false;
+
+
             string outer = "";
             foreach (Vector2Int vec in path)
             {
@@ -347,6 +444,14 @@ public class Game_Handler : MonoBehaviour
 
         }
         moving = false;
+        if (path != null && path.Length != 0)
+        {
+            foreach (Vector2Int vec in path)
+            {
+                worldHandler.getBuildLayers().getGridObject(vec.x, vec.y).setPathfindingData(null);
+            }
+            pathfindingVisualHandler.SetGrid(worldHandler.getBuildLayers());
+        }
         yield break;
     }
 
