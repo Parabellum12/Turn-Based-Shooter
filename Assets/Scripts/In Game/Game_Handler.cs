@@ -246,12 +246,15 @@ public class Game_Handler : MonoBehaviour
 
     void handleUnitRightClick()
     {
-        SelectedUnit = null;
         if (WaitingForAcceptionOfPath)
         {
             Debug.Log("cancelMoveRequest");
             CancelMoveRequest = true;
             resetPathVisualGrid();
+        }
+        else
+        {
+            SelectedUnit = null;
         }
     }
 
