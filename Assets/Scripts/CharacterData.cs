@@ -46,13 +46,13 @@ public class CharacterData
         switch (characterClass)
         {
             case CharacterClassEnum.Defender:
-                setDataValues(100, 25, 30, 100, 60, 20, 35, 50);
+                setDataValues(100, 25, 40, 100, 60, 20, 35, 50);
                 break;
             case CharacterClassEnum.Attacker:
                 setDataValues(75, 75, 50, 75, 70, 40, 50, 50);
                 break;
             case CharacterClassEnum.Engineer:
-                setDataValues(50, 50, 40, 40, 20, 90, 20, 50);
+                setDataValues(50, 50, 30, 40, 20, 90, 20, 50);
                 break;
             case CharacterClassEnum.Ranger:
                 setDataValues(25, 100, 100, 60, 90, 50, 90, 50);

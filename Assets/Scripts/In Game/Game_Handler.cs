@@ -344,7 +344,6 @@ public class Game_Handler : MonoBehaviour
         }
     }
 
-
     private IEnumerator handleUnitMove()
     {
         Debug.Log("start new path");
@@ -432,6 +431,10 @@ public class Game_Handler : MonoBehaviour
                 outer += vec.ToString() + ",";
             }
             //Debug.Log("Found Path:" + outer);
+
+
+
+
             yield return StartCoroutine(SelectedUnit.moveToPos(path));
             SelectedUnit = null;
 
@@ -442,6 +445,7 @@ public class Game_Handler : MonoBehaviour
                 arr[index] = scr.getGridPos();
                 index++;
             }
+            //Debug.Log("hello NewPos");
             LocalView.RPC("GiveMasterNewPositions", Photon.Pun.RpcTarget.MasterClient, Vector2IntArrayToString(arr), PhotonNetwork.LocalPlayer);
 
 

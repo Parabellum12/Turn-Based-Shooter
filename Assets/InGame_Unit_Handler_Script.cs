@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InGame_Unit_Handler_Script : MonoBehaviour
 {
@@ -8,7 +9,14 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     Game_Handler gameHandlerScript;
     public CharacterData characterData;
     public Vector2Int gridPos;
-    float speed = 50f;
+    float speed = 25f;
+    [SerializeField] Texture Attacker;
+    [SerializeField] Texture Defender;
+    [SerializeField] Texture Ranger;
+    [SerializeField] Texture Engineer;
+    [SerializeField] SpriteRenderer sprite;
+
+
     private void Start()
     {
         gameHadlerObj = GameObject.FindGameObjectWithTag("GameController");
@@ -18,6 +26,22 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     public void setup(Vector3 pos, CharacterData charDat, Vector2Int gridpos)
     {
         characterData = charDat;
+        switch (characterData.characterClass)
+        {
+            case CharacterData.CharacterClassEnum.Attacker:
+                sprite.sprite = Attacker;
+                break;
+            case CharacterData.CharacterClassEnum.Defender:
+                sprite.sprite = Defender;
+                break;
+            case CharacterData.CharacterClassEnum.Ranger:
+                sprite.sprite = Ranger;
+                break;
+            case CharacterData.CharacterClassEnum.Engineer:
+                sprite.sprite = Engineer;
+                break;
+
+        }
         transform.position = new Vector3(pos.x, pos.y, -1);
         this.gridPos = gridpos;
     }
