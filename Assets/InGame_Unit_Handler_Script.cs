@@ -10,10 +10,10 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     public CharacterData characterData;
     public Vector2Int gridPos;
     float speed = 25f;
-    [SerializeField] Texture Attacker;
-    [SerializeField] Texture Defender;
-    [SerializeField] Texture Ranger;
-    [SerializeField] Texture Engineer;
+    [SerializeField] Sprite Attacker;
+    [SerializeField] Sprite Defender;
+    [SerializeField] Sprite Ranger;
+    [SerializeField] Sprite Engineer;
     [SerializeField] SpriteRenderer sprite;
 
 
