@@ -61,21 +61,81 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     public IEnumerator moveToPos(Vector2Int[] posList)
     {
+        Vector2 originalPos = transform.position;
         Debug.Log("Move");
         foreach (Vector2Int vec in posList)
         {
             targetPos = gameHandlerScript.getPosOnGrid(vec);
             needToMove = true;
+            setAngle(originalPos, targetPos);
             while (Vector2.Distance(transform.position, targetPos) > 0.5f)
             {
                 yield return null;
             }
             transform.position = new Vector3(targetPos.x, targetPos.y, -1);
+            originalPos = new Vector3(targetPos.x, targetPos.y, -1);
         }
         needToMove = false;
         seGridPos(posList[posList.Length-1]);
         yield break;
     }
+
+    private void setAngle(Vector2 original, Vector2 target)
+    {
+        if (original.x == target.x)
+        {
+            //vertical
+            if (original.y < target.y)
+            {
+                //up
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else
+            {
+                //down
+                transform.rotation = Quaternion.Euler(0, 0, -180);
+            }
+        }
+        else if (original.y == target.y)
+        {
+            //horizontal
+            if (original.x < target.x)
+            {
+                //right
+                transform.rotation = Quaternion.Euler(0, 0, -90);
+            }
+            else
+            {
+                //left
+                transform.rotation = Quaternion.Euler(0, 0, 90);
+            }
+        }
+        else
+        {
+            //diagonal
+            if (target.x < original.x && original.y < target.y)
+            {
+                //topleft
+                transform.rotation = Quaternion.Euler(0, 0, 45);
+            }
+            else if (original.x < target.x && original.y < target.y)
+            {
+                //topright
+                transform.rotation = Quaternion.Euler(0, 0, -45);
+            }
+            else if (original.x < target.x && original.y > target.y)
+            {
+                //bottomright
+                transform.rotation = Quaternion.Euler(0, 0, -135);
+            }
+            else if (target.x < original.x && target.y < original.y)
+            {
+                //bottomleft
+                transform.rotation = Quaternion.Euler(0, 0, 135);
+            }
+        }
+    }
+
     bool needToMove = false;
     Vector2 targetPos;
 
