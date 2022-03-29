@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class InGame_Unit_Handler_Script : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     [SerializeField] Sprite Ranger;
     [SerializeField] Sprite Engineer;
     [SerializeField] SpriteRenderer sprite;
+    [SerializeField] SpriteRenderer indicator;
+    [SerializeField] PhotonView localview;
 
 
     private void Start()
@@ -26,25 +29,54 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     public void setup(Vector3 pos, CharacterData charDat, Vector2Int gridpos)
     {
         characterData = charDat;
+        int spritenum = 0;
         switch (characterData.characterClass)
         {
             case CharacterData.CharacterClassEnum.Attacker:
                 sprite.sprite = Attacker;
+                spritenum = 1;
                 break;
             case CharacterData.CharacterClassEnum.Defender:
                 sprite.sprite = Defender;
+                spritenum = 2;
                 break;
             case CharacterData.CharacterClassEnum.Ranger:
                 sprite.sprite = Ranger;
+
+                spritenum = 3;
                 break;
             case CharacterData.CharacterClassEnum.Engineer:
                 sprite.sprite = Engineer;
+                spritenum = 4;
                 break;
 
         }
         transform.position = new Vector3(pos.x, pos.y, -1);
         this.gridPos = gridpos;
+        indicator.color = Color.green;
+
+        localview.RPC("syncSprite", RpcTarget.Others, spritenum);
     }
+
+    [PunRPC] void syncSprite(int spritenum)
+    {
+        switch (spritenum)
+        {
+            case 1:
+                sprite.sprite = Attacker;
+                break;
+            case 2:
+                sprite.sprite = Defender;
+                break;
+            case 3:
+                sprite.sprite = Ranger;
+                break;
+            case 4:
+                sprite.sprite = Engineer;
+                break;
+        }
+    }
+
 
 
     public bool mouseOver = false;
@@ -59,10 +91,12 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         mouseOver=false;
     }
 
+
+    bool wantToCancelMove = false;
     public IEnumerator moveToPos(Vector2Int[] posList)
     {
         Vector2 originalPos = transform.position;
-        Debug.Log("Move");
+        //Debug.Log("Move");
         foreach (Vector2Int vec in posList)
         {
             targetPos = gameHandlerScript.getPosOnGrid(vec);
@@ -72,11 +106,43 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             {
                 yield return null;
             }
+            if (wantToCancelMove)
+            {
+                wantToCancelMove = false;
+                break;
+            }
             transform.position = new Vector3(targetPos.x, targetPos.y, -1);
             originalPos = new Vector3(targetPos.x, targetPos.y, -1);
         }
         needToMove = false;
         seGridPos(posList[posList.Length-1]);
+        yield break;
+    }
+
+    public IEnumerator stopMovement()
+    {
+        yield return StartCoroutine(waitForReaction());
+        wantToCancelMove = true;
+        //Debug.Log("start stop movment");
+        yield break;
+    }
+
+    float getTimeToReact()
+    {
+        return (1000 - (characterData.ReactionTime * 7)) / 1000;
+    }
+
+    IEnumerator waitForReaction()
+    {
+        float timeToReact = getTimeToReact();
+
+        float startTime = Time.realtimeSinceStartup;
+        //Debug.Log((Time.realtimeSinceStartup - startTime));
+        while ((Time.realtimeSinceStartup - startTime) < timeToReact)
+        {
+            Debug.Log("reactionTime:" + timeToReact + " TimeSinceStart:"+ (Time.realtimeSinceStartup - startTime) + " Test:" + ((Time.realtimeSinceStartup - startTime) < timeToReact));
+            yield return null;
+        }
         yield break;
     }
 
@@ -136,7 +202,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         }
     }
 
-    bool needToMove = false;
+    public bool needToMove = false;
     Vector2 targetPos;
 
     private void Update()

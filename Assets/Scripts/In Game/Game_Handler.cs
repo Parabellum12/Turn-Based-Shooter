@@ -228,6 +228,11 @@ public class Game_Handler : MonoBehaviour
             {
                 handleRightClick();
             }
+            else if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                //Debug.Log("stop moving");
+                stopAllUnitMovement();
+            }
             //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
         }
     }
@@ -287,19 +292,76 @@ public class Game_Handler : MonoBehaviour
                 //no unit clicked
                 if (SelectedUnit != null && !moving)
                 {
-                    if (!WaitingForAcceptionOfPath)
+                    List<Vector2Int> restricted = getRestrictedTiles();
+                    bool empty = true;
+                    foreach (Vector2Int vec in restricted)
                     {
-                        //new path
-                        StartCoroutine(handleUnitMove());
-                        WaitingForAcceptionOfPath = true;
+                        worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
+                        if (vec == new Vector2Int(x, y))
+                        {
+                            empty = false;
+                        }
+                    }
+
+                    if (empty)
+                    {
+                        //clicked on empty tile
+                        handleMove();
                     }
                     else
                     {
-                        //accept path
-                        AcceptedMovePath = true;
+                        //clicked on occupied Tile
+                        Debug.Log("Clicked On Occupied Tile");
                     }
                 }
             }
+        }
+    }
+
+
+
+
+    void stopAllUnitMovement()
+    {
+        foreach (InGame_Unit_Handler_Script unit in AllUnits)
+        {
+            if (unit.needToMove)
+            {
+                StartCoroutine(unit.stopMovement());
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    void handleMove()
+    {
+        if (!WaitingForAcceptionOfPath)
+        {
+            //new path
+            StartCoroutine(handleUnitMove());
+            WaitingForAcceptionOfPath = true;
+        }
+        else
+        {
+            //accept path
+            AcceptedMovePath = true;
         }
     }
 
@@ -315,9 +377,11 @@ public class Game_Handler : MonoBehaviour
                 worldHandler.getBuildLayers().getGridObject(i, j).setPathfindingData(null);
             }
         }
-        Debug.Log("kill old path");
+        //Debug.Log("kill old path");
         pathfindingVisualHandler.SetGrid(worldHandler.getBuildLayers());
     }
+
+
 
 
     bool moving = false;
@@ -346,7 +410,7 @@ public class Game_Handler : MonoBehaviour
 
     private IEnumerator handleUnitMove()
     {
-        Debug.Log("start new path");
+        //Debug.Log("start new path");
 
         //reset path visuals
         resetPathVisualGrid();
@@ -578,4 +642,11 @@ public class Game_Handler : MonoBehaviour
         }
         return returner;
     }
+
+    public Vector2 getClosestTilePos(Vector2 pos)
+    {
+        worldHandler.getBuildLayers().GetXY(pos, out int x, out int y);
+        return getPosOnGrid(new Vector2Int(x,y));
+    }
+
 }

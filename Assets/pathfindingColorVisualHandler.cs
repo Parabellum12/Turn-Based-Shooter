@@ -40,7 +40,7 @@ public class pathfindingColorVisualHandler : MonoBehaviour
 
     private void UpdateHeatMapVisual()
     {
-        Debug.Log("Updated Mesh");
+        //Debug.Log("Updated Mesh");
         MeshUtils.CreateEmptyMeshArrays(objectGrid.getWidth() * objectGrid.getWidth(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
         for (int x = 0; x < objectGrid.getWidth(); x++)
         {
