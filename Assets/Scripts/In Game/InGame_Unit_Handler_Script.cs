@@ -129,7 +129,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     float getTimeToReact()
     {
-        return (1000 - (characterData.ReactionTime * 7)) / 1000;
+        return (1000 - (characterData.ReactionTime * 10)) / 1000;
     }
 
     IEnumerator waitForReaction()
