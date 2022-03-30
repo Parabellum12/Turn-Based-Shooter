@@ -99,5 +99,22 @@ public static class UtilClass
         EventSystem.current.RaycastAll(eventData, raysastResults);
         return raysastResults;
     }
+
+    public static Vector3 getVectorFromAngle(float angle)
+    {
+        float angleRad = angle * (Mathf.PI / 180f);
+        return new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
+    }
+
+    public static float getAngleFromVectorFloat(Vector3 direction)
+    {
+        direction = direction.normalized;
+        float n = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        if (n < 0)
+        {
+            n += 360;
+        }
+        return n;
+    }
 }
 

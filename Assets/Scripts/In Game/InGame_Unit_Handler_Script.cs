@@ -18,7 +18,6 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     [SerializeField] SpriteRenderer sprite;
     [SerializeField] SpriteRenderer indicator;
     [SerializeField] PhotonView localview;
-    [SerializeField] General2D_Raycast_Handler_Script raycastHandler;
 
 
     private void Start()
@@ -59,7 +58,8 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         localview.RPC("syncSprite", RpcTarget.Others, spritenum);
     }
 
-    [PunRPC] void syncSprite(int spritenum)
+    [PunRPC]
+    void syncSprite(int spritenum)
     {
         switch (spritenum)
         {
@@ -89,7 +89,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     private void OnMouseExit()
     {
-        mouseOver=false;
+        mouseOver = false;
     }
 
 
@@ -117,7 +117,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             originalPos = new Vector3(targetPos.x, targetPos.y, -1);
         }
         needToMove = false;
-        seGridPos(posList[posList.Length-1]);
+        seGridPos(posList[posList.Length - 1]);
         yield break;
     }
 
@@ -142,7 +142,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         //Debug.Log((Time.realtimeSinceStartup - startTime));
         while ((Time.realtimeSinceStartup - startTime) < timeToReact)
         {
-            Debug.Log("reactionTime:" + timeToReact + " TimeSinceStart:"+ (Time.realtimeSinceStartup - startTime) + " Test:" + ((Time.realtimeSinceStartup - startTime) < timeToReact));
+            Debug.Log("reactionTime:" + timeToReact + " TimeSinceStart:" + (Time.realtimeSinceStartup - startTime) + " Test:" + ((Time.realtimeSinceStartup - startTime) < timeToReact));
             yield return null;
         }
         yield break;
@@ -248,39 +248,5 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
 
 
-    //view handling stuff
-    [SerializeField] float maxDist = 500;
-    [SerializeField] int viewAngle = 120;
-    [SerializeField] int numPoints = 240;
-    [SerializeField] GameObject debugPoint;
-    public IEnumerator handleView()
-    {
-        RaycastHit2D[] arr = new RaycastHit2D[0];
-        yield return StartCoroutine(raycastHandler.getRayReturns(transform.position, transform.rotation.eulerAngles.z, transform.rotation.eulerAngles, maxDist, viewAngle, numPoints, (returner) =>
-        {
-            arr = returner;
-        }));
-
-        float startTime = Time.realtimeSinceStartup;
-        bool needToUpdate = false;
-        /*
-        foreach (RaycastHit2D cur in arr)
-        {
-            if (needToUpdate)
-            {
-                needToUpdate = false;
-                startTime = Time.realtimeSinceStartup;
-            }
-            Debug.Log(cur.point.ToString());
-            Instantiate(debugPoint, cur.point, Quaternion.identity);
-            if (Time.realtimeSinceStartup - startTime > 0.05)
-            {
-                needToMove = true;
-                yield return null;
-            }
-        }
-        */
-        yield break;
-    }
-
 }
+   

@@ -657,7 +657,7 @@ public class Game_Handler : MonoBehaviour
     {
         foreach (InGame_Unit_Handler_Script cur in AllUnits)
         {
-            StartCoroutine(cur.handleView());
+
         }
     }
 
