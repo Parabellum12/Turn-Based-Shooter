@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 6988666693218595776}
   - component: {fileID: 4438188032142185959}
   - component: {fileID: 8973483162976532547}
+  - component: {fileID: 5796085046904869129}
   m_Layer: 0
   m_Name: UnitPreFab
   m_TagString: Untagged
@@ -190,8 +191,13 @@ MonoBehaviour:
   sprite: {fileID: 1708740022482147297}
   indicator: {fileID: 7610224118138204281}
   localview: {fileID: 8973483162976532547}
+  raycastHandler: {fileID: 5796085046904869129}
   mouseOver: 0
   needToMove: 0
+  maxDist: 500
+  viewAngle: 120
+  numPoints: 240
+  debugPoint: {fileID: 4680446954992201020, guid: 762645d3f2c9bc5489a3be12bfdd0d90, type: 3}
 --- !u!58 &6988666693218595776
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -247,6 +253,18 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &5796085046904869129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708740022482147296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db12443b1eb4b64687078567b3b4886, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2512363240542120174
 GameObject:
   m_ObjectHideFlags: 0

@@ -581,7 +581,11 @@ MonoBehaviour:
   UnitPrefab: {fileID: 1708740022482147296, guid: be55ce4578e7e8d439cf13e662693639, type: 3}
   SelectedUnit: {fileID: 0}
   AllUnits: []
+  AllowDebuggingInputs: 1
   adjacentOnly: 0
+  greenColorDist: 80
+  orangeColorDist: 160
+  RedColorDist: 240
   pathfindingColors:
   - {fileID: 11400000, guid: 77abaca8ada4b56479c5cf68c6dcd17f, type: 2}
   - {fileID: 11400000, guid: b42c376657f44074b9241e056a34e2ad, type: 2}

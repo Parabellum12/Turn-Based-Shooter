@@ -18,6 +18,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     [SerializeField] SpriteRenderer sprite;
     [SerializeField] SpriteRenderer indicator;
     [SerializeField] PhotonView localview;
+    [SerializeField] General2D_Raycast_Handler_Script raycastHandler;
 
 
     private void Start()
@@ -92,6 +93,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     }
 
 
+    //movment stuff
     bool wantToCancelMove = false;
     public IEnumerator moveToPos(Vector2Int[] posList)
     {
@@ -242,4 +244,43 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     {
         return gridPos;
     }
+
+
+
+
+    //view handling stuff
+    [SerializeField] float maxDist = 500;
+    [SerializeField] int viewAngle = 120;
+    [SerializeField] int numPoints = 240;
+    [SerializeField] GameObject debugPoint;
+    public IEnumerator handleView()
+    {
+        RaycastHit2D[] arr = new RaycastHit2D[0];
+        yield return StartCoroutine(raycastHandler.getRayReturns(transform.position, transform.rotation.eulerAngles.z, transform.rotation.eulerAngles, maxDist, viewAngle, numPoints, (returner) =>
+        {
+            arr = returner;
+        }));
+
+        float startTime = Time.realtimeSinceStartup;
+        bool needToUpdate = false;
+        /*
+        foreach (RaycastHit2D cur in arr)
+        {
+            if (needToUpdate)
+            {
+                needToUpdate = false;
+                startTime = Time.realtimeSinceStartup;
+            }
+            Debug.Log(cur.point.ToString());
+            Instantiate(debugPoint, cur.point, Quaternion.identity);
+            if (Time.realtimeSinceStartup - startTime > 0.05)
+            {
+                needToMove = true;
+                yield return null;
+            }
+        }
+        */
+        yield break;
+    }
+
 }

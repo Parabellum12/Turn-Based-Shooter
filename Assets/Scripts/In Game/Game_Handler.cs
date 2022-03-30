@@ -212,7 +212,7 @@ public class Game_Handler : MonoBehaviour
     //local units
     public List<InGame_Unit_Handler_Script> AllUnits = new List<InGame_Unit_Handler_Script>();
 
-
+    [SerializeField] bool AllowDebuggingInputs = false;
     // Update is called once per frame
     void Update()
     {
@@ -228,10 +228,14 @@ public class Game_Handler : MonoBehaviour
             {
                 handleRightClick();
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha1))
+            else if (Input.GetKeyDown(KeyCode.Alpha1) && AllowDebuggingInputs)
             {
                 //Debug.Log("stop moving");
                 stopAllUnitMovement();
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2) && AllowDebuggingInputs)
+            {
+                testRaycasting();
             }
             //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
         }
@@ -647,6 +651,14 @@ public class Game_Handler : MonoBehaviour
     {
         worldHandler.getBuildLayers().GetXY(pos, out int x, out int y);
         return getPosOnGrid(new Vector2Int(x,y));
+    }
+
+    void testRaycasting()
+    {
+        foreach (InGame_Unit_Handler_Script cur in AllUnits)
+        {
+            StartCoroutine(cur.handleView());
+        }
     }
 
 }
