@@ -5,22 +5,42 @@ using UnityEngine;
 public class FieldOfView_Script : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float fov = 90;
-    public int rayCount = 2;
-    public float viewDist = 10f;
+    [SerializeField] public float fov = 120;
+    [SerializeField] public int rayCount = 2;
+    [SerializeField] public float viewDist = 10f;
     Mesh mesh;
     [SerializeField] LayerMask layerMask;
+    [SerializeField] public Transform lockOnTo = null;
 
+    Vector3 origin;
     void Start()
     {
         mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
+        origin = transform.position;
+        transform.position = Vector3.zero;
+        GetComponent<MeshFilter>().mesh = mesh; 
+        //layerMask = LayerMask.NameToLayer("WorldRaycasting");
+        //transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 90 + (fov/2));
         updateFOVMesh();
+        
+
     }
 
+    private void LateUpdate()
+    {
+        if (lockOnTo != null)
+        {
+            setAimDirection();
+            origin = lockOnTo.position;
+            //transform.position = origin;
+            //transform.position = lockOnTo.position;
+        }
+        updateFOVMesh();
+    }
+    float startingAngle = 0f;
     public void updateFOVMesh()
     { 
-        float currentAngle = 0f;
+        float currentAngle = startingAngle;
         float angleIncrease = fov / rayCount;
 
 
@@ -29,7 +49,8 @@ public class FieldOfView_Script : MonoBehaviour
         Vector3[] verticies = new Vector3[rayCount + 1 + 1];
         Vector2[] uv = new Vector2[verticies.Length];
         int[] triangles = new int[rayCount*3];
-        Vector3 origin = Vector3.zero;
+
+
         verticies[0] = origin;
 
         int vertexIndex = 1;
@@ -39,6 +60,7 @@ public class FieldOfView_Script : MonoBehaviour
             Vector3 vertex;
 
             RaycastHit2D raycaseHit = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask);
+            //Debug.DrawLine(origin, origin + UtilClass.getVectorFromAngle(currentAngle) * viewDist, Color.green, .1f);
             if (raycaseHit.collider != null)
             {
                 //hit
@@ -71,5 +93,14 @@ public class FieldOfView_Script : MonoBehaviour
         mesh.vertices = verticies;
         mesh.uv = uv;
         mesh.triangles = triangles;
+        mesh.RecalculateBounds();
     }
+
+
+
+    private void setAimDirection()
+    {
+        startingAngle = UtilClass.getAngleFromVectorFloat(lockOnTo.rotation.eulerAngles) + fov/2f;
+    }
+
 }

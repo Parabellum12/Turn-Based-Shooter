@@ -18,12 +18,15 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     [SerializeField] SpriteRenderer sprite;
     [SerializeField] SpriteRenderer indicator;
     [SerializeField] PhotonView localview;
-
+    [SerializeField] GameObject FOVObj;
+    GameObject fovSystem;
 
     private void Start()
     {
         gameHadlerObj = GameObject.FindGameObjectWithTag("GameController");
         gameHandlerScript = gameHadlerObj.GetComponent<Game_Handler>();
+        fovSystem = Instantiate(FOVObj);
+        fovSystem.GetComponent<FieldOfView_Script>().lockOnTo = gameObject.transform;
     }
 
     public void setup(Vector3 pos, CharacterData charDat, Vector2Int gridpos)
