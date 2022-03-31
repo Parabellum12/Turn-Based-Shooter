@@ -20,36 +20,56 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     [SerializeField] PhotonView localview;
     [SerializeField] GameObject FOVObj;
     GameObject fovSystem;
-
+    FieldOfView_Script localViewSystem;
+    bool doneOnce = true;
     private void Start()
     {
         gameHadlerObj = GameObject.FindGameObjectWithTag("GameController");
         gameHandlerScript = gameHadlerObj.GetComponent<Game_Handler>();
-        fovSystem = Instantiate(FOVObj);
-        fovSystem.GetComponent<FieldOfView_Script>().lockOnTo = gameObject.transform;
+        setuplocalViewSys();
     }
+
+    void setuplocalViewSys()
+    {
+        if (!doneOnce)
+        {
+            return;
+        }
+        doneOnce = false;
+        fovSystem = Instantiate(FOVObj);
+        localViewSystem = fovSystem.GetComponent<FieldOfView_Script>();
+
+        localViewSystem.lockOnTo = gameObject.transform;
+    }
+
+
 
     public void setup(Vector3 pos, CharacterData charDat, Vector2Int gridpos)
     {
+        setuplocalViewSys();
         characterData = charDat;
         int spritenum = 0;
         switch (characterData.characterClass)
         {
             case CharacterData.CharacterClassEnum.Attacker:
                 sprite.sprite = Attacker;
+                localViewSystem.setParameters(145, 45, 75);
                 spritenum = 1;
                 break;
             case CharacterData.CharacterClassEnum.Defender:
                 sprite.sprite = Defender;
+                localViewSystem.setParameters(280, 45, 35);
                 spritenum = 2;
                 break;
             case CharacterData.CharacterClassEnum.Ranger:
                 sprite.sprite = Ranger;
+                localViewSystem.setParameters(30, 60, 120);
 
                 spritenum = 3;
                 break;
             case CharacterData.CharacterClassEnum.Engineer:
                 sprite.sprite = Engineer;
+                localViewSystem.setParameters(360, 180, 25);
                 spritenum = 4;
                 break;
 

@@ -96,11 +96,27 @@ public class FieldOfView_Script : MonoBehaviour
         mesh.RecalculateBounds();
     }
 
-
-
     private void setAimDirection()
     {
-        startingAngle = UtilClass.getAngleFromVectorFloat(lockOnTo.rotation.eulerAngles) + fov/2f;
+        startingAngle = lockOnTo.rotation.eulerAngles.z + 90 + (fov/2f);
     }
+
+    public void setViewDist(float dist)
+    {
+        viewDist = dist;
+    }
+
+    public void setFOV(float fov)
+    {
+        this.fov = fov;
+        rayCount = Mathf.RoundToInt(fov);
+    }
+
+    public void setParameters(float fov, int rayCount, float viewDist)
+    {
+        setFOV(fov);
+        setViewDist(viewDist);
+    }
+    
 
 }

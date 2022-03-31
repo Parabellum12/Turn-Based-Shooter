@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1696014770439842287}
   - component: {fileID: 7610224118138204281}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UnitIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 6988666693218595776}
   - component: {fileID: 4438188032142185959}
   - component: {fileID: 8973483162976532547}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UnitPreFab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3112542470527338167}
   - component: {fileID: 213199457197861546}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UnitIndicator (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
