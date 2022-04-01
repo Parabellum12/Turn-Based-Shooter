@@ -299,24 +299,29 @@ public class Game_Handler : MonoBehaviour
                 {
                     List<Vector2Int> restricted = getRestrictedTiles();
                     bool empty = true;
-                    foreach (Vector2Int vec in restricted)
+                    worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
+                    if (worldHandler.getBuildLayers().inBounds(x, y))
                     {
-                        worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
-                        if (vec == new Vector2Int(x, y))
-                        {
-                            empty = false;
-                        }
-                    }
+                        //invalid pos
 
-                    if (empty)
-                    {
-                        //clicked on empty tile
-                        handleMove();
-                    }
-                    else
-                    {
-                        //clicked on occupied Tile
-                        Debug.Log("Clicked On Occupied Tile");
+                        foreach (Vector2Int vec in restricted)
+                        {
+                            if (vec == new Vector2Int(x, y))
+                            {
+                                empty = false;
+                            }
+                        }
+
+                        if (empty)
+                        {
+                            //clicked on empty tile
+                            handleMove();
+                        }
+                        else
+                        {
+                            //clicked on occupied Tile
+                            Debug.Log("Clicked On Occupied Tile");
+                        }
                     }
                 }
             }
@@ -427,6 +432,11 @@ public class Game_Handler : MonoBehaviour
 
         worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
         worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
+        if (!worldHandler.getBuildLayers().inBounds(x,y) || !worldHandler.getBuildLayers().inBounds(x2, y2))
+        {
+            //invalid pos
+            yield break;
+        }
 
         if (clickedPosOccupied(new Vector2Int(x2, y2)))
         {
