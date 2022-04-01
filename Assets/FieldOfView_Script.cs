@@ -38,6 +38,8 @@ public class FieldOfView_Script : MonoBehaviour
         updateFOVMesh();
     }
     float startingAngle = 0f;
+
+
     public void updateFOVMesh()
     { 
         float currentAngle = startingAngle;
@@ -65,6 +67,7 @@ public class FieldOfView_Script : MonoBehaviour
             {
                 //hit
                 vertex = raycaseHit.point;
+                
             }
             else
             {
@@ -96,6 +99,8 @@ public class FieldOfView_Script : MonoBehaviour
         mesh.RecalculateBounds();
     }
 
+   
+
     private void setAimDirection()
     {
         startingAngle = lockOnTo.rotation.eulerAngles.z + 90 + (fov/2f);
@@ -117,6 +122,7 @@ public class FieldOfView_Script : MonoBehaviour
         setFOV(fov);
         setViewDist(viewDist);
     }
+
     
 
 }

@@ -56,10 +56,10 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     }
 
 
-
     public void setup(Vector3 pos, CharacterData charDat, Vector2Int gridpos)
     {
         setuplocalViewSys();
+        gameObject.tag = "FriendlyUnit";
         characterData = charDat;
         int spritenum = 0;
         switch (characterData.characterClass)
@@ -242,7 +242,6 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     public bool needToMove = false;
     Vector2 targetPos;
-
     private void Update()
     {
         if (needToHideOtherSelf)
@@ -254,6 +253,9 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         {
             transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
         }
+       
+
+
     }
 
     private float HandleMoveSingleAxis(float current, float target, float speed)

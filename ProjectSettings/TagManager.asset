@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - PathfindingVisual
+  - EnemyUnit
+  - FriendlyUnit
+  - FOVSys
   layers:
   - Default
   - TransparentFX
