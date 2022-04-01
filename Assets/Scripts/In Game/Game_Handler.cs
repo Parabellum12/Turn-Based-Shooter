@@ -162,6 +162,7 @@ public class Game_Handler : MonoBehaviour
         
         InGame_Unit_Handler_Script unitHandler = unit.GetComponent<InGame_Unit_Handler_Script>();
         unitHandler.setup(worldPosToSpawnAt, PlayerUnits[index], tile);
+        unitHandler.hideOtherSelf();
         AllUnits.Add(unitHandler);
     }
 

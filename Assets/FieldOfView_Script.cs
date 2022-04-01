@@ -109,7 +109,7 @@ public class FieldOfView_Script : MonoBehaviour
     public void setFOV(float fov)
     {
         this.fov = fov;
-        rayCount = Mathf.RoundToInt(fov);
+        rayCount = Mathf.RoundToInt(fov) * 2;
     }
 
     public void setParameters(float fov, int rayCount, float viewDist)

@@ -22,9 +22,11 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     GameObject fovSystem;
     FieldOfView_Script localViewSystem;
     bool doneOnce = true;
+    [SerializeField] GameObject showSelfMask;
     private void Start()
     {
         gameHadlerObj = GameObject.FindGameObjectWithTag("GameController");
+        showSelfMask.SetActive(true);
         gameHandlerScript = gameHadlerObj.GetComponent<Game_Handler>();
         setuplocalViewSys();
     }
@@ -40,6 +42,17 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         localViewSystem = fovSystem.GetComponent<FieldOfView_Script>();
 
         localViewSystem.lockOnTo = gameObject.transform;
+    }
+    bool needToHideOtherSelf = false;
+     
+    [PunRPC] void hideSelfIfNotOwner()
+    {
+        needToHideOtherSelf = true;
+    }
+
+    public void hideOtherSelf()
+    {
+        localview.RPC("hideSelfIfNotOwner", RpcTarget.Others);
     }
 
 
@@ -232,6 +245,11 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     private void Update()
     {
+        if (needToHideOtherSelf)
+        {
+            showSelfMask.SetActive(false);
+            fovSystem.SetActive(false);
+        }
         if (needToMove)
         {
             transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
