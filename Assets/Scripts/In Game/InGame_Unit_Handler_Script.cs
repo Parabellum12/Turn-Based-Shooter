@@ -29,6 +29,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         showSelfMask.SetActive(true);
         gameHandlerScript = gameHadlerObj.GetComponent<Game_Handler>();
         setuplocalViewSys();
+        StartCoroutine(HandleStopMovement());
     }
 
     void setuplocalViewSys()
@@ -289,6 +290,32 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     }
 
 
+
+    
+
+    bool seenUnitsAlready = false;
+
+    IEnumerator HandleStopMovement()
+    {
+        while (true)
+        {
+            if (localViewSystem.currentlySeenUnits.Count > 0)
+            {
+                if (needToMove && !seenUnitsAlready)
+                {
+                    seenUnitsAlready = true;
+                    stopMovement();
+                }
+            }
+            else
+            {
+                seenUnitsAlready = false;
+            }
+
+
+            yield return null;
+        }
+    }
 
 
 }

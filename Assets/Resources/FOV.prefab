@@ -105,7 +105,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 8
-  lockOnTo: {fileID: 0}
-  unitLayerMask:
+  layerMask2:
     serializedVersion: 2
     m_Bits: 128
+  lockOnTo: {fileID: 0}
