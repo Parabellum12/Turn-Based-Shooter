@@ -109,3 +109,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   lockOnTo: {fileID: 0}
+  currentlySeenUnits: []
