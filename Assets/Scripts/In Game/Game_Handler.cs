@@ -218,12 +218,21 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     public List<InGame_Unit_Handler_Script> AllUnits = new List<InGame_Unit_Handler_Script>();
 
     [SerializeField] bool AllowDebuggingInputs = false;
+    bool firstUpdateOnTurn = true;
     // Update is called once per frame
     void Update()
     {
         if (IsMyTurn())
         {
-
+            if (firstUpdateOnTurn)
+            {
+                //first frame of turn
+                firstUpdateOnTurn = false;
+                foreach (InGame_Unit_Handler_Script scr in AllUnits)
+                {
+                   scr.resetValuesOnStartOfTurn();
+                }
+            }
 
             if (Input.GetMouseButtonDown(0) && !UtilClass.IsPointerOverUIElement(LayerMask.NameToLayer("UI")))
             {
@@ -243,6 +252,10 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                 testRaycasting();
             }
             //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
+        }
+        else
+        {
+            firstUpdateOnTurn = true;
         }
     }
 

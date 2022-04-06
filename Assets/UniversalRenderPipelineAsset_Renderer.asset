@@ -144,8 +144,7 @@ MonoBehaviour:
       LayerMask:
         serializedVersion: 2
         m_Bits: 512
-      PassNames:
-      - 
+      PassNames: []
     overrideMaterial: {fileID: 0}
     overrideMaterialPassIndex: 0
     overrideDepthState: 0

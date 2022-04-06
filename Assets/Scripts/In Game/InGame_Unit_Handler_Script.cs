@@ -253,7 +253,6 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         {
             transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
         }
-       
 
 
     }
@@ -332,7 +331,17 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
 
     int currentHealth;
+    int currentActionPoints;
 
+    public void resetValuesOnStartOfTurn()
+    {
+        currentActionPoints = characterData.ActionPoints;
+    }
+
+    public int getRemainingAPAfterPath(float gcost)
+    {
+
+    }
 
 }
    
