@@ -69,18 +69,6 @@ public class FieldOfView_Script : MonoBehaviour
             Vector3 vertex;
 
             RaycastHit2D raycaseHit = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask);
-            RaycastHit2D raycaseHit2 = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask2);
-
-
-            if (raycaseHit2.collider != null && raycaseHit2.collider.gameObject.CompareTag("FriendlyUnit"))
-            {
-                //Debug.Log("I See Enemy!");
-                GameObject curScr = raycaseHit2.collider.gameObject;
-                if (!currentlySeenUnits.Contains(curScr))
-                {
-                    currentlySeenUnits.Add(curScr);
-                }
-            }
 
 
             //Debug.DrawRay(origin, UtilClass.getVectorFromAngle(currentAngle) * viewDist, Color.green, .1f);

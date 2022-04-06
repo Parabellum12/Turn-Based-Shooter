@@ -4,8 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine.SceneManagement;
+using System.IO;
 
-public class Game_Handler : MonoBehaviour
+
+public class Game_Handler : MonoBehaviourPunCallbacks
 {
     public static string mapFileName;
     [SerializeField] PhotonView LocalView;
@@ -294,12 +298,13 @@ public class Game_Handler : MonoBehaviour
             }
             else
             {
+                worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
                 //no unit clicked
-                if (SelectedUnit != null && !moving)
+                if (SelectedUnit != null && !moving && !getRestrictedTiles().Contains(new Vector2Int(x, y)))
                 {
+                    //trying to path
                     List<Vector2Int> restricted = getRestrictedTiles();
                     bool empty = true;
-                    worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
                     if (worldHandler.getBuildLayers().inBounds(x, y))
                     {
                         //invalid pos
@@ -324,6 +329,11 @@ public class Game_Handler : MonoBehaviour
                         }
                     }
                 }
+                else if (getRestrictedTiles().Contains(new Vector2Int(x,y)) && SelectedUnit != null)
+                {
+                    //clicking on enemy Unit
+                    HandleClickOnEnemyUnit();
+                }
             }
         }
     }
@@ -346,10 +356,25 @@ public class Game_Handler : MonoBehaviour
 
 
 
+    private void OnApplicationQuit()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            LocalView.RPC("masterClientLeft", RpcTarget.Others);
+        }
+    }
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        masterClientLeft();
+    }
 
 
 
-
+    [PunRPC] void masterClientLeft()
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene("JoinServer");
+    }
 
 
 
@@ -588,6 +613,9 @@ public class Game_Handler : MonoBehaviour
     }
 
 
+    
+
+
     public Vector3 getPosOnGrid(Vector2Int pos)
     {
         Vector3 newPos = worldHandler.getBuildLayers().getWorldPosition(pos.x, pos.y);
@@ -670,6 +698,23 @@ public class Game_Handler : MonoBehaviour
         {
 
         }
+    }
+
+
+
+
+    //shooting stuff
+
+    public InGame_Unit_Handler_Script selectedEnemyUnit = null;
+
+    private void HandleClickOnEnemyUnit()
+    {
+        if (selectedEnemyUnit == null)
+        {
+            return;
+        }
+
+        Debug.Log("I Click Enemy Unit!");
     }
 
 }

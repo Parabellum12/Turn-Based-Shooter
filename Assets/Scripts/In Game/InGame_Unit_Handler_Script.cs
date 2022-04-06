@@ -26,10 +26,14 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     private void Start()
     {
         gameHadlerObj = GameObject.FindGameObjectWithTag("GameController");
-        showSelfMask.SetActive(true);
         gameHandlerScript = gameHadlerObj.GetComponent<Game_Handler>();
-        setuplocalViewSys();
-        StartCoroutine(HandleStopMovement());
+        if (localview.IsMine)
+        {
+            showSelfMask.SetActive(true);
+            setuplocalViewSys();
+            StartCoroutine(HandleStopMovement());
+            currentHealth = characterData.HealthPoints;
+        }
     }
 
     void setuplocalViewSys()
@@ -245,11 +249,6 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     Vector2 targetPos;
     private void Update()
     {
-        if (needToHideOtherSelf)
-        {
-            showSelfMask.SetActive(false);
-            fovSystem.SetActive(false);
-        }
         if (needToMove)
         {
             transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
@@ -299,6 +298,10 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     {
         while (true)
         {
+            if (needToHideOtherSelf)
+            {
+                yield break;
+            }
             if (localViewSystem.currentlySeenUnits.Count > 0)
             {
                 if (needToMove && !seenUnitsAlready)
@@ -316,6 +319,19 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             yield return null;
         }
     }
+
+
+
+    private void OnMouseDown()
+    {
+        if (!localview.IsMine)
+        {
+            gameHandlerScript.selectedEnemyUnit = this;
+        }
+    }
+
+
+    int currentHealth;
 
 
 }
