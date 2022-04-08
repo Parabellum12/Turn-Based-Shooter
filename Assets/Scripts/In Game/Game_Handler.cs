@@ -247,10 +247,6 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                 //Debug.Log("stop moving");
                 stopAllUnitMovement();
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2) && AllowDebuggingInputs)
-            {
-                testRaycasting();
-            }
             //Debug.Log("AllUnitsInGameCount:" + allUnitsInGame.Count);
         }
         else
@@ -705,29 +701,40 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         return getPosOnGrid(new Vector2Int(x,y));
     }
 
-    void testRaycasting()
+
+
+    List<InGame_Unit_Handler_Script> getAllSeenUnits()
     {
-        foreach (InGame_Unit_Handler_Script cur in AllUnits)
+        List<InGame_Unit_Handler_Script> allSeenUnits = new List<InGame_Unit_Handler_Script>();
+        foreach (InGame_Unit_Handler_Script scr in AllUnits)
         {
-
+            allSeenUnits.AddRange(scr.getSeenEnemyUnits());
         }
+        return allSeenUnits;
     }
-
-
-
 
     //shooting stuff
 
     public InGame_Unit_Handler_Script selectedEnemyUnit = null;
-
+    [SerializeField] bool allowShootingFromAnyOrJustSelf = true;
+    //true = allow clicking on any unit seen, false = only allow clikcing on units seen by the selected friendly unit
     private void HandleClickOnEnemyUnit()
     {
         if (selectedEnemyUnit == null)
         {
+            Debug.Log("I Click Air");
             return;
         }
+        List<InGame_Unit_Handler_Script> allSeenUnits = getAllSeenUnits();
 
-        Debug.Log("I Click Enemy Unit!");
+        if (allowShootingFromAnyOrJustSelf && allSeenUnits.Contains(selectedEnemyUnit))
+        {
+            //clicked on a unit seen by any friendly
+        }
+        else if (!allowShootingFromAnyOrJustSelf && SelectedUnit.getSeenEnemyUnits().Contains(selectedEnemyUnit))
+        {
+            //clicked on a unit seen by Selected friendly
+        }
     }
 
 }

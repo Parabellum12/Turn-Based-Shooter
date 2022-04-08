@@ -194,6 +194,7 @@ MonoBehaviour:
   showSelfMask: {fileID: 2512363240542120174}
   mouseOver: 0
   needToMove: 0
+  seenStuff: []
 --- !u!58 &6988666693218595776
 CircleCollider2D:
   m_ObjectHideFlags: 0

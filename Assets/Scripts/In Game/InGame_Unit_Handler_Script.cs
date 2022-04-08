@@ -255,7 +255,6 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
         }
 
-
     }
 
     private float HandleMoveSingleAxis(float current, float target, float speed)
@@ -293,21 +292,26 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     
 
     bool seenUnitsAlready = false;
-
+    [SerializeField] GameObject[] seenStuff = null;
     IEnumerator HandleStopMovement()
     {
         while (true)
         {
+            seenStuff = localViewSystem.currentlySeenUnits.ToArray();
             if (needToHideOtherSelf)
             {
                 yield break;
             }
             if (localViewSystem.currentlySeenUnits.Count > 0)
             {
-                if (needToMove && !seenUnitsAlready)
+                if (!seenUnitsAlready)
                 {
                     seenUnitsAlready = true;
-                    stopMovement();
+
+                    if (needToMove)
+                    {
+                        stopMovement();
+                    }
                 }
             }
             else
@@ -342,6 +346,16 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     public int getRemainingAPAfterPath(float gcost)
     {
         return 0;
+    }
+
+    public List<InGame_Unit_Handler_Script> getSeenEnemyUnits()
+    {
+        List<InGame_Unit_Handler_Script> returner = new List<InGame_Unit_Handler_Script>();
+        foreach (GameObject gm in localViewSystem.currentlySeenUnits)
+        {
+            returner.Add(gm.GetComponent<InGame_Unit_Handler_Script>());
+        }
+        return returner;
     }
 
 }
