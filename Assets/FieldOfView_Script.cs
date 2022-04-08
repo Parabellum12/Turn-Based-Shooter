@@ -69,6 +69,7 @@ public class FieldOfView_Script : MonoBehaviour
             Vector3 vertex;
 
             RaycastHit2D raycaseHit = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask);
+            RaycastHit2D raycaseHit2;
 
 
             //Debug.DrawRay(origin, UtilClass.getVectorFromAngle(currentAngle) * viewDist, Color.green, .1f);
@@ -76,12 +77,19 @@ public class FieldOfView_Script : MonoBehaviour
             {
                 //hit
                 vertex = raycaseHit.point;
-                
+                raycaseHit2 = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), Vector3.Distance(origin, raycaseHit.point), layerMask2);
+
             }
             else
             {
                 //no hit
                 vertex = origin + UtilClass.getVectorFromAngle(currentAngle) * viewDist;
+                raycaseHit2 = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask2);
+            }
+
+            if (raycaseHit2.collider != null)
+            {
+                Debug.DrawRay(lockOnTo.transform.position, UtilClass.getVectorFromAngle(currentAngle) * Vector2.Distance(lockOnTo.transform.position, raycaseHit2.point), Color.red, Time.deltaTime); 
             }
 
 

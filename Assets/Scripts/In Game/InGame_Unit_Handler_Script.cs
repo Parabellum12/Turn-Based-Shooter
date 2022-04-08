@@ -33,6 +33,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             setuplocalViewSys();
             StartCoroutine(HandleStopMovement());
             currentHealth = characterData.HealthPoints;
+            gameObject.layer = LayerMask.NameToLayer("behindMask2");
         }
     }
 
@@ -340,7 +341,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     public int getRemainingAPAfterPath(float gcost)
     {
-
+        return 0;
     }
 
 }
