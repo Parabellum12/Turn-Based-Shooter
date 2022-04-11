@@ -6291,6 +6291,7 @@ MonoBehaviour:
   openClose_UnitManagment_Text: {fileID: 1503027554}
   UnitManagment: {fileID: 1502129294}
   unit_Stats_Handler_Script: {fileID: 1502129298}
+  openClose_UnitManagment_Button: {fileID: 927384348}
   mapSelector: {fileID: 829840668}
   debugging: 1
   autoStart: 0

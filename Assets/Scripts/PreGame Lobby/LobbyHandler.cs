@@ -28,6 +28,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text openClose_UnitManagment_Text;
     [SerializeField] GameObject UnitManagment;
     [SerializeField] Unit_Stats_Handler_Script unit_Stats_Handler_Script;
+    [SerializeField] Button openClose_UnitManagment_Button;
 
     //map selection
     [SerializeField] TMP_Dropdown mapSelector;
@@ -99,6 +100,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         List<CharacterData> characterDatas = SessionPersistantDataHandler.getPersistantUnitData();
         if (characterDatas != null && characterDatas.Count > 0)
         {
+            Debug.Log("Load Unit Data");
             units = characterDatas.ToArray();
             updateUnitCount();
         }
@@ -165,7 +167,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
                     units[i] = new CharacterData(true);
                 }
                 unitIcons[i].Unit_Name.text = units[i].CharacterName;
-                unitIcons[i].Unit_Name.enableAutoSizing = false;
+               // unitIcons[i].Unit_Name.enableAutoSizing = false;
                 unitIcons[i].Unit_Name.enableAutoSizing = true;
                 if (i == Currently_Selected_Icon)
                 {
@@ -178,6 +180,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
                 unitIcons[i].Class_Image.sprite = units[i].ClassImage;
                 unitIcons[i].Active.SetActive(true);
                 unitIcons[i].Buy.SetActive(false);
+
             }
             else
             {
@@ -234,12 +237,13 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             {
                 //stop unit custimization
                 closeUnitManagment();
-                UnitManagment.GetComponent<Button>().interactable = false;
+                SessionPersistantDataHandler.setPersistantUnitSquad(units);
+                openClose_UnitManagment_Button.interactable = false;
             }
             else
             {
                 //allow unit custimization
-                UnitManagment.GetComponent<Button>().interactable = true;
+                openClose_UnitManagment_Button.interactable = true;
             }
             localView.RPC("handleReadyUp", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer);
         }

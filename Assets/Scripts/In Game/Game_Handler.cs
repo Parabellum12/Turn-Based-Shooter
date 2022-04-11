@@ -369,7 +369,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            LocalView.RPC("masterClientLeft", RpcTarget.Others);
+           // LocalView.RPC("masterClientLeft", RpcTarget.Others);
         }
     }
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -379,9 +379,11 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
 
 
-    [PunRPC] void masterClientLeft()
+    private void masterClientLeft()
     {
         PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LeaveLobby();
+        PhotonNetwork.AutomaticallySyncScene = false;
         SceneManager.LoadScene("JoinServer");
     }
 
