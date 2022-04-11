@@ -20,10 +20,17 @@ public class CreateAndJoinGames : MonoBehaviourPunCallbacks
     public void changeNick()
     {
         PhotonNetwork.NickName = userName.text;
+        SessionPersistantDataHandler.setPlrName(userName.text);
     }
 
     public void Start()
     {
+        string tempName = SessionPersistantDataHandler.getPlrName();
+        if (tempName.Length > 0)
+        {
+            userName.text = tempName;
+            changeNick();
+        }
         if (autoConnect)
         {
             GameName.text = "Test";

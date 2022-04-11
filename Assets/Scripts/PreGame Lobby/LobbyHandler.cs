@@ -90,6 +90,18 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         {
             play();
         }
+
+        handlePersistantData();
+    }
+
+    void handlePersistantData()
+    {
+        List<CharacterData> characterDatas = SessionPersistantDataHandler.getPersistantUnitData();
+        if (characterDatas != null && characterDatas.Count > 0)
+        {
+            units = characterDatas.ToArray();
+            updateUnitCount();
+        }
     }
 
     public void openAndCloseUnitManagement()
@@ -212,10 +224,22 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             if (text.text.Equals("Ready"))
             {
                 text.text = "Not Ready";
+
             }
             else
             {
                 text.text = "Ready";
+            }
+            if (text.text.Equals("Ready"))
+            {
+                //stop unit custimization
+                closeUnitManagment();
+                UnitManagment.GetComponent<Button>().interactable = false;
+            }
+            else
+            {
+                //allow unit custimization
+                UnitManagment.GetComponent<Button>().interactable = true;
             }
             localView.RPC("handleReadyUp", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer);
         }
@@ -225,6 +249,7 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     [PunRPC]
     public void handleReadyUp(Photon.Realtime.Player plr)
     {
+        SessionPersistantDataHandler.setPersistantUnitSquad(units);
         for (int i = 0; i < players.Length; i++)
         {
             if (players[i].Equals(plr))
@@ -232,6 +257,10 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
                 PhotonView iconView = playerIcons[i].photonView;
                 iconView.RPC("updateReadyStatus", RpcTarget.OthersBuffered, !playerIcons[i].ready);
                 playerIcons[i].updateReadyStatus(!playerIcons[i].ready);
+
+                
+
+
                 return;
             }
         }
@@ -305,6 +334,12 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             PhotonNetwork.LoadLevel("InGame");
         }
     }
+
+
+
+
+
+
 
     private string getSelectedMap()
     {
@@ -389,6 +424,9 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
             }
             playerIcons[index].gameObject.SetActive(true);
         }
+
+
+
     }
 
 

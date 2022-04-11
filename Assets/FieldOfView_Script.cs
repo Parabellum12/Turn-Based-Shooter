@@ -12,22 +12,22 @@ public class FieldOfView_Script : MonoBehaviour
     [SerializeField] LayerMask layerMask;
     [SerializeField] LayerMask layerMask2;
     [SerializeField] public Transform lockOnTo = null;
-
+    [SerializeField] bool debugging = false;
     Vector3 origin;
     void Start()
     {
         mesh = new Mesh();
         origin = transform.position;
         transform.position = Vector3.zero;
-        GetComponent<MeshFilter>().mesh = mesh; 
+        GetComponent<MeshFilter>().mesh = mesh;
         //layerMask = LayerMask.NameToLayer("WorldRaycasting");
         //transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 90 + (fov/2));
         updateFOVMesh();
-        
+
 
     }
 
-    
+
 
     private void LateUpdate()
     {
@@ -42,12 +42,12 @@ public class FieldOfView_Script : MonoBehaviour
     }
     float startingAngle = 0f;
 
-    
+
 
     public List<GameObject> currentlySeenUnits = new List<GameObject>();
 
     public void updateFOVMesh()
-    { 
+    {
         float currentAngle = startingAngle;
         float angleIncrease = fov / rayCount;
 
@@ -56,7 +56,7 @@ public class FieldOfView_Script : MonoBehaviour
 
         Vector3[] verticies = new Vector3[rayCount + 1 + 1];
         Vector2[] uv = new Vector2[verticies.Length];
-        int[] triangles = new int[rayCount*3];
+        int[] triangles = new int[rayCount * 3];
 
 
         verticies[0] = origin;
@@ -77,7 +77,7 @@ public class FieldOfView_Script : MonoBehaviour
             {
                 //hit
                 vertex = raycaseHit.point;
-                raycaseHit2 =  Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), Vector3.Distance(origin, raycaseHit.point), layerMask2);
+                raycaseHit2 = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), Vector3.Distance(origin, raycaseHit.point), layerMask2);
 
             }
             else
@@ -87,15 +87,17 @@ public class FieldOfView_Script : MonoBehaviour
                 raycaseHit2 = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask2);
             }
 
-         
+
             foreach (RaycastHit2D hit in raycaseHit2)
             {
-                    if (!currentlySeenUnits.Contains(hit.collider.gameObject))
-                    {
-                        currentlySeenUnits.Add(hit.collider.gameObject);
-                    }
-                    //Debug.DrawRay(lockOnTo.transform.position, UtilClass.getVectorFromAngle(currentAngle) * Vector2.Distance(lockOnTo.transform.position, hit.point), Color.red, Time.deltaTime);
-                
+                if (!currentlySeenUnits.Contains(hit.collider.gameObject))
+                {
+                    currentlySeenUnits.Add(hit.collider.gameObject);
+                }
+                if (debugging)
+                {
+                    Debug.DrawRay(lockOnTo.transform.position, UtilClass.getVectorFromAngle(currentAngle) * Vector2.Distance(lockOnTo.transform.position, hit.point), Color.red, Time.deltaTime);
+                }
             }
 
 
@@ -122,11 +124,11 @@ public class FieldOfView_Script : MonoBehaviour
         mesh.RecalculateBounds();
     }
 
-   
+
 
     private void setAimDirection()
     {
-        startingAngle = lockOnTo.rotation.eulerAngles.z + 90 + (fov/2f);
+        startingAngle = lockOnTo.rotation.eulerAngles.z + 90 + (fov / 2f);
     }
 
     public void setViewDist(float dist)
@@ -146,6 +148,6 @@ public class FieldOfView_Script : MonoBehaviour
         setViewDist(viewDist);
     }
 
-    
+
 
 }
