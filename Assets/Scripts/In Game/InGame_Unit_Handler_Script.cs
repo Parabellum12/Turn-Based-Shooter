@@ -421,5 +421,22 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         return .5f;
     }
 
+
+    public void handleGettingShot()
+    {
+        localview.RPC("ownerHandleGetShot", localview.Owner);
+    }
+
+    [PunRPC] void ownerHandleGetShot()
+    {
+        currentHealth -= 10;
+    }
+
+    public void handleDeath()
+    {
+        Destroy(localViewSystem.gameObject);
+        PhotonNetwork.Destroy(this.gameObject);
+    }
+
 }
    

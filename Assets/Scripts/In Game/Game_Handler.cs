@@ -282,7 +282,35 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         else
         {
             firstUpdateOnTurn = true;
+            handleUnitDeath();
         }
+    }
+
+    void handleUnitDeath()
+    {
+        List<InGame_Unit_Handler_Script> toRemove = new List<InGame_Unit_Handler_Script>();
+        foreach (InGame_Unit_Handler_Script scr in AllUnits)
+        {
+            if (scr.currentHealth <= 0)
+            {
+                scr.handleDeath();
+                toRemove.Add(scr);
+            }
+        }
+        foreach (InGame_Unit_Handler_Script scr in toRemove)
+        {
+            AllUnits.Remove(scr);
+        }
+        if (toRemove.Count > 0)
+        {
+            List<Vector2Int> poses = new List<Vector2Int>();
+            foreach (InGame_Unit_Handler_Script scr in AllUnits)
+            {
+                poses.Add(scr.gridPos);
+            }
+            LocalView.RPC("GiveMasterNewPositions", RpcTarget.MasterClient, Vector2IntArrayToString(poses.ToArray()), PhotonNetwork.LocalPlayer);
+        }
+
     }
 
 
@@ -867,6 +895,9 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     [SerializeField] GameObject bulletPrefab;
     void handleShoot()
     {
+        lineRenderer.positionCount = 0;
+        originallySelectedEnemy = null;
+        selectedEnemyUnit = null;
         Debug.Log("Make New Bullet");
         GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
         bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos);
