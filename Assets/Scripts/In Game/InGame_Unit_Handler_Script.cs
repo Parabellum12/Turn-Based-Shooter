@@ -23,6 +23,11 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     FieldOfView_Script localViewSystem;
     bool doneOnce = true;
     [SerializeField] GameObject showSelfMask;
+
+
+
+
+
     private void Start()
     {
         gameHadlerObj = GameObject.FindGameObjectWithTag("GameController");
@@ -35,6 +40,48 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             currentHealth = characterData.HealthPoints;
             gameObject.layer = LayerMask.NameToLayer("behindMask2");
         }
+    }
+
+    public bool isSelected = false;
+    bool HeadingToWhiteOrGreen = true;
+    float time = 0;
+    private void Update()
+    {
+        if (needToMove)
+        {
+            transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
+        }
+        if (localview.IsMine && isSelected)
+        {
+            time += Time.deltaTime;
+            if (time > 1)
+            {
+                HeadingToWhiteOrGreen = !HeadingToWhiteOrGreen;
+                time -= 1;
+            }
+            if (HeadingToWhiteOrGreen)
+            {
+                //white
+               // Debug.Log("Flash");
+                indicator.color = Color.Lerp(Color.green, Color.white, time);
+            }
+            else
+            {
+                //green
+                //Debug.Log("why Flash");
+                indicator.color = Color.Lerp(Color.white, Color.green, time);
+            }
+        }
+        else if (!localview.IsMine)
+        {
+            indicator.color = Color.red;
+            //Debug.Log("Stop Flash");
+        }
+        else if (!isSelected)
+        {
+            indicator.color = Color.green;
+        }
+
     }
 
     void setuplocalViewSys()
@@ -140,9 +187,20 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     public IEnumerator moveToPos(Vector2Int[] posList)
     {
         Vector2 originalPos = transform.position;
+        if (currentActionPoints - (gameHandlerScript.worldHandler.getBuildLayers().getGridObject(posList[0].x, posList[0].y).gCost * getMoveCostMultiplier()) < 0)
+        {
+            yield break;
+        }
+
         //Debug.Log("Move");
+        Vector2Int finalPos = gridPos;
         foreach (Vector2Int vec in posList)
         {
+            if (currentActionPoints - (gameHandlerScript.worldHandler.getBuildLayers().getGridObject(vec.x, vec.y).gCost * getMoveCostMultiplier()) < 0)
+            {
+                break;
+            }
+            finalPos = vec;
             targetPos = gameHandlerScript.getPosOnGrid(vec);
             needToMove = true;
             setAngle(originalPos, targetPos);
@@ -158,8 +216,11 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             transform.position = new Vector3(targetPos.x, targetPos.y, -1);
             originalPos = new Vector3(targetPos.x, targetPos.y, -1);
         }
+
+        currentActionPoints -= gameHandlerScript.worldHandler.getBuildLayers().getGridObject(finalPos.x, finalPos.y).gCost / 2;
         needToMove = false;
-        seGridPos(posList[posList.Length - 1]);
+        gameHandlerScript.worldHandler.getBuildLayers().GetXY(transform.position, out int x, out int y);
+        seGridPos(new Vector2Int(x, y));
         yield break;
     }
 
@@ -248,14 +309,6 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     public bool needToMove = false;
     Vector2 targetPos;
-    private void Update()
-    {
-        if (needToMove)
-        {
-            transform.position = new Vector3(HandleMoveSingleAxis(transform.position.x, targetPos.x, speed), HandleMoveSingleAxis(transform.position.y, targetPos.y, speed), -1);
-        }
-
-    }
 
     private float HandleMoveSingleAxis(float current, float target, float speed)
     {
@@ -310,7 +363,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
                     if (needToMove)
                     {
-                        stopMovement();
+                        yield return StartCoroutine(stopMovement());
                     }
                 }
             }
@@ -335,8 +388,13 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
     }
 
 
-    int currentHealth;
-    int currentActionPoints;
+
+
+
+
+    //turn stuff
+    public int currentHealth;
+    public int currentActionPoints;
 
     public void resetValuesOnStartOfTurn()
     {
@@ -356,6 +414,11 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             returner.Add(gm.GetComponent<InGame_Unit_Handler_Script>());
         }
         return returner;
+    }
+
+    public float getMoveCostMultiplier()
+    {
+        return .5f;
     }
 
 }

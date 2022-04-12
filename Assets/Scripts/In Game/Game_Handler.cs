@@ -14,7 +14,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     public static string mapFileName;
     [SerializeField] PhotonView LocalView;
     [SerializeField] SaveLoad_Handler_Script saveLoad;
-    [SerializeField] World_Handler_Script worldHandler;
+    [SerializeField] public World_Handler_Script worldHandler;
 
     List<World_Handler_Script.WorldTileSpawnPoints> spawnZones;
 
@@ -63,7 +63,8 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
 
 
-    [PunRPC] public void assignTeamInt(int i)
+    [PunRPC]
+    public void assignTeamInt(int i)
     {
         teamIntValue = i;
     }
@@ -115,26 +116,30 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         return -1;
     }
 
-    
-    [PunRPC] void AssignLocalTeam(Team team)
+
+    [PunRPC]
+    void AssignLocalTeam(Team team)
     {
         localTeam = team;
     }
 
-    [PunRPC] void SetActiveTeam(Team activeTeam)
+    [PunRPC]
+    void SetActiveTeam(Team activeTeam)
     {
         currentActiveTeam = activeTeam;
         Debug.Log("Active Team:" + activeTeam);
     }
 
-    [PunRPC] public void setMap(string mapFileName)
+    [PunRPC]
+    public void setMap(string mapFileName)
     {
         Game_Handler.mapFileName = mapFileName.Trim();
         saveLoad.load(mapFileName);
         spawnZones = worldHandler.setupSpawnPoints(worldHandler.getBuildLayers());
     }
 
-    [PunRPC] void spawnUnits(int spawnZoneIndex)
+    [PunRPC]
+    void spawnUnits(int spawnZoneIndex)
     {
         //Debug.Log("PlayerUnits Length:" + PlayerUnits.Length + ", SpawnZoneCount:" + spawnZones.Count);
         World_Handler_Script.WorldTileSpawnPoints spawnZone = spawnZones[spawnZoneIndex];
@@ -161,9 +166,9 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     public void spawnUnit(Vector2Int tile, int index)
     {
         //Debug.Log("SpawnedUnit At:" + tile.ToString());
-        Vector3 worldPosToSpawnAt = worldHandler.getBuildLayers().getWorldPosition(tile.x, tile.y) + (new Vector3(1,1) * worldHandler.cellSize) * .5f;
+        Vector3 worldPosToSpawnAt = worldHandler.getBuildLayers().getWorldPosition(tile.x, tile.y) + (new Vector3(1, 1) * worldHandler.cellSize) * .5f;
         GameObject unit = PhotonNetwork.Instantiate("UnitPreFab", worldPosToSpawnAt, Quaternion.identity);  //Instantiate(UnitPrefab);
-        
+
         InGame_Unit_Handler_Script unitHandler = unit.GetComponent<InGame_Unit_Handler_Script>();
         unitHandler.setup(worldPosToSpawnAt, PlayerUnits[index], tile);
         unitHandler.hideOtherSelf();
@@ -173,13 +178,15 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     //turn handleing
 
 
-    [PunRPC] void MasterNextTurn()
+    [PunRPC]
+    void MasterNextTurn()
     {
         currentActiveTeamIndex = (currentActiveTeamIndex + 1) % TotalPlayers.Length;
         LocalView.RPC("recieveNextTurn", RpcTarget.All, currentActiveTeamIndex);
     }
 
-    [PunRPC] void recieveNextTurn(int index)
+    [PunRPC]
+    void recieveNextTurn(int index)
     {
         currentActiveTeamIndex = index;
         currentActiveTeam = getTeamFromValue(currentActiveTeamIndex);
@@ -191,6 +198,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         CancelMoveRequest = true;
         if (IsMyTurn())
         {
+            selectFriendlyUnit(null);
             LocalView.RPC("MasterNextTurn", RpcTarget.MasterClient);
         }
     }
@@ -214,6 +222,28 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
 
     public InGame_Unit_Handler_Script SelectedUnit;
+
+    void selectFriendlyUnit(InGame_Unit_Handler_Script selected)
+    {
+        if (selected != SelectedUnit)
+        {
+            lineRenderer.positionCount = 0;
+        }
+        else
+        {
+            return;
+        }
+        if (SelectedUnit != null)
+        {
+            SelectedUnit.isSelected = false;
+        }
+        SelectedUnit = selected;
+        if (SelectedUnit != null)
+        {
+            SelectedUnit.isSelected = true;
+        }
+    }
+
     //local units
     public List<InGame_Unit_Handler_Script> AllUnits = new List<InGame_Unit_Handler_Script>();
 
@@ -230,7 +260,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                 firstUpdateOnTurn = false;
                 foreach (InGame_Unit_Handler_Script scr in AllUnits)
                 {
-                   scr.resetValuesOnStartOfTurn();
+                    scr.resetValuesOnStartOfTurn();
                 }
             }
 
@@ -277,7 +307,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         }
         else
         {
-            SelectedUnit = null;
+            selectFriendlyUnit(null);
         }
     }
 
@@ -302,16 +332,23 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             if (tempSelect != null)
             {
                 //unit clicked
-                SelectedUnit = tempSelect;
+                selectFriendlyUnit(tempSelect);
                 resetPathVisualGrid();
             }
             else
             {
                 worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
                 //no unit clicked
-                if (SelectedUnit != null && !moving && !getRestrictedTiles().Contains(new Vector2Int(x, y)))
+                if (getRestrictedTiles().Contains(new Vector2Int(x, y)) && SelectedUnit != null)
+                {
+                    //clicking on enemy Unit
+                    HandleClickOnEnemyUnit();
+                }
+                else if (SelectedUnit != null && !moving && !getRestrictedTiles().Contains(new Vector2Int(x, y)))
                 {
                     //trying to path
+
+                    lineRenderer.positionCount = 0;
                     List<Vector2Int> restricted = getRestrictedTiles();
                     bool empty = true;
                     if (worldHandler.getBuildLayers().inBounds(x, y))
@@ -338,11 +375,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                         }
                     }
                 }
-                else if (getRestrictedTiles().Contains(new Vector2Int(x,y)) && SelectedUnit != null)
-                {
-                    //clicking on enemy Unit
-                    HandleClickOnEnemyUnit();
-                }
+
             }
         }
     }
@@ -369,7 +402,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-           // LocalView.RPC("masterClientLeft", RpcTarget.Others);
+            // LocalView.RPC("masterClientLeft", RpcTarget.Others);
         }
     }
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -385,6 +418,11 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveLobby();
         PhotonNetwork.AutomaticallySyncScene = false;
         SceneManager.LoadScene("JoinServer");
+    }
+
+    public void leave()
+    {
+        masterClientLeft();
     }
 
 
@@ -438,13 +476,17 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     [SerializeField] int greenColorDist = 80;
     [SerializeField] int orangeColorDist = 160;
     [SerializeField] int RedColorDist = 240;
+    int tempActionPointsMax;
+    int tempActionPointsCur;
     private int calculateUnitMoveColors(World_Handler_Script.WorldBuildTile tile)
     {
-        if (tile.gCost < greenColorDist)
+        tempActionPointsCur = tempActionPointsMax;
+        tempActionPointsCur -= (int)(tile.gCost * SelectedUnit.getMoveCostMultiplier());
+        if ((float)tempActionPointsCur / (float)tempActionPointsMax > .5)
         {
             return 2;
         }
-        else if (tile.gCost < orangeColorDist)
+        else if (tempActionPointsCur > 0)
         {
             return 1;
         }
@@ -452,6 +494,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         {
             return 0;
         }
+
     }
 
     private IEnumerator handleUnitMove()
@@ -468,7 +511,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
         worldHandler.getBuildLayers().GetXY(SelectedUnit.transform.position, out int x, out int y);
         worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x2, out int y2);
-        if (!worldHandler.getBuildLayers().inBounds(x,y) || !worldHandler.getBuildLayers().inBounds(x2, y2))
+        if (!worldHandler.getBuildLayers().inBounds(x, y) || !worldHandler.getBuildLayers().inBounds(x2, y2))
         {
             //invalid pos
             yield break;
@@ -489,6 +532,8 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         }));
         if (path != null && path.Length > 0)
         {
+            tempActionPointsMax = SelectedUnit.currentActionPoints;
+            tempActionPointsCur = SelectedUnit.currentActionPoints;
             foreach (Vector2Int vec in path)
             {
                 worldHandler.getBuildLayers().getGridObject(vec.x, vec.y).setPathfindingData(pathfindingColors[calculateUnitMoveColors(worldHandler.getBuildLayers().getGridObject(vec.x, vec.y))]);
@@ -530,7 +575,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             {
                 //not clicked on same pos
 
-                
+
                 AcceptedMovePath = false;
                 StartCoroutine(handleUnitMove());
                 yield break;
@@ -551,7 +596,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
 
             yield return StartCoroutine(SelectedUnit.moveToPos(path));
-            SelectedUnit = null;
+            //selectFriendlyUnit(null);
 
             Vector2Int[] arr = new Vector2Int[AllUnits.ToArray().Length];
             int index = 0;
@@ -585,13 +630,11 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     public List<Vector2Int> getRestrictedTiles()
     {
         List<Vector2Int> returner = new List<Vector2Int>();
-        int count = 0;
         foreach (Vector2Int[] arr in playerToUnitDictionary.Values)
         {
             foreach (Vector2Int Arrpos in arr)
             {
                 returner.Add(Arrpos);
-                count++;
             }
         }
         //Debug.Log("WHYYYYYYY:"+count);
@@ -624,7 +667,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     }
 
 
-    
+
 
 
     public Vector3 getPosOnGrid(Vector2Int pos)
@@ -635,30 +678,34 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         return newPos;
     }
 
-    
+
 
 
 
     //network unit pos storage handling
     Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary = new Dictionary<Photon.Realtime.Player, Vector2Int[]>();
-    [PunRPC] void GiveMasterNewPositions(string arrAsString, Photon.Realtime.Player plr)
+    [PunRPC]
+    void GiveMasterNewPositions(string arrAsString, Photon.Realtime.Player plr)
     {
         playerToUnitDictionary.Remove(plr);
         playerToUnitDictionary.Add(plr, stringToVector2Int(arrAsString));
         LocalView.RPC("giveClientPlayerPositions", Photon.Pun.RpcTarget.Others, arrAsString, plr);
     }
 
-    [PunRPC] void clientSetDictionary(Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary)
+    [PunRPC]
+    void clientSetDictionary(Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary)
     {
         this.playerToUnitDictionary = playerToUnitDictionary;
     }
 
-    [PunRPC] void clientClearDictionary()
+    [PunRPC]
+    void clientClearDictionary()
     {
         playerToUnitDictionary.Clear();
     }
 
-    [PunRPC] void giveClientPlayerPositions(string asString, Photon.Realtime.Player plr)
+    [PunRPC]
+    void giveClientPlayerPositions(string asString, Photon.Realtime.Player plr)
     {
         playerToUnitDictionary.Remove(plr);
         playerToUnitDictionary.Add(plr, stringToVector2Int(asString));
@@ -670,7 +717,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         for (int i = 0; i < arr.Length; i++)
         {
             returner += arr[i].x + "," + arr[i].y;
-            if (i != arr.Length-1)
+            if (i != arr.Length - 1)
             {
                 returner += ";";
             }
@@ -700,7 +747,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     public Vector2 getClosestTilePos(Vector2 pos)
     {
         worldHandler.getBuildLayers().GetXY(pos, out int x, out int y);
-        return getPosOnGrid(new Vector2Int(x,y));
+        return getPosOnGrid(new Vector2Int(x, y));
     }
 
 
@@ -719,24 +766,110 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
     public InGame_Unit_Handler_Script selectedEnemyUnit = null;
     [SerializeField] bool allowShootingFromAnyOrJustSelf = true;
+    [SerializeField] LineRenderer lineRenderer;
+    [SerializeField] LayerMask friendlyUnitLayer;
     //true = allow clicking on any unit seen, false = only allow clikcing on units seen by the selected friendly unit
+
+    InGame_Unit_Handler_Script originallySelectedEnemy = null;
+    Vector2 bulletTargetPos;
     private void HandleClickOnEnemyUnit()
     {
         if (selectedEnemyUnit == null)
         {
-            Debug.Log("I Click Air");
+            lineRenderer.positionCount = 0;
+            originallySelectedEnemy = null;
             return;
         }
-        List<InGame_Unit_Handler_Script> allSeenUnits = getAllSeenUnits();
 
-        if (allowShootingFromAnyOrJustSelf && allSeenUnits.Contains(selectedEnemyUnit))
+        if (originallySelectedEnemy != null && originallySelectedEnemy == selectedEnemyUnit)
         {
-            //clicked on a unit seen by any friendly
+            //clicked same unit to confirm choice
+            Debug.Log("SHOOT!");
+            handleShoot();
         }
-        else if (!allowShootingFromAnyOrJustSelf && SelectedUnit.getSeenEnemyUnits().Contains(selectedEnemyUnit))
+        else
         {
-            //clicked on a unit seen by Selected friendly
+            originallySelectedEnemy = selectedEnemyUnit;
+            Debug.Log("Show Bullet Path");
+
+
+
+
+            bool blocked = false;
+            List<InGame_Unit_Handler_Script> allSeenUnits = getAllSeenUnits();
+            RaycastHit2D hit = Physics2D.Raycast(SelectedUnit.gameObject.transform.position, (selectedEnemyUnit.gameObject.transform.position - SelectedUnit.gameObject.transform.position), Vector2.Distance(SelectedUnit.gameObject.transform.position, selectedEnemyUnit.gameObject.transform.position), ~friendlyUnitLayer);
+            Vector3 endPos = new Vector3();
+            if (hit.collider == null)
+            {
+                Debug.Log("WTF How Did I Not Hit Anything??????");
+            }
+            else
+            {
+                Debug.Log("I Hit: name:" + hit.collider.gameObject.name + " | tag:" + hit.collider.gameObject.tag);
+                if (hit.collider.gameObject.tag.Equals(selectedEnemyUnit.gameObject.tag))
+                {
+                    //direct line of sight to Enemy
+                    Debug.Log("Enemy Los");
+                    endPos = selectedEnemyUnit.gameObject.transform.position;
+                }
+                else
+                {
+                    //line of sight to enemy blocked
+                    Debug.Log("Blocked Los");
+                    blocked = true;
+                    endPos = hit.point;
+                }
+            }
+            if (SelectedUnit.getSeenEnemyUnits().Contains(selectedEnemyUnit))
+            {
+                bulletTargetPos = endPos;
+                Debug.Log("I Click Enemy Unit Seen By Selected");
+                //clicked on a unit seen by Selected friendly
+                if (moving || WaitingForAcceptionOfPath)
+                {
+                    CancelMoveRequest = true;
+                    resetPathVisualGrid();
+                }
+                if (blocked)
+                {
+                    lineRenderer.startColor = Color.red;
+                    lineRenderer.endColor = Color.red;
+                }
+                else
+                {
+                    lineRenderer.startColor = Color.green;
+                    lineRenderer.endColor = Color.green;
+                }
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPosition(0, SelectedUnit.gameObject.transform.position);
+                lineRenderer.SetPosition(1, endPos);
+            }
+            else if (allowShootingFromAnyOrJustSelf && allSeenUnits.Contains(selectedEnemyUnit))
+            {
+                bulletTargetPos = endPos;
+                Debug.Log("I Click Enemy Unit Seen By Friendly");
+                //clicked on a unit seen by any friendly
+                if (moving || WaitingForAcceptionOfPath)
+                {
+                    CancelMoveRequest = true;
+                    resetPathVisualGrid();
+                }
+                lineRenderer.startColor = Color.red;
+                lineRenderer.endColor = Color.red;
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPosition(0, SelectedUnit.gameObject.transform.position);
+                lineRenderer.SetPosition(1, endPos);
+            }
         }
+    }
+
+
+    [SerializeField] GameObject bulletPrefab;
+    void handleShoot()
+    {
+        Debug.Log("Make New Bullet");
+        GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
+        bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos);
     }
 
 }

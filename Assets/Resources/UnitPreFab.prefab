@@ -192,9 +192,12 @@ MonoBehaviour:
   localview: {fileID: 8973483162976532547}
   FOVObj: {fileID: 843964922922692087, guid: 4d6c586ca3ac8564ca3a6745035e2738, type: 3}
   showSelfMask: {fileID: 2512363240542120174}
+  isSelected: 0
   mouseOver: 0
   needToMove: 0
   seenStuff: []
+  currentHealth: 0
+  currentActionPoints: 0
 --- !u!58 &6988666693218595776
 CircleCollider2D:
   m_ObjectHideFlags: 0
