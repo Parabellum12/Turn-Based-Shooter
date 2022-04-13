@@ -13,6 +13,7 @@ public class FieldOfView_Script : MonoBehaviour
     [SerializeField] LayerMask layerMask2;
     [SerializeField] public Transform lockOnTo = null;
     [SerializeField] bool debugging = false;
+    [SerializeField] float farViewDistMultiplier = 1.5f;
     Vector3 origin;
     void Start()
     {
@@ -45,6 +46,7 @@ public class FieldOfView_Script : MonoBehaviour
 
 
     public List<GameObject> currentlySeenUnits = new List<GameObject>();
+    public List<GameObject> currentlySeenUnitsFar = new List<GameObject>();
 
     public void updateFOVMesh()
     {
@@ -64,35 +66,51 @@ public class FieldOfView_Script : MonoBehaviour
         int vertexIndex = 1;
         int triangleIndex = 0;
         currentlySeenUnits.Clear();
+        currentlySeenUnitsFar.Clear();
         for (int i = 0; i <= rayCount; i++)
         {
             Vector3 vertex;
 
-            RaycastHit2D raycaseHit = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask);
-            RaycastHit2D[] raycaseHit2;
+            RaycastHit2D raycaseHitWorld = Physics2D.Raycast(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask);
+            RaycastHit2D[] raycaseHitEnemy;
+            RaycastHit2D[] raycaseHitEnemyFar;
 
 
             //Debug.DrawRay(origin, UtilClass.getVectorFromAngle(currentAngle) * viewDist, Color.green, .1f);
-            if (raycaseHit.collider != null)
+            if (raycaseHitWorld.collider != null)
             {
                 //hit
-                vertex = raycaseHit.point;
-                raycaseHit2 = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), Vector3.Distance(origin, raycaseHit.point), layerMask2);
+                vertex = raycaseHitWorld.point;
+                raycaseHitEnemy = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), Vector3.Distance(origin, raycaseHitWorld.point), layerMask2);
+                raycaseHitEnemyFar = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), Vector3.Distance(origin, raycaseHitWorld.point), layerMask2);
 
             }
             else
             {
                 //no hit
                 vertex = origin + UtilClass.getVectorFromAngle(currentAngle) * viewDist;
-                raycaseHit2 = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask2);
+                raycaseHitEnemy = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist, layerMask2);
+                raycaseHitEnemyFar = Physics2D.RaycastAll(origin, UtilClass.getVectorFromAngle(currentAngle), viewDist * farViewDistMultiplier, layerMask2);
             }
 
 
-            foreach (RaycastHit2D hit in raycaseHit2)
+            foreach (RaycastHit2D hit in raycaseHitEnemy)
             {
                 if (!currentlySeenUnits.Contains(hit.collider.gameObject))
                 {
                     currentlySeenUnits.Add(hit.collider.gameObject);
+                }
+                if (debugging)
+                {
+                    Debug.DrawRay(lockOnTo.transform.position, UtilClass.getVectorFromAngle(currentAngle) * Vector2.Distance(lockOnTo.transform.position, hit.point), Color.red, Time.deltaTime);
+                }
+            }
+
+            foreach (RaycastHit2D hit in raycaseHitEnemyFar)
+            {
+                if (!currentlySeenUnitsFar.Contains(hit.collider.gameObject))
+                {
+                    currentlySeenUnitsFar.Add(hit.collider.gameObject);
                 }
                 if (debugging)
                 {

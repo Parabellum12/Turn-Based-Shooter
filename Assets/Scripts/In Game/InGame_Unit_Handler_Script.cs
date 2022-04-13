@@ -406,10 +406,21 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
         return 0;
     }
 
+
+
     public List<InGame_Unit_Handler_Script> getSeenEnemyUnits()
     {
         List<InGame_Unit_Handler_Script> returner = new List<InGame_Unit_Handler_Script>();
         foreach (GameObject gm in localViewSystem.currentlySeenUnits)
+        {
+            returner.Add(gm.GetComponent<InGame_Unit_Handler_Script>());
+        }
+        return returner;
+    }
+    public List<InGame_Unit_Handler_Script> getSeenEnemyUnitsFar()
+    {
+        List<InGame_Unit_Handler_Script> returner = new List<InGame_Unit_Handler_Script>();
+        foreach (GameObject gm in localViewSystem.currentlySeenUnitsFar)
         {
             returner.Add(gm.GetComponent<InGame_Unit_Handler_Script>());
         }

@@ -11,13 +11,18 @@ public class Bullet_Handler_Script : MonoBehaviourPun
     float xMoveBy;
     float yMoveBy;
     [SerializeField] PhotonView localview;
-
-    public void setTarget(Vector2 origin, Vector2 target)
+    bool closeOrFar;
+    public void setTarget(Vector2 origin, Vector2 target, bool closeOrFar)
     {
+        if (!localview.IsMine)
+        {
+            return;
+        }
+        //true = close, false = far
+        this.closeOrFar = closeOrFar;
         targetPos = target;
 
         float targetAngle = UtilClass.getAngleFromVectorFloat(target - origin);
-        Debug.Log("targetAngle:" + targetAngle);
         transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, targetAngle+90);
 
         Vector3 angleVec = UtilClass.getVectorFromAngle(targetAngle);
@@ -28,13 +33,11 @@ public class Bullet_Handler_Script : MonoBehaviourPun
 
     private void Update()
     {
-        if (moving)
+        if (localview.IsMine && moving)
         {
             Vector2 test = new Vector2(transform.position.x, transform.position.y);
             if (Vector2.Distance(test, targetPos) < 1f)
             {
-                Debug.Log("Finished Stuff");
-                PhotonNetwork.Destroy(this.gameObject);
                 moving = false;
             }
             else
@@ -42,6 +45,11 @@ public class Bullet_Handler_Script : MonoBehaviourPun
                 transform.position += new Vector3(xMoveBy * speed * Time.deltaTime, yMoveBy * speed * Time.deltaTime, 0);
             }
         }
+        else if (localview.IsMine && !moving)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
+       
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -50,11 +58,18 @@ public class Bullet_Handler_Script : MonoBehaviourPun
         {
             return;
         }
-        Debug.Log("trigger Entered");
+        //Debug.Log("trigger Entered");
         if (collision.gameObject.tag == ("EnemyUnit"))
         {
-            collision.gameObject.GetComponent<InGame_Unit_Handler_Script>().handleGettingShot();
-            PhotonNetwork.Destroy(this.gameObject);
+            moving = false;
+            if (closeOrFar)
+            {
+                collision.gameObject.GetComponent<InGame_Unit_Handler_Script>().handleGettingShot();
+            }
+            else
+            {
+                collision.gameObject.GetComponent<InGame_Unit_Handler_Script>().handleGettingShot();
+            }
         }
     }
 

@@ -228,6 +228,8 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         if (selected != SelectedUnit)
         {
             lineRenderer.positionCount = 0;
+            originallySelectedEnemy = null;
+            selectedEnemyUnit = null;
         }
         else
         {
@@ -377,6 +379,8 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                     //trying to path
 
                     lineRenderer.positionCount = 0;
+                    originallySelectedEnemy = null;
+                    selectedEnemyUnit = null;
                     List<Vector2Int> restricted = getRestrictedTiles();
                     bool empty = true;
                     if (worldHandler.getBuildLayers().inBounds(x, y))
@@ -736,7 +740,11 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     void giveClientPlayerPositions(string asString, Photon.Realtime.Player plr)
     {
         playerToUnitDictionary.Remove(plr);
-        playerToUnitDictionary.Add(plr, stringToVector2Int(asString));
+        Vector2Int[] temp = stringToVector2Int(asString);
+        if (temp.Length > 0)
+        {
+            playerToUnitDictionary.Add(plr, stringToVector2Int(asString));
+        }
     }
 
     private string Vector2IntArrayToString(Vector2Int[] arr)
@@ -757,8 +765,12 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
     private Vector2Int[] stringToVector2Int(string s)
     {
+        if (s.Length == 0)
+        {
+            return new Vector2Int[0];
+        }
         string[] values = s.Split(';');
-        //Debug.Log("values length:" + values.Length);
+        //Debug.Log("s:" + s + "values length:" + values.Length);
         Vector2Int[] returner = new Vector2Int[values.Length];
         int index = 0;
         foreach (string str in values)
@@ -882,8 +894,18 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                     CancelMoveRequest = true;
                     resetPathVisualGrid();
                 }
-                lineRenderer.startColor = Color.red;
-                lineRenderer.endColor = Color.red;
+                if (SelectedUnit.getSeenEnemyUnitsFar().Contains(selectedEnemyUnit))
+                {
+                    //seen by self but far
+                    lineRenderer.startColor = Color.yellow;
+                    lineRenderer.endColor = Color.yellow;
+                }
+                else
+                {
+                    //only seen by others
+                    lineRenderer.startColor = Color.red;
+                    lineRenderer.endColor = Color.red;
+                }
                 lineRenderer.positionCount = 2;
                 lineRenderer.SetPosition(0, SelectedUnit.gameObject.transform.position);
                 lineRenderer.SetPosition(1, endPos);
@@ -892,15 +914,23 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     }
 
 
-    [SerializeField] GameObject bulletPrefab;
     void handleShoot()
     {
         lineRenderer.positionCount = 0;
         originallySelectedEnemy = null;
         selectedEnemyUnit = null;
-        Debug.Log("Make New Bullet");
-        GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
-        bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos);
+        if (lineRenderer.startColor == Color.green)
+        {
+            Debug.Log("Make New Bullet");
+            GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
+            bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos, false);
+        }
+        else if (lineRenderer.startColor == Color.yellow)
+        {
+            Debug.Log("Make New Bullet Far");
+            GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
+            bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos, true);
+        }
     }
 
 }

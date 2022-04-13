@@ -947,8 +947,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 1478181547}
   friendlyUnitLayer:
     serializedVersion: 2
-    m_Bits: 320
-  bulletPrefab: {fileID: 0}
+    m_Bits: 2368
 --- !u!4 &1478181541
 Transform:
   m_ObjectHideFlags: 0
