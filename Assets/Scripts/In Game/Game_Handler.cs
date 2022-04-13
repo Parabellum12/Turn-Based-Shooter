@@ -37,6 +37,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     Photon.Realtime.Player[] TotalPlayers;
     Dictionary<Team, Photon.Realtime.Player> TeamToPlayerDictionary = new Dictionary<Team, Photon.Realtime.Player>();
     int teamIntValue;
+    [SerializeField] Button nextTurnButton;
     //game setup
     void Start()
     {
@@ -254,6 +255,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     {
         if (IsMyTurn())
         {
+            nextTurnButton.interactable = true;
             if (firstUpdateOnTurn)
             {
                 //first frame of turn
@@ -283,6 +285,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         {
             firstUpdateOnTurn = true;
             handleUnitDeath();
+            nextTurnButton.interactable = false;
         }
     }
 
@@ -436,9 +439,14 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
     private void OnApplicationQuit()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient)
         {
-            // LocalView.RPC("masterClientLeft", RpcTarget.Others);
+            List<Vector2Int> poses = new List<Vector2Int>();
+            foreach (InGame_Unit_Handler_Script scr in AllUnits)
+            {
+                poses.Add(scr.gridPos);
+            }
+            LocalView.RPC("GiveMasterNewPositions", RpcTarget.MasterClient, Vector2IntArrayToString(poses.ToArray()), PhotonNetwork.LocalPlayer);
         }
     }
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -458,6 +466,15 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
     public void leave()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            List<Vector2Int> poses = new List<Vector2Int>();
+            foreach (InGame_Unit_Handler_Script scr in AllUnits)
+            {
+                poses.Add(scr.gridPos);
+            }
+            LocalView.RPC("GiveMasterNewPositions", RpcTarget.MasterClient, Vector2IntArrayToString(poses.ToArray()), PhotonNetwork.LocalPlayer);
+        }
         masterClientLeft();
     }
 
@@ -719,14 +736,28 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
 
     //network unit pos storage handling
-    Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary = new Dictionary<Photon.Realtime.Player, Vector2Int[]>();
+    [SerializeField]Dictionary<Photon.Realtime.Player, Vector2Int[]> playerToUnitDictionary = new Dictionary<Photon.Realtime.Player, Vector2Int[]>();
     [PunRPC]
     void GiveMasterNewPositions(string arrAsString, Photon.Realtime.Player plr)
     {
         playerToUnitDictionary.Remove(plr);
-        playerToUnitDictionary.Add(plr, stringToVector2Int(arrAsString));
+        Vector2Int[] temp = stringToVector2Int(arrAsString);
+        bool removedAllEnemyUnitsOfASinglePlayer = false;
+        if (temp.Length > 0)
+        {
+            playerToUnitDictionary.Add(plr, stringToVector2Int(arrAsString));
+        }
+        else
+        {
+            removedAllEnemyUnitsOfASinglePlayer = true;
+        }
         resetShooting();
         LocalView.RPC("giveClientPlayerPositions", Photon.Pun.RpcTarget.Others, arrAsString, plr);
+        if (removedAllEnemyUnitsOfASinglePlayer)
+        {
+
+            handleWinCondition();
+        }
     }
 
     [PunRPC]
@@ -829,13 +860,13 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         if (originallySelectedEnemy != null && originallySelectedEnemy == selectedEnemyUnit)
         {
             //clicked same unit to confirm choice
-            Debug.Log("SHOOT!");
+            //Debug.Log("SHOOT!");
             handleShoot();
         }
         else
         {
             originallySelectedEnemy = selectedEnemyUnit;
-            Debug.Log("Show Bullet Path");
+            //Debug.Log("Show Bullet Path");
 
 
 
@@ -854,13 +885,13 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                 if (hit.collider.gameObject.tag.Equals(selectedEnemyUnit.gameObject.tag))
                 {
                     //direct line of sight to Enemy
-                    Debug.Log("Enemy Los");
+                    //Debug.Log("Enemy Los");
                     endPos = selectedEnemyUnit.gameObject.transform.position;
                 }
                 else
                 {
                     //line of sight to enemy blocked
-                    Debug.Log("Blocked Los");
+                    //Debug.Log("Blocked Los");
                     blocked = true;
                     endPos = hit.point;
                 }
@@ -868,7 +899,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             if (SelectedUnit.getSeenEnemyUnits().Contains(selectedEnemyUnit))
             {
                 bulletTargetPos = endPos;
-                Debug.Log("I Click Enemy Unit Seen By Selected");
+                //Debug.Log("I Click Enemy Unit Seen By Selected");
                 //clicked on a unit seen by Selected friendly
                 if (moving || WaitingForAcceptionOfPath)
                 {
@@ -892,7 +923,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             else if (allowShootingFromAnyOrJustSelf && allSeenUnits.Contains(selectedEnemyUnit))
             {
                 bulletTargetPos = endPos;
-                Debug.Log("I Click Enemy Unit Seen By Friendly");
+                //Debug.Log("I Click Enemy Unit Seen By Friendly");
                 //clicked on a unit seen by any friendly
                 if (moving || WaitingForAcceptionOfPath)
                 {
@@ -931,13 +962,13 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         resetShooting();
         if (lineRenderer.startColor == Color.green)
         {
-            Debug.Log("Make New Bullet");
+            Debug.Log("Make New Bullet");//
             GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
             bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos, false);
         }
         else if (lineRenderer.startColor == Color.yellow)
         {
-            Debug.Log("Make New Bullet Far");
+            //Debug.Log("Make New Bullet Far");
             GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
             bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos, true);
         }
@@ -955,6 +986,16 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         Color c = sr.color;
         c.a = 0;
         sr.color = c;
+
+    }
+
+    void handleWinCondition()
+    {
+        if (playerToUnitDictionary.Keys.Count == 1)
+        {
+            List<Photon.Realtime.Player> winner = new List<Photon.Realtime.Player>(playerToUnitDictionary.Keys);
+            Debug.Log(winner[0] + " Is The Winner!");
+        }
     }
 
 }

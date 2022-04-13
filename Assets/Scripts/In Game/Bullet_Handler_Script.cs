@@ -57,7 +57,11 @@ public class Bullet_Handler_Script : MonoBehaviourPun
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        if (collision.gameObject.tag != ("FriendlyUnit"))
+        if (collision.gameObject.tag != ("FriendlyUnit") && localview.IsMine)
+        {
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        }
+        else if (collision.gameObject.tag != ("EnemyUnit") && !localview.IsMine)
         {
             gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
