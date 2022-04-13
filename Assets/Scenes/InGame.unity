@@ -948,6 +948,7 @@ MonoBehaviour:
   friendlyUnitLayer:
     serializedVersion: 2
     m_Bits: 2368
+  blackScreen: {fileID: 986286070}
 --- !u!4 &1478181541
 Transform:
   m_ObjectHideFlags: 0

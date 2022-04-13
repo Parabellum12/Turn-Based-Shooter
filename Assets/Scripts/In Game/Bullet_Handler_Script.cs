@@ -45,15 +45,22 @@ public class Bullet_Handler_Script : MonoBehaviourPun
                 transform.position += new Vector3(xMoveBy * speed * Time.deltaTime, yMoveBy * speed * Time.deltaTime, 0);
             }
         }
-        else if (localview.IsMine && !moving)
+        else if (localview.IsMine && !moving && !started)
         {
-            PhotonNetwork.Destroy(gameObject);
+            started = true;
+            StartCoroutine(handleDestroy());
         }
        
     }
+    bool started = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
+        if (collision.gameObject.tag != ("FriendlyUnit"))
+        {
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        }
         if (!localview.IsMine)
         {
             return;
@@ -71,6 +78,18 @@ public class Bullet_Handler_Script : MonoBehaviourPun
                 collision.gameObject.GetComponent<InGame_Unit_Handler_Script>().handleGettingShot();
             }
         }
+    }
+
+
+    IEnumerator handleDestroy()
+    {
+        float time = Time.realtimeSinceStartup;
+        while ((Time.realtimeSinceStartup - time) < 5)
+        {
+            yield return null;
+        }
+        PhotonNetwork.Destroy(gameObject);
+        yield break;
     }
 
 }

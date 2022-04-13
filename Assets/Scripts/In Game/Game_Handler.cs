@@ -227,9 +227,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     {
         if (selected != SelectedUnit)
         {
-            lineRenderer.positionCount = 0;
-            originallySelectedEnemy = null;
-            selectedEnemyUnit = null;
+            resetShooting();
         }
         else
         {
@@ -312,6 +310,14 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             }
             LocalView.RPC("GiveMasterNewPositions", RpcTarget.MasterClient, Vector2IntArrayToString(poses.ToArray()), PhotonNetwork.LocalPlayer);
         }
+        if (AllUnits.Count == 0)
+        {
+            if (!loseConditionHandled)
+            {
+                loseConditionHandled = true;
+                handleAllFriendlyUnitsDead();
+            }
+        }
 
     }
 
@@ -378,9 +384,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                 {
                     //trying to path
 
-                    lineRenderer.positionCount = 0;
-                    originallySelectedEnemy = null;
-                    selectedEnemyUnit = null;
+                    resetShooting();
                     List<Vector2Int> restricted = getRestrictedTiles();
                     bool empty = true;
                     if (worldHandler.getBuildLayers().inBounds(x, y))
@@ -721,6 +725,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     {
         playerToUnitDictionary.Remove(plr);
         playerToUnitDictionary.Add(plr, stringToVector2Int(arrAsString));
+        resetShooting();
         LocalView.RPC("giveClientPlayerPositions", Photon.Pun.RpcTarget.Others, arrAsString, plr);
     }
 
@@ -745,6 +750,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         {
             playerToUnitDictionary.Add(plr, stringToVector2Int(asString));
         }
+        resetShooting();
     }
 
     private string Vector2IntArrayToString(Vector2Int[] arr)
@@ -816,8 +822,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     {
         if (selectedEnemyUnit == null)
         {
-            lineRenderer.positionCount = 0;
-            originallySelectedEnemy = null;
+            resetShooting();
             return;
         }
 
@@ -914,11 +919,16 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     }
 
 
-    void handleShoot()
+    void resetShooting()
     {
         lineRenderer.positionCount = 0;
         originallySelectedEnemy = null;
         selectedEnemyUnit = null;
+    }
+
+    void handleShoot()
+    {
+        resetShooting();
         if (lineRenderer.startColor == Color.green)
         {
             Debug.Log("Make New Bullet");
@@ -931,6 +941,20 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             GameObject bullet = PhotonNetwork.Instantiate("Bullet", SelectedUnit.gameObject.transform.position, Quaternion.identity);
             bullet.GetComponent<Bullet_Handler_Script>().setTarget(SelectedUnit.gameObject.transform.position, bulletTargetPos, true);
         }
+    }
+
+
+    //win lose handling
+
+    [SerializeField] GameObject blackScreen;
+    bool loseConditionHandled = false;
+    void handleAllFriendlyUnitsDead()
+    {
+        blackScreen.layer = LayerMask.NameToLayer("Mask");
+        SpriteRenderer sr = blackScreen.GetComponent<SpriteRenderer>();
+        Color c = sr.color;
+        c.a = 0;
+        sr.color = c;
     }
 
 }
