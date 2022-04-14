@@ -74,6 +74,7 @@ public class SaveLoad_Handler_Script : MonoBehaviour
         }
 
         sr.Close();
+        worldHandler.setupVisualBlockers();
     }
 
 

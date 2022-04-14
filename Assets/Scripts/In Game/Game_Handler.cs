@@ -42,6 +42,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     void Start()
     {
         pathfindingVisualHandler = GameObject.FindGameObjectWithTag("PathfindingVisual").GetComponent<pathfindingColorVisualHandler>();
+        blackScreen.SetActive(true);
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
@@ -378,7 +379,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             {
                 worldHandler.getBuildLayers().GetXY(UtilClass.getMouseWorldPosition(), out int x, out int y);
                 //no unit clicked
-                if (getRestrictedTiles().Contains(new Vector2Int(x, y)) && SelectedUnit != null)
+                if (getRestrictedTiles().Contains(new Vector2Int(x, y)) && SelectedUnit != null && !moving)
                 {
                     //clicking on enemy Unit
                     HandleClickOnEnemyUnit();

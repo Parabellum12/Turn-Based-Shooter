@@ -125,6 +125,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             case CharacterData.CharacterClassEnum.Defender:
                 sprite.sprite = Defender;
                 localViewSystem.setParameters(280, 45, 35);
+                localViewSystem.setRayCount(280);
                 spritenum = 2;
                 break;
             case CharacterData.CharacterClassEnum.Ranger:
@@ -136,6 +137,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
             case CharacterData.CharacterClassEnum.Engineer:
                 sprite.sprite = Engineer;
                 localViewSystem.setParameters(360, 180, 25);
+                localViewSystem.setRayCount(360);
                 spritenum = 4;
                 break;
 

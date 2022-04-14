@@ -439,7 +439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &986286071
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1000,6 +1000,7 @@ MonoBehaviour:
   visualGrid: {fileID: 1478181546}
   TileAtlas: {fileID: 21300000, guid: 820dbbfedc10ad14facbc150a9360bda, type: 3}
   setDebugTo: 0
+  WorldVisualBlocker: {fileID: 7129513341329227653, guid: 3374dda849b9dc346aba63c25802193c, type: 3}
 --- !u!114 &1478181543
 MonoBehaviour:
   m_ObjectHideFlags: 0

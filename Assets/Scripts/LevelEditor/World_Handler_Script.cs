@@ -20,11 +20,13 @@ public class World_Handler_Script : MonoBehaviour
 
     [SerializeField] bool setDebugTo = false;
     public static bool debugging = false;
-
+    [SerializeField] GameObject WorldVisualBlocker;
+    static GameObject WorldVisualBlockerStatic;
     List<WorldTileSpawnPoints> spawnPoints = new List<WorldTileSpawnPoints>();
 
     public void Awake()
     {
+        World_Handler_Script.WorldVisualBlockerStatic = WorldVisualBlocker;
         debugging = setDebugTo;
         allTileBuildData = SetAllTileBuildData;
         string seperator = "";
@@ -184,7 +186,6 @@ public class World_Handler_Script : MonoBehaviour
         buildLevels = new GridClass<WorldBuildTile>(gameObject.transform, width, height, cellSize, Vector3.zero, (int x, int y) => new WorldBuildTile(x, y, defaultTile));
         visualGrid.SetGrid(buildLevels);
 
-
         /* A* preview
         AstarPathing pathing = new AstarPathing();
         Vector2Int[] path = pathing.returnPath(new Vector2Int(0,0), new Vector2Int(5, 10), buildLevels);
@@ -287,6 +288,31 @@ public class World_Handler_Script : MonoBehaviour
 
     }
 
+    List<GameObject> visualBlockers = new List<GameObject>();
+    public void setupVisualBlockers()
+    {
+        foreach (GameObject gm in visualBlockers)
+        {
+            Destroy(gm);
+        }
+        visualBlockers.Clear();
+        for (int x = 0; x < buildLevels.width; x++)
+        {
+            for (int y = 0; y < buildLevels.height; y++)
+            {
+                if (!buildLevels.getGridObject(x,y).IsWalkable())
+                {
+                    //need to add wall
+                    GameObject tempgm = Instantiate(WorldVisualBlockerStatic);
+                    tempgm.transform.localScale.Set(50, 50, 1);
+                    tempgm.transform.lossyScale.Set(50, 50, 1);
+                    tempgm.transform.position = new Vector3(buildLevels.getWorldPosition(x, y).x + 7.5f, buildLevels.getWorldPosition(x, y).y + 7.5f, 0);
+                    visualBlockers.Add(tempgm);
+                }
+            }
+        }
+    }
+
 
 
 
@@ -307,6 +333,8 @@ public class World_Handler_Script : MonoBehaviour
         TileBuildData WallData;
 
         TileBuildData pathfindingData = null;
+
+        GameObject visualBlocker;
 
         bool[] subGrid = new bool[9];
 
