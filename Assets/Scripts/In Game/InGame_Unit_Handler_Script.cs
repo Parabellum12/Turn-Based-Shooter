@@ -442,7 +442,7 @@ public class InGame_Unit_Handler_Script : MonoBehaviour
 
     [PunRPC] void ownerHandleGetShot()
     {
-        currentHealth -= 10;
+        currentHealth -= Mathf.FloorToInt(10f * (1f - ((characterData.Armor/2f)/100f)));
     }
 
     public void handleDeath()

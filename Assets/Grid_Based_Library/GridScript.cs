@@ -30,7 +30,6 @@ public class GridClass<TGridObject>
         gridArray = new TGridObject[width, height];
         debugGridArray = new TextMeshPro[width, height];
 
-
         for (int i = 0; i < gridArray.GetLength(0); i++)
         {
             for (int j = 0; j < gridArray.GetLength(1); j++)
