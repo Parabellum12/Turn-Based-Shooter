@@ -229,6 +229,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     {
         if (selected != SelectedUnit)
         {
+
             resetShooting();
         }
         else
@@ -240,6 +241,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             SelectedUnit.isSelected = false;
         }
         SelectedUnit = selected;
+        handleShowStats();
         if (SelectedUnit != null)
         {
             SelectedUnit.isSelected = true;
@@ -252,10 +254,13 @@ public class Game_Handler : MonoBehaviourPunCallbacks
     [SerializeField] bool AllowDebuggingInputs = false;
     bool firstUpdateOnTurn = true;
     // Update is called once per frame
+
+
     void Update()
     {
         if (IsMyTurn())
         {
+            handleUnitCamera();
             nextTurnButton.interactable = true;
             if (firstUpdateOnTurn)
             {
@@ -289,6 +294,47 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             nextTurnButton.interactable = false;
         }
     }
+
+
+
+    //unit camera
+    [SerializeField] Camera UnitCamera;
+    [SerializeField] RawImage unitTextureImage;
+    void handleUnitCamera()
+    {
+        if (SelectedUnit != null)
+        {
+            unitTextureImage.enabled = true;
+            Vector2 pos = SelectedUnit.transform.position;
+            Vector3 toSet = pos;
+            toSet.z = -5;
+            UnitCamera.transform.position = toSet;
+        }
+        else
+        {
+            unitTextureImage.enabled = false;
+        }
+    }
+
+    //stat shower
+    [SerializeField] stat_Shower_Handler Ap;
+    [SerializeField] stat_Shower_Handler health;
+    void handleShowStats()
+    {
+        if (SelectedUnit != null)
+        {
+            Ap.setValues("Action Points", SelectedUnit.currentActionPoints, 100);
+            health.setValues("Health", SelectedUnit.currentHealth, 100);
+        }
+        else
+        {
+            //no unit selected
+            Ap.setValues("Action Points", 0, 0);
+            health.setValues("Health", 0, 0);
+        }
+    }
+
+
 
     void handleUnitDeath()
     {
@@ -610,6 +656,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
         {
 
             //wait for acceptance of path
+            Ap.setTempValue(SelectedUnit.currentActionPoints - (worldHandler.getBuildLayers().getGridObject(path[path.Length-1].x, path[path.Length - 1].y).gCost * SelectedUnit.getMoveCostMultiplier()));
             while (!AcceptedMovePath)
             {
                 if (CancelMoveRequest)
@@ -673,6 +720,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
             }
             pathfindingVisualHandler.SetGrid(worldHandler.getBuildLayers());
         }
+        handleShowStats();
         yield break;
     }
 
