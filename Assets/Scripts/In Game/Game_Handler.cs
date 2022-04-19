@@ -664,7 +664,7 @@ public class Game_Handler : MonoBehaviourPunCallbacks
                     AcceptedMovePath = false;
                     CancelMoveRequest = false;
                     WaitingForAcceptionOfPath = false;
-
+                    Ap.resetTemp();
                     resetPathVisualGrid();
 
                     yield break;
@@ -1038,13 +1038,39 @@ public class Game_Handler : MonoBehaviourPunCallbacks
 
     }
 
+    [SerializeField] GameObject endScreen;
+    [SerializeField] TMP_Text endScreenText;
+
     void handleWinCondition()
     {
         if (playerToUnitDictionary.Keys.Count == 1)
         {
             List<Photon.Realtime.Player> winner = new List<Photon.Realtime.Player>(playerToUnitDictionary.Keys);
             Debug.Log(winner[0] + " Is The Winner!");
+            foreach (Photon.Realtime.Player plr in PhotonNetwork.PlayerList)
+            {
+                if (plr == winner[0])
+                {
+                    LocalView.RPC("winner", plr);
+                }
+                else
+                {
+                    LocalView.RPC("loser", plr);
+                }
+            }
         }
+    }
+
+    [PunRPC] void winner()
+    {
+        endScreenText.text = "Victory!";
+        endScreen.SetActive(true);
+    }
+
+    [PunRPC] void loser()
+    {
+        endScreenText.text = "Defeat";
+        endScreen.SetActive(true);
     }
 
 }

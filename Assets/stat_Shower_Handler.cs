@@ -34,6 +34,11 @@ public class stat_Shower_Handler : MonoBehaviour
         temValue = currentValue;
     }
 
+    public void resetTemp()
+    {
+        temValue = currentValue;
+    }
+
     float flashTimer = 0;
     //true = white, false = color
     bool FlashOrColor = false;
